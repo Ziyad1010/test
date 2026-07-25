@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>عمار | سوق مواد البناء</title>
+  <meta name="description" content="عمار — منصة سعودية لبيع مواد البناء: أسمنت، حديد، خرسانة جاهزة، طوب وبلوك، مواد تشطيب وأدوات، من موردين موثوقين وبأسعار تنافسية." />
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===================== Top Navigation ===================== -->
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="#top" class="brand">
+        <img src="assets/images/logo.png" alt="شعار عمار" class="brand-logo" />
+        <span class="brand-text">
+          <strong>عمّار</strong>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="التنقل الرئيسي">
+        <a href="#top" class="nav-link active">الرئيسية</a>
+        <a href="#products" class="nav-link">المتجر</a>
+        <a href="#howWorks" class="nav-link">كيف نعمل</a>
+        <a href="#categories" class="nav-link">التصنيفات</a>
+        <a href="#partners" class="nav-link">الموردون</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="cart-btn" id="cartBtn" aria-label="سلة التسوق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span class="cart-badge" id="cartCount">2</span>
+        </button>
+        <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+        <a href="signup.html" class="btn btn-dark">إنشاء حساب</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="القائمة">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== Hero ===================== -->
+  <section class="hero" id="about">
+    <div class="container hero-inner">
+      <div class="hero-media">
+        <div class="hero-clip">
+          <img src="assets/images/hero.jpg" alt="مواد بناء أمام فيلا حديثة" />
+        </div>
+        <span class="hero-deco hero-deco-dots" aria-hidden="true"></span>
+        <span class="hero-deco hero-deco-gold" aria-hidden="true"></span>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">
+          كل مواد البنـاء<br />في مكان <em>واحد</em>
+        </h1>
+        <p class="hero-sub">
+          نوفر لك أفضل جودة وأسعار تنافسية من موردين موثوقين في جميع أنحاء المملكة
+        </p>
+
+        <form class="search-bar" id="searchForm" role="search">
+          <div class="search-select">
+            <select id="searchCategory" aria-label="اختر القسم">
+              <option value="">كل الأقسام</option>
+              <option value="cement">الأسمنت</option>
+              <option value="steel">الحديد</option>
+              <option value="concrete">الخرسانة الجاهزة</option>
+              <option value="blocks">الطوب والبلوك</option>
+              <option value="finishing">مواد التشطيب</option>
+              <option value="tools">أدوات ومعدات</option>
+            </select>
+          </div>
+          <input type="search" id="searchInput" placeholder="ابحث عن منتج، مورد أو علامة تجارية..." aria-label="بحث" />
+          <button type="submit" class="search-btn" aria-label="بحث">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </form>
+
+        <!-- Feature icons row -->
+        <ul class="hero-features">
+          <li>
+            <span class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            </span>
+            <div><strong>دعم فني 24/7</strong></div>
+          </li>
+          <li>
+            <span class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.83 0l4.59-4.59a2 2 0 0 0 0-2.83z"/><circle cx="7.5" cy="7.7" r="1.2"/></svg>
+            </span>
+            <div><strong>أسعار تنافسية</strong></div>
+          </li>
+          <li>
+            <span class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </span>
+            <div><strong>توصيل سريع</strong></div>
+          </li>
+          <li>
+            <span class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
+            <div><strong>جودة مضمونة</strong></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Enterprise Partners Dual-Row Slider ===================== -->
+  <section class="trust-slider-section" id="partners">
+    <div class="container trust-slider-header">
+      <div class="trust-badge-pill">
+        <span class="pulse-dot"></span>
+        <strong>ثقة مبنية</strong>
+      </div>
+      <h2 class="trust-main-title">كبرى الشركات والمصانع والجهات تثق في منصة عمّار</h2>
+      <p class="trust-main-sub">رسخنا مكانتنا كشريك موثوق لأبرز المصانع والموردين والشركات الرائدة في قطاع البناء والتشييد بالمملكة</p>
+    </div>
+
+    <div class="trust-slider-rows">
+      <!-- Row 1: Sliding Left -->
+      <div class="trust-row-wrap">
+        <div class="trust-track-row track-left">
+          <!-- Set 1 -->
+          <div class="logo-card">
+            <span class="logo-badge">سابك</span>
+            <span class="logo-tag">SABIC</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-gold">◈</span>
+            <span class="logo-text">العمران للمقاولات</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-cyan">▲</span>
+            <span class="logo-text">أسمنت العربية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-orange">RAJHI</span>
+            <span class="logo-text">حديد الراجحي</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-teal">SCC</span>
+            <span class="logo-text">الخرسانة السعودية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-green">aramco</span>
+            <span class="logo-text">أرامكو السعودية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-gold">الفوزان</span>
+            <span class="logo-text">الفوزان لمواد البناء</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-cyan">البواني</span>
+            <span class="logo-text">مجموعة البواني</span>
+          </div>
+
+          <!-- Set 1 Duplicate for smooth loop -->
+          <div class="logo-card">
+            <span class="logo-badge">سابك</span>
+            <span class="logo-tag">SABIC</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-gold">◈</span>
+            <span class="logo-text">العمران للمقاولات</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-cyan">▲</span>
+            <span class="logo-text">أسمنت العربية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-orange">RAJHI</span>
+            <span class="logo-text">حديد الراجحي</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-teal">SCC</span>
+            <span class="logo-text">الخرسانة السعودية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-green">aramco</span>
+            <span class="logo-text">أرامكو السعودية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-gold">الفوزان</span>
+            <span class="logo-text">الفوزان لمواد البناء</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-cyan">البواني</span>
+            <span class="logo-text">مجموعة البواني</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Sliding Right -->
+      <div class="trust-row-wrap">
+        <div class="trust-track-row track-right">
+          <!-- Set 2 -->
+          <div class="logo-card">
+            <span class="logo-badge text-orange">المهيدب</span>
+            <span class="logo-text">المهيدب لمواد البناء</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-blue">أسمنت اليمامة</span>
+            <span class="logo-text">شركة أسمنت اليمامة</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-teal">الزامل</span>
+            <span class="logo-text">الزامل للهياكل الفولاذية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-green">حديد الاتفاق</span>
+            <span class="logo-text">شركة الاتفاق للحديد</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-gold">الخزف</span>
+            <span class="logo-text">الخزف السعودي</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-cyan">الكفاح</span>
+            <span class="logo-text">الكفاح لمواد البناء</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-blue">بن لادن</span>
+            <span class="logo-text">مجموعة بن لادن السعودية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-orange">أم القرى</span>
+            <span class="logo-text">أسمنت أم القرى</span>
+          </div>
+
+          <!-- Set 2 Duplicate for smooth loop -->
+          <div class="logo-card">
+            <span class="logo-badge text-orange">المهيدب</span>
+            <span class="logo-text">المهيدب لمواد البناء</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-blue">أسمنت اليمامة</span>
+            <span class="logo-text">شركة أسمنت اليمامة</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-teal">الزامل</span>
+            <span class="logo-text">الزامل للهياكل الفولاذية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-green">حديد الاتفاق</span>
+            <span class="logo-text">شركة الاتفاق للحديد</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-gold">الخزف</span>
+            <span class="logo-text">الخزف السعودي</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-cyan">الكفاح</span>
+            <span class="logo-text">الكفاح لمواد البناء</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-blue">بن لادن</span>
+            <span class="logo-text">مجموعة بن لادن السعودية</span>
+          </div>
+          <div class="logo-card">
+            <span class="logo-badge text-orange">أم القرى</span>
+            <span class="logo-text">أسمنت أم القرى</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Categories ===================== -->
+  <section class="section categories" id="categories">
+    <div class="container">
+      <div class="categories-header-bar">
+        <h2 class="section-title">تسوق حسب الفئة</h2>
+        <a href="#categories" class="section-link">
+          عرض الكل
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </a>
+      </div>
+
+      <div class="cat-grid" id="catGrid"><!-- rendered by JS --></div>
+    </div>
+  </section>
+
+  <!-- ===================== Promo Banners ===================== -->
+  <section class="section promos" id="promos">
+    <div class="container promo-grid">
+      <article class="promo-card promo-dark">
+        <img class="promo-img" src="assets/images/banner-supply.jpg" alt="مستودع مواد بناء وشاحنة توريد" />
+        <div class="promo-overlay overlay-dark"></div>
+        <div class="promo-content">
+          <span class="promo-label">Bulk Supply</span>
+          <h3>توريد لمشاريعك</h3>
+          <p>نوفر كميات كبيرة للمقاولات بأسعار خاصة وشروط مرنة</p>
+          <a href="#" class="btn btn-gold">تواصل مع المبيعات</a>
+        </div>
+      </article>
+
+      <article class="promo-card promo-light">
+        <img class="promo-img" src="assets/images/banner-delivery.jpg" alt="مهندسان في موقع بناء" />
+        <div class="promo-overlay overlay-light"></div>
+        <div class="promo-content">
+          <span class="promo-label">Fast Delivery</span>
+          <h3>توصيل سريع</h3>
+          <p>نصل طلبك في الوقت المحدد إلى موقعك مباشرة</p>
+          <a href="#" class="btn btn-outline-dark">تتبع الطلب</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== Featured Products ===================== -->
+  <section class="section products" id="products">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title">منتجات مميزة</h2>
+        <a href="#" class="section-link">
+          عرض جميع المنتجات
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        </a>
+      </div>
+
+      <div class="products-wrap">
+        <button class="slider-arrow arrow-prev" id="prodPrev" aria-label="السابق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <div class="prod-track" id="prodTrack"><!-- rendered by JS --></div>
+        <button class="slider-arrow arrow-next" id="prodNext" aria-label="التالي">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Why Choose Us ===================== -->
+  <section class="section why-us" id="whyUs">
+    <div class="container">
+      <div class="why-us-header">
+        <span class="why-us-eyebrow">لماذا تختارنا</span>
+        <h2 class="why-us-title">نحو بناء أفضل وأسرع وأكثر ذكاءً</h2>
+        <p class="why-us-sub">نحن ندرك التحديات التي تواجهكم في رحلة البناء، لذا صممنا عمار لتكون الحل الشامل لكل احتياجاتكم.</p>
+      </div>
+      <div class="why-us-grid">
+        <div class="why-card">
+          <span class="badge-soon">قريبا</span>
+          <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>مواد عالية الجودة</h3>
+          <p>نوفر منتجات معتمدة ومطابقة للمواصفات العالمية والمحلية من أفضل المصانع.</p>
+        </div>
+        <div class="why-card">
+          <span class="badge-soon">قريبا</span>
+          <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></div>
+          <h3>أسعار تنافسية</h3>
+          <p>قارن بين مئات العروض والأسعار من مختلف الموردين واختر الأنسب لميزانيتك.</p>
+        </div>
+        <div class="why-card">
+          <span class="badge-soon">قريبا</span>
+          <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <h3>توصيل سريع</h3>
+          <p>نظام لوجستي متطور يضمن وصول طلبك إلى موقع المشروع في أسرع وقت ممكن.</p>
+        </div>
+        <div class="why-card">
+          <span class="badge-soon">قريبا</span>
+          <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></div>
+          <h3>دعم فني</h3>
+          <p>فريق من الخبراء متاح على مدار الساعة للإجابة على استفساراتك ومساعدتك.</p>
+        </div>
+        <div class="why-card">
+          <span class="badge-soon">قريبا</span>
+          <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg></div>
+          <h3>خدمات متكاملة</h3>
+          <p>شبكة واسعة من المقاولين والمهندسين المعتمدين لتنفيذ مشروعك باحترافية.</p>
+        </div>
+        <div class="why-card">
+          <span class="badge-soon">قريبا</span>
+          <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+          <h3>دفع آمن</h3>
+          <p>خيارات دفع متعددة وآمنة تماماً تشمل مدى، فيزا، وخدمات الدفع بالتقسيط.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== How it Works ===================== -->
+  <section class="section how-works" id="howWorks">
+    <div class="container">
+      <div class="how-works-header">
+        <h2 class="how-works-title">كيف تعمل منصة عمار؟</h2>
+        <p class="how-works-sub">بخطوات بسيطة وسهلة يمكنك الحصول على كل ما تحتاجه لمشروعك الإنشائي.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <h3>سجّل حسابك</h3>
+          <p>قم بإنشاء حسابك مجاناً خلال دقائق كفرد أو كمؤسسة لتبدأ رحلة البناء.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <h3>تصفح واختر</h3>
+          <p>استكشف آلاف المنتجات والخدمات وقارن بين العروض المتوفرة.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <h3>اطلب وادفع</h3>
+          <p>أضف ما تحتاجه للسلة وأكمل عملية الشراء بخيارات دفع آمنة وسهلة.</p>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <h3>استلم واستمتع</h3>
+          <p>سنقوم بتوصيل طلباتك لموقعك بأسرع وقت. ابدأ العمل الآن!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Supplier CTA ===================== -->
+  <section class="section supplier-cta" id="supplierCta">
+    <div class="container">
+      <div class="supplier-card">
+        <div class="supplier-image">
+          <img src="assets/images/banner-supply.jpg" alt="ميناء شحن" />
+          <div class="supplier-stat">
+            <span class="stat-number">+40%</span>
+            <span class="stat-label">نمو المبيعات</span>
+          </div>
+        </div>
+        <div class="supplier-content">
+          <span class="supplier-eyebrow">🚀 فرصة نمو لعملك</span>
+          <h2 class="supplier-title">هل أنت مورد؟<br>انضم لعمار وزد مبيعاتك قريباً</h2>
+          <p class="supplier-desc">افتح آفاقاً جديدة لعملك ووصولاً غير محدود لآلاف المطورين والعملاء النشطين في منصتنا. نحن نساعدك في التوسع التقني وزيادة المبيعات بكل سهولة.</p>
+          <ul class="supplier-features">
+            <li><span class="check">✓</span> لوحة تحكم شاملة لإدارة الطلبات</li>
+            <li><span class="check">✓</span> وصول لآلاف العملاء الجدد شهرياً</li>
+            <li><span class="check">✓</span> دعم تقني ولوجستي متكامل</li>
+            <li><span class="check">✓</span> تقارير مبيعات وتحليلات متقدمة</li>
+          </ul>
+          <a href="signup.html" class="btn-supplier">انضم كمورد الآن</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CTA Banner ===================== -->
+  <section class="cta-banner">
+    <div class="container cta-inner">
+      <h2 class="cta-brand">عمّار</h2>
+      <p class="cta-text">انضم لآلاف العملاء الذين يثقون بمنصة عمار لبناء مستقبلهم. الجودة، التوفير، والسرعة، قريباً في مكان واحد وبضغطة زر.</p>
+      <a href="signup.html" class="btn-cta">سجل الآن ←</a>
+    </div>
+  </section>
+
+  <!-- ===================== Pre-footer Trust Band ===================== -->
+  <section class="trust-band" id="howItWorks">
+    <div class="container trust-grid">
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        </span>
+        <div><strong>إرجاع سهل</strong><small>سياسة إرجاع مرنة خلال 7 أيام</small></div>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 14 17 22l-5-3-5 3 1.5-8"/></svg>
+        </span>
+        <div><strong>ضمان الجودة</strong><small>منتجات أصلية بجودة مضمونة</small></div>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <div><strong>طرق دفع آمنة</strong><small>دفع إلكتروني آمن ومتعدد الخيارات</small></div>
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        </span>
+        <div><strong>دعم عملاء مميز</strong><small>فريق دعم متخصص على مدار الساعة</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== Footer ===================== -->
+  <footer class="site-footer" id="footer">
+    <div class="container">
+      <!-- Multi-column footer grid -->
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>عن عمار</h4>
+          <p>عمار مواد البناء في مكان واحد. نقدّم أفضل جودة وأسعار تنافسية من موردين موثوقين في جميع أنحاء المملكة.</p>
+        </div>
+        <div class="footer-col">
+          <h4>كيف نعمل</h4>
+          <ul>
+            <li><a href="#howWorks">الدفع</a></li>
+            <li><a href="#categories">المعارض</a></li>
+            <li><a href="#products">البورصة</a></li>
+            <li><a href="#supplierCta">الرواد</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>سياسات</h4>
+          <ul>
+            <li><a href="#">السرية</a></li>
+            <li><a href="#">المعاملات</a></li>
+            <li><a href="#">سياستنا</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>تواصل معنا</h4>
+          <p>تواصل معنا على البريد الإلكتروني لمتابعة أحدث المنتجات والعروض</p>
+          <div class="socials" style="margin-top: 14px;">
+            <a href="#" aria-label="لينكدإن"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></a>
+            <a href="#" aria-label="إكس"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41z"/></svg></a>
+            <a href="#" aria-label="إنستغرام"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="يوتيوب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="footer-inner">
+        <p class="copyright">© 2026 عمار — جميع الحقوق محفوظة</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
