@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الطلبات | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">الطلبات</h1>
+            <p class="page-subtitle">متابعة طلبات العملاء وحالتها من الاستلام حتى التسليم</p>
+          </div>
+        </div>
+
+        <div class="pd-stat-strip">
+          <div class="pd-stat"><strong id="ordStatTotal">0</strong><span>إجمالي الطلبات</span></div>
+          <div class="pd-stat"><strong id="ordStatPending">0</strong><span>قيد المراجعة</span></div>
+          <div class="pd-stat"><strong id="ordStatShipping">0</strong><span>يتم الشحن</span></div>
+          <div class="pd-stat"><strong id="ordStatDone">0</strong><span>تم التسليم</span></div>
+        </div>
+
+        <div class="tab-bar" id="ordTabs">
+          <button type="button" class="tab-btn is-active" data-status="">الكل</button>
+          <button type="button" class="tab-btn" data-status="review">قيد المراجعة</button>
+          <button type="button" class="tab-btn" data-status="prep">يتم التجهيز</button>
+          <button type="button" class="tab-btn" data-status="shipped">تم الشحن</button>
+          <button type="button" class="tab-btn" data-status="delivered">تم التسليم</button>
+          <button type="button" class="tab-btn" data-status="cancelled">ملغي</button>
+        </div>
+
+        <div class="pd-table-wrap">
+          <table class="pd-table">
+            <thead>
+              <tr>
+                <th>رقم الطلب</th>
+                <th>العميل</th>
+                <th>المنتجات</th>
+                <th>المبلغ</th>
+                <th>الدفع</th>
+                <th>التاريخ</th>
+                <th>الحالة</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ordTableBody"><!-- JS-populated --></tbody>
+          </table>
+        </div>
+        <p class="pd-empty" id="ordEmpty" hidden>لا توجد طلبات في هذه الحالة</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Order Detail Modal -->
+  <div class="pd-modal-overlay" id="ordModalOverlay" hidden>
+    <div class="pd-modal">
+      <div class="pd-modal-header">
+        <h2 id="ordModalTitle">تفاصيل الطلب #1024</h2>
+        <button type="button" class="pd-modal-close" id="ordModalClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body" id="ordModalBody"><!-- JS-populated --></div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="ordPrintBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            طباعة
+          </button>
+        </div>
+        <div class="pd-modal-footer-end" id="ordModalActions"><!-- JS-populated --></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/orders.js"></script>
+</body>
+</html>

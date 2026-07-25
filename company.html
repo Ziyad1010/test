@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الشركة | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">ملف الشركة</h1>
+            <p class="page-subtitle">هذه المعلومات تظهر للمشترين في صفحة متجرك العامة</p>
+          </div>
+          <button class="pd-add-btn" id="coSaveBtn">حفظ التغييرات</button>
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <div class="pd-subhead" style="margin-top:0;"><strong>الشعار والوصف</strong></div>
+            <div style="display:flex;gap:16px;align-items:center;margin-bottom:18px;">
+              <div id="coLogoPreview" style="width:72px;height:72px;border-radius:14px;background:var(--primary-50);display:flex;align-items:center;justify-content:center;color:var(--primary-600);font-weight:800;font-size:1.4rem;flex-shrink:0;overflow:hidden;">ب</div>
+              <div class="pd-dropzone-sm" id="coLogoDropzone" style="flex:1;padding:14px;">
+                <input type="file" id="coLogoInput" accept="image/*" hidden />
+                <span>اضغط لرفع شعار جديد (PNG أو JPG)</span>
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="coName">اسم الشركة</label>
+              <input type="text" id="coName" />
+            </div>
+            <div class="pd-field">
+              <label for="coDesc">وصف الشركة</label>
+              <textarea id="coDesc" maxlength="600" placeholder="نبذة عن نشاط شركتك ومميزاتها..."></textarea>
+              <span class="pd-counter"><span id="coDescCount">0</span>/600</span>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="pd-subhead" style="margin-top:0;"><strong>التواصل والموقع الإلكتروني</strong></div>
+            <div class="pd-field">
+              <label for="coWebsite">الموقع الإلكتروني</label>
+              <input type="text" id="coWebsite" placeholder="https://example.sa" />
+            </div>
+            <div class="pd-field-row cols-2">
+              <div class="pd-field">
+                <label for="coTwitter">حساب X (تويتر)</label>
+                <input type="text" id="coTwitter" placeholder="@company" />
+              </div>
+              <div class="pd-field">
+                <label for="coInstagram">حساب إنستغرام</label>
+                <input type="text" id="coInstagram" placeholder="@company" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="coCr">رقم السجل التجاري</label>
+              <input type="text" id="coCr" readonly />
+            </div>
+            <div class="pd-field">
+              <label>حالة التحقق</label>
+              <div><span class="pd-status-pill draft" id="coVerifyStatus">قيد المراجعة</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card" style="margin-bottom:24px;">
+          <div class="pd-subhead" style="margin-top:0;"><strong>الشهادات والمستندات</strong></div>
+          <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr));">
+            <div class="cert-card">
+              <span class="cert-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div class="cert-info"><strong>السجل التجاري</strong><small id="coCrStatus">تم الرفع — قيد المراجعة</small></div>
+            </div>
+            <div class="cert-card">
+              <span class="cert-icon" style="background:var(--warning-bg);color:var(--warning);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+              <div class="cert-info"><strong>شهادة ضريبة القيمة المضافة</strong><small>لم يتم الرفع بعد</small></div>
+              <button type="button" class="ob-btn-ghost" data-upload="vat">رفع</button>
+            </div>
+            <div class="cert-card">
+              <span class="cert-icon" style="background:var(--bg);color:var(--muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+              <div class="cert-info"><strong>شهادة الأيزو (ISO)</strong><small>اختياري — لم يتم الرفع بعد</small></div>
+              <button type="button" class="ob-btn-ghost" data-upload="iso">رفع</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="pd-subhead" style="margin-top:0;"><strong>معرض صور الشركة</strong></div>
+          <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
+            <img src="assets/images/banner-supply.jpg" alt="مستودع" style="width:100%;height:110px;object-fit:cover;border-radius:10px;" />
+            <img src="assets/images/banner-delivery.jpg" alt="توصيل" style="width:100%;height:110px;object-fit:cover;border-radius:10px;" />
+            <div class="pd-dropzone-sm" style="height:110px;padding:8px;justify-content:center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span style="font-size:0.75rem;">إضافة صورة</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/company.js"></script>
+</body>
+</html>

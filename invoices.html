@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الفواتير | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">الفواتير</h1>
+            <p class="page-subtitle">فواتيرك الضريبية المصدرة للعملاء وحالة سدادها</p>
+          </div>
+        </div>
+
+        <div class="pd-stat-strip">
+          <div class="pd-stat"><strong id="invStatTotal">0</strong><span>إجمالي الفواتير</span></div>
+          <div class="pd-stat"><strong id="invStatPaid">0 ر.س</strong><span>محصّل</span></div>
+          <div class="pd-stat"><strong id="invStatPending">0 ر.س</strong><span>قيد التحصيل</span></div>
+          <div class="pd-stat"><strong id="invStatOverdue">0</strong><span>متأخرة السداد</span></div>
+        </div>
+
+        <div class="tab-bar" id="invTabs">
+          <button type="button" class="tab-btn is-active" data-status="">الكل</button>
+          <button type="button" class="tab-btn" data-status="paid">مسددة</button>
+          <button type="button" class="tab-btn" data-status="pending">قيد التحصيل</button>
+          <button type="button" class="tab-btn" data-status="overdue">متأخرة</button>
+        </div>
+
+        <div class="pd-table-wrap">
+          <table class="pd-table">
+            <thead>
+              <tr>
+                <th>رقم الفاتورة</th>
+                <th>العميل</th>
+                <th>الرقم الضريبي</th>
+                <th>المبلغ</th>
+                <th>تاريخ الإصدار</th>
+                <th>تاريخ الاستحقاق</th>
+                <th>الحالة</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="invTableBody"><!-- JS-populated --></tbody>
+          </table>
+        </div>
+        <p class="pd-empty" id="invEmpty" hidden>لا توجد فواتير في هذه الحالة</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/invoices.js"></script>
+</body>
+</html>
