@@ -28,21 +28,6 @@
         <h1 class="auth-title">مرحباً بعودتك</h1>
         <p class="auth-subtitle">سجّل الدخول إلى حسابك في منصة عمار</p>
 
-        <!-- Account Type Selection -->
-        <div class="account-type-group">
-          <label class="account-type-label">نوع الحساب</label>
-          <div class="account-type-selector">
-            <button type="button" class="account-type-btn active" id="btnBuyer" onclick="selectRole('buyer')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              أفراد / مشتري
-            </button>
-            <button type="button" class="account-type-btn" id="btnSupplier" onclick="selectRole('supplier')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              مورد / بائع
-            </button>
-          </div>
-        </div>
-
         <button class="auth-google-btn" onclick="handleGoogleSignIn()">
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" />
           المتابعة باستخدام Google
@@ -76,22 +61,6 @@
   </div>
 
   <script>
-    let currentRole = 'buyer';
-
-    function selectRole(role) {
-      currentRole = role;
-      const btnBuyer = document.getElementById('btnBuyer');
-      const btnSupplier = document.getElementById('btnSupplier');
-
-      if (role === 'supplier') {
-        btnSupplier.classList.add('active');
-        btnBuyer.classList.remove('active');
-      } else {
-        btnBuyer.classList.add('active');
-        btnSupplier.classList.remove('active');
-      }
-    }
-
     function togglePassword(inputId) {
       const input = document.getElementById(inputId);
       if (input.type === 'password') {
@@ -103,19 +72,11 @@
 
     function handleLoginSubmit(e) {
       e.preventDefault();
-      if (currentRole === 'supplier') {
-        window.location.href = 'dashboard.html';
-      } else {
-        window.location.href = 'index.html';
-      }
+      window.location.href = 'index.html';
     }
 
     function handleGoogleSignIn() {
-      if (currentRole === 'supplier') {
-        window.location.href = 'dashboard.html';
-      } else {
-        window.location.href = 'index.html';
-      }
+      window.location.href = 'index.html';
     }
   </script>
 </body>
