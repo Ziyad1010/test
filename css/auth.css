@@ -105,6 +105,9 @@ a {
     z-index: 1;
     width: 130px;
     margin-bottom: 20px;
+    background: transparent;
+    object-fit: contain;
+    mix-blend-mode: multiply;
     filter: drop-shadow(0 4px 12px rgba(0, 168, 204, 0.15));
 }
 
@@ -161,62 +164,42 @@ a {
     margin-bottom: 28px;
 }
 
-/* Account Type Selector */
+/* Account Type Selector (Minimalist) */
 .account-type-group {
     margin-bottom: 24px;
 }
-
-.account-type-label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--dark-900);
-}
-
 .account-type-selector {
     display: flex;
-    background: var(--teal-50);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 4px;
-    gap: 4px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 6px;
+    gap: 6px;
 }
-
 .account-type-btn {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 8px;
+    padding: 12px 14px;
+    border-radius: 6px;
     border: none;
     background: transparent;
     font-family: var(--font);
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 500;
     color: var(--muted);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
 }
-
-.account-type-btn svg {
-    width: 18px;
-    height: 18px;
+.account-type-btn:hover {
+    color: var(--dark-700);
 }
-
 .account-type-btn.active {
     background: #ffffff;
-    color: var(--teal-600);
-    box-shadow: 0 2px 8px rgba(0, 168, 204, 0.15);
-    border: 1px solid var(--teal-300);
+    color: var(--dark-900);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
-
-.account-type-btn.active svg {
-    color: var(--teal-500);
-}
-
 .auth-google-btn {
     display: flex;
     align-items: center;

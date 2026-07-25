@@ -72,6 +72,8 @@ a { text-decoration: none; color: inherit; }
   width: 40px;
   height: 40px;
   object-fit: contain;
+  mix-blend-mode: multiply;
+  background-color: transparent !important;
 }
 
 .sidebar-brand {

@@ -30,16 +30,9 @@
 
         <!-- Account Type Selection -->
         <div class="account-type-group">
-          <label class="account-type-label">نوع الحساب المراد إنشاؤه</label>
           <div class="account-type-selector">
-            <button type="button" class="account-type-btn active" id="btnBuyer" onclick="selectRole('buyer')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              أفراد / مشتري
-            </button>
-            <button type="button" class="account-type-btn" id="btnSupplier" onclick="selectRole('supplier')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              مورد / بائع
-            </button>
+            <button type="button" class="account-type-btn active" id="btnBuyer" onclick="selectRole('buyer')">مشتري / أفراد</button>
+            <button type="button" class="account-type-btn" id="btnSupplier" onclick="selectRole('supplier')">مورد / شركات</button>
           </div>
         </div>
 
