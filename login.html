@@ -28,6 +28,14 @@
         <h1 class="auth-title">مرحباً بعودتك</h1>
         <p class="auth-subtitle">سجّل الدخول إلى حسابك في منصة عمار</p>
 
+        <!-- Account Type Selection -->
+        <div class="account-type-group">
+          <div class="account-type-selector">
+            <button type="button" class="account-type-btn active" id="btnBuyer" onclick="selectRole('buyer')">مشتري / أفراد</button>
+            <button type="button" class="account-type-btn" id="btnSupplier" onclick="selectRole('supplier')">مورد / شركات</button>
+          </div>
+        </div>
+
         <button class="auth-google-btn" onclick="handleGoogleSignIn()">
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo" />
           المتابعة باستخدام Google
@@ -61,6 +69,22 @@
   </div>
 
   <script>
+    let currentRole = 'buyer';
+
+    function selectRole(role) {
+      currentRole = role;
+      const btnBuyer = document.getElementById('btnBuyer');
+      const btnSupplier = document.getElementById('btnSupplier');
+
+      if (role === 'supplier') {
+        btnSupplier.classList.add('active');
+        btnBuyer.classList.remove('active');
+      } else {
+        btnBuyer.classList.add('active');
+        btnSupplier.classList.remove('active');
+      }
+    }
+
     function togglePassword(inputId) {
       const input = document.getElementById(inputId);
       if (input.type === 'password') {
@@ -70,13 +94,17 @@
       }
     }
 
+    function supplierDestination() {
+      return localStorage.getItem('ammar_supplier_onboarded') === 'true' ? 'dashboard.html' : 'onboarding.html';
+    }
+
     function handleLoginSubmit(e) {
       e.preventDefault();
-      window.location.href = 'index.html';
+      window.location.href = currentRole === 'supplier' ? supplierDestination() : 'index.html';
     }
 
     function handleGoogleSignIn() {
-      window.location.href = 'index.html';
+      window.location.href = currentRole === 'supplier' ? supplierDestination() : 'index.html';
     }
   </script>
 </body>

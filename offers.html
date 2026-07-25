@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>العروض | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">العروض</h1>
+            <p class="page-subtitle">أنشئ حملات خصم لزيادة مبيعاتك في مدن ومنتجات محددة</p>
+          </div>
+          <button class="pd-add-btn" id="offAddBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            إنشاء عرض
+          </button>
+        </div>
+
+        <div class="tab-bar" id="offTabs">
+          <button type="button" class="tab-btn is-active" data-status="">كل العروض</button>
+          <button type="button" class="tab-btn" data-status="active">نشطة</button>
+          <button type="button" class="tab-btn" data-status="scheduled">مجدولة</button>
+          <button type="button" class="tab-btn" data-status="ended">منتهية</button>
+        </div>
+
+        <div class="card-grid" id="offGrid"><!-- JS-populated --></div>
+        <p class="pd-empty" id="offEmpty" hidden>لا توجد عروض في هذا التصنيف</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Offer Modal -->
+  <div class="pd-modal-overlay" id="offModalOverlay" hidden>
+    <div class="pd-modal">
+      <div class="pd-modal-header">
+        <h2>إنشاء عرض جديد</h2>
+        <button type="button" class="pd-modal-close" id="offModalClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body">
+        <div class="pd-field">
+          <label for="ofName">اسم العرض <em>*</em></label>
+          <input type="text" id="ofName" placeholder="عرض نهاية الأسبوع على الحديد" />
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="ofDiscount">نسبة الخصم % <em>*</em></label>
+            <input type="number" id="ofDiscount" min="1" max="90" placeholder="15" />
+          </div>
+          <div class="pd-field">
+            <label for="ofCode">كود الخصم (اختياري)</label>
+            <input type="text" id="ofCode" placeholder="SAVE15" />
+          </div>
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="ofStart">تاريخ البداية <em>*</em></label>
+            <input type="date" id="ofStart" />
+          </div>
+          <div class="pd-field">
+            <label for="ofEnd">تاريخ النهاية <em>*</em></label>
+            <input type="date" id="ofEnd" />
+          </div>
+        </div>
+        <div class="pd-field">
+          <label for="ofCities">المدن المستهدفة</label>
+          <select id="ofCities" multiple size="4">
+            <option selected>الرياض</option>
+            <option selected>جدة</option>
+            <option>الدمام</option>
+            <option>مكة المكرمة</option>
+            <option>المدينة المنورة</option>
+          </select>
+        </div>
+        <div class="pd-field">
+          <label for="ofProducts">المنتجات المستهدفة</label>
+          <select id="ofProducts" multiple size="5">
+            <option selected>حديد تسليح سعودي 12مم</option>
+            <option>أسمنت بورتلاندي عادي</option>
+            <option>خرسانة جاهزة C30</option>
+            <option>بلاط بورسلين مطفي 60×60</option>
+            <option>طوب أسمنتي مصمت 20سم</option>
+          </select>
+        </div>
+      </div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="offCancelBtn">إلغاء</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-primary" id="offCreateBtn">إنشاء العرض</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/shell.js"></script>
+  <script src="js/offers.js"></script>
+</body>
+</html>

@@ -119,7 +119,10 @@
     function handleSignupSubmit(e) {
       e.preventDefault();
       if (currentRole === 'supplier') {
-        window.location.href = 'dashboard.html';
+        localStorage.removeItem('ammar_supplier_onboarded');
+        var fullname = document.getElementById('fullname').value.trim();
+        if (fullname) localStorage.setItem('ammar_user_name', fullname);
+        window.location.href = 'onboarding.html';
       } else {
         window.location.href = 'index.html';
       }
@@ -127,7 +130,8 @@
 
     function handleGoogleSignIn() {
       if (currentRole === 'supplier') {
-        window.location.href = 'dashboard.html';
+        localStorage.removeItem('ammar_supplier_onboarded');
+        window.location.href = 'onboarding.html';
       } else {
         window.location.href = 'index.html';
       }
