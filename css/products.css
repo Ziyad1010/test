@@ -399,3 +399,16 @@
   .pd-stat-strip { grid-template-columns: repeat(2, 1fr); }
   .pd-field-row.cols-2, .pd-field-row.cols-3 { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 640px) {
+  .pd-stat-strip { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pd-toolbar { padding: 12px; }
+  .pd-view-toggle { margin-inline-start: 0; }
+  .pd-modal-overlay { padding: 0; align-items: flex-end; }
+  .pd-modal { max-height: 92vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .pd-modal-body { padding: 16px 18px; }
+  .pd-modal-footer { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
+  .pd-modal-footer-start, .pd-modal-footer-end { width: 100%; }
+  .pd-modal-footer-end { flex-direction: column; }
+  .pd-modal-tabs { padding: 0 16px; }
+}
