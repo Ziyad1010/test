@@ -77,6 +77,52 @@ var Shell = (function () {
       e.preventDefault();
       if (window.confirm('هل تريد تسجيل الخروج من حساب المورد؟')) logout();
     });
+
+    // Closing the drawer when a nav link is tapped matters on mobile even
+    // though the link also navigates away — without it the drawer stays
+    // visually "open" for the brief moment before the new page loads.
+    $all('.nav-item', mount).forEach(function (link) {
+      link.addEventListener('click', function () { closeMobileMenu(); });
+    });
+  }
+
+  /* ---------------- Mobile drawer ---------------- */
+  function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function openMobileMenu() {
+    var sidebar = document.getElementById('dashSidebar');
+    var backdrop = document.getElementById('dashBackdrop');
+    if (sidebar) sidebar.classList.add('is-open');
+    if (backdrop) backdrop.classList.add('is-open');
+  }
+
+  function closeMobileMenu() {
+    var sidebar = document.getElementById('dashSidebar');
+    var backdrop = document.getElementById('dashBackdrop');
+    if (sidebar) sidebar.classList.remove('is-open');
+    if (backdrop) backdrop.classList.remove('is-open');
+  }
+
+  function initMobileMenu() {
+    var navbar = document.querySelector('.top-navbar');
+    if (!navbar || document.getElementById('mobileMenuBtn')) return;
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'mobileMenuBtn';
+    btn.className = 'mobile-menu-btn';
+    btn.setAttribute('aria-label', 'القائمة');
+    btn.innerHTML = iconSvg('<line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>');
+    navbar.insertBefore(btn, navbar.firstChild);
+    btn.addEventListener('click', openMobileMenu);
+
+    var backdrop = document.createElement('div');
+    backdrop.id = 'dashBackdrop';
+    backdrop.className = 'dash-backdrop';
+    document.body.appendChild(backdrop);
+    backdrop.addEventListener('click', closeMobileMenu);
+
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMobileMenu(); });
   }
 
   function setCompanyName() {
@@ -126,6 +172,7 @@ var Shell = (function () {
   document.addEventListener('DOMContentLoaded', function () {
     renderSidebar();
     setCompanyName();
+    initMobileMenu();
   });
 
   return { toast: toast, logout: logout, setTheme: setTheme, getTheme: getTheme };

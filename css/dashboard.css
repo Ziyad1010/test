@@ -75,8 +75,36 @@ button { font-family: inherit; }
   top: 0;
   bottom: 0;
   right: 0;
-  z-index: 100;
+  z-index: 300;
+  transition: transform 0.28s ease;
 }
+
+/* Mobile hamburger toggle + backdrop — injected into .top-navbar by js/shell.js */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.mobile-menu-btn svg { width: 18px; height: 18px; }
+
+.dash-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  z-index: 290;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.dash-backdrop.is-open { opacity: 1; pointer-events: auto; }
 
 .sidebar-header {
   padding: 22px;
@@ -196,13 +224,14 @@ button { font-family: inherit; }
 
 /* Top Navigation Bar */
 .top-navbar {
-  height: 70px;
+  min-height: 70px;
   background-color: var(--surface);
   border-bottom: 1px solid var(--line);
   padding: 0 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   position: sticky;
   top: 0;
   z-index: 90;
@@ -212,11 +241,13 @@ button { font-family: inherit; }
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .user-avatar {
   width: 40px;
   height: 40px;
+  flex-shrink: 0;
   border-radius: 50%;
   background-color: var(--primary-50);
   border: 1px solid #bfdbfe;
@@ -228,12 +259,18 @@ button { font-family: inherit; }
 .user-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .user-name {
+  display: block;
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 46vw;
 }
 
 .user-role {
@@ -701,9 +738,27 @@ button { font-family: inherit; }
   .profile-tasks { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 768px) {
-  .dash-sidebar { width: 70px; }
-  .dash-sidebar .sidebar-brand, .dash-sidebar .nav-item span { display: none; }
-  .dash-main { margin-right: 70px; }
+/* Below this width the sidebar becomes an off-canvas drawer (toggled by
+   js/shell.js's injected hamburger button) instead of a permanent column,
+   so the main content gets the full screen width on phones/small tablets. */
+@media (max-width: 900px) {
+  .dash-sidebar {
+    transform: translateX(100%);
+    box-shadow: -16px 0 40px rgba(0, 0, 0, 0.25);
+  }
+  .dash-sidebar.is-open { transform: translateX(0); }
+  .dash-main { margin-right: 0; }
+  .mobile-menu-btn { display: flex; }
+}
+
+@media (max-width: 640px) {
+  .top-navbar { padding: 0 16px; min-height: 60px; }
+  .dash-body { padding: 16px; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .page-header > *:last-child { align-self: stretch; }
   .kpi-grid { grid-template-columns: 1fr; }
+  .user-role { display: none; }
+  .user-name { max-width: 38vw; }
+  .top-navbar .refresh-btn { font-size: 0; padding: 9px; gap: 0; }
+  .top-navbar .refresh-btn svg { width: 17px; height: 17px; }
 }
