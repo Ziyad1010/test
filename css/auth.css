@@ -365,16 +365,42 @@ a {
     height: 16px;
 }
 
+@media (max-width: 1040px) {
+    .auth-page { padding: 20px; }
+    .auth-card { max-width: 720px; }
+    .auth-form-container { padding: 48px 36px; }
+}
+
 @media (max-width: 768px) {
     .auth-card {
         flex-direction: column;
+        max-width: 480px;
     }
     .auth-deco {
-        padding: 30px;
+        padding: 24px;
         flex: none;
-        height: 220px;
+        height: 160px;
     }
+    .auth-deco img { width: 90px; margin-bottom: 10px; }
+    .auth-deco h2 { font-size: 1.4rem; }
     .auth-form-container {
-        padding: 40px 24px;
+        padding: 32px 24px;
     }
+    .auth-back { top: 16px; right: 16px; }
+}
+
+@media (max-width: 480px) {
+    .auth-page { padding: 0; }
+    .auth-card {
+        max-width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        border: none;
+        box-shadow: none;
+    }
+    .auth-deco { display: none; }
+    .auth-form-container { padding: 76px 20px 40px; }
+    .auth-title { font-size: 1.5rem; }
+    .auth-back { top: 20px; right: 16px; font-size: 0.85rem; }
+    .account-type-btn { padding: 10px 8px; font-size: 0.88rem; }
 }

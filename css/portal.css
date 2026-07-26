@@ -222,3 +222,15 @@
   .chat-shell { grid-template-columns: 1fr; height: auto; }
   .chat-list { border-left: none; border-bottom: 1px solid var(--line); max-height: 260px; }
 }
+
+@media (max-width: 640px) {
+  .chat-list { max-height: 200px; }
+  .chat-messages { min-height: 320px; }
+  .chat-bubble { max-width: 82%; }
+  .settings-panel { padding: 18px; }
+  .settings-nav { flex-direction: row; overflow-x: auto; padding: 8px; }
+  .settings-nav-btn { white-space: nowrap; }
+  .report-config { padding: 16px; }
+  .cert-card { flex-wrap: wrap; }
+  .notif-item { padding: 14px; }
+}

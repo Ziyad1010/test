@@ -333,7 +333,7 @@
 .pd-field-row.cols-2 { grid-template-columns: repeat(2, 1fr); }
 .pd-field-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
 
-.pd-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; position: relative; }
+.pd-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; position: relative; min-width: 0; }
 .pd-field-row .pd-field { margin-bottom: 0; }
 .pd-field label { font-size: 0.82rem; font-weight: 600; color: var(--ink); }
 .pd-field label em { color: var(--danger); font-style: normal; }
