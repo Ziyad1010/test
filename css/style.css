@@ -1476,7 +1476,6 @@ img[src*="logo.png"] {
   .main-nav .nav-link { padding-block: 12px; width: 100%; border-bottom: 1px solid var(--line); }
   .main-nav .nav-link:last-child { border-bottom: none; }
   .menu-toggle { display: flex; }
-  .btn-outline { display: none; }
 
   .hero-inner { grid-template-columns: 1fr; gap: 36px; }
   .hero-media { order: 2; }

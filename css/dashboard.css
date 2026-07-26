@@ -300,6 +300,13 @@ button { font-family: inherit; }
 .dash-body {
   padding: 32px;
   flex: 1;
+  width: 100%;
+}
+
+/* Cap content width on ultra-wide monitors so cards/charts don't stretch
+   thin and awkward — keeps the dashboard centered and readable at 4K/1440p. */
+@media (min-width: 1680px) {
+  .dash-body { max-width: 1600px; margin-inline: auto; }
 }
 
 /* Page Header */
