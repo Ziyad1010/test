@@ -28,7 +28,8 @@
     currentStep: 1,
     warehouses: [],
     location: { lat: null, lng: null },
-    crFile: null
+    crFile: null,
+    savedAddress: { region: '', city: '', district: '' }
   };
 
   var STEPS = [
@@ -48,7 +49,8 @@
         { label: 'رقم السجل التجاري وتواريخه', check: function () { return !!val('crNumber') && !!val('crIssue') && !!val('crExpiry'); } },
         { label: 'وسائل التواصل الأساسية', check: function () { return !!val('mainMobile') && !!val('officialEmail'); } },
         { label: 'العنوان الرئيسي للشركة', check: function () {
-          return !!val('buildingNo') && !!val('postalCode') && !!val('district') && !!val('city') && !!val('street') && !!val('detailedAddress');
+          return !!val('region') && !!val('city') && !!districtValue() && !!val('buildingNo') &&
+            !!val('postalCode') && !!val('street') && !!val('detailedAddress');
         } }
       ]
     },
@@ -119,8 +121,14 @@
   function fieldIds() {
     return ['companyType', 'companyNameEn', 'companyName', 'crExpiry', 'crIssue', 'crNumber',
       'landline', 'altMobile', 'mainMobile', 'fax', 'altEmail', 'officialEmail',
-      'buildingNo', 'postalCode', 'district', 'city', 'poBox', 'detailedAddress', 'street'];
+      'region', 'city', 'district', 'districtOther', 'buildingNo', 'postalCode',
+      'poBox', 'detailedAddress', 'street'];
   }
+
+  // The address selects are rebuilt from js/saudi-regions.js and only make
+  // sense in region → city → district order, so they are restored by the
+  // cascade rather than by the generic field loop.
+  var ADDRESS_IDS = ['region', 'city', 'district', 'districtOther'];
 
   function saveState() {
     var data = { fields: {}, warehouses: state.warehouses, location: state.location, currentStep: state.currentStep };
@@ -128,6 +136,10 @@
       var el = document.getElementById(id);
       if (el) data.fields[id] = el.value;
     });
+    // Persist the district the user actually settled on, whether it came from
+    // the curated list or the free-text fallback.
+    data.fields.district = districtValue();
+    delete data.fields.districtOther;
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) { /* ignore */ }
   }
 
@@ -137,14 +149,165 @@
     if (!raw) return;
     try {
       var data = JSON.parse(raw);
-      Object.keys(data.fields || {}).forEach(function (id) {
+      var fields = data.fields || {};
+      Object.keys(fields).forEach(function (id) {
+        if (ADDRESS_IDS.indexOf(id) !== -1) return;
         var el = document.getElementById(id);
-        if (el && data.fields[id]) el.value = data.fields[id];
+        if (el && fields[id]) el.value = fields[id];
       });
+      state.savedAddress = {
+        region: fields.region || '',
+        city: fields.city || '',
+        district: fields.district || ''
+      };
       if (data.warehouses && data.warehouses.length) state.warehouses = data.warehouses;
       if (data.location) state.location = data.location;
       if (data.currentStep && data.currentStep >= 1 && data.currentStep <= 5) state.currentStep = data.currentStep;
     } catch (e) { /* ignore */ }
+  }
+
+  /* ---------------- Address cascade: region → city → district ---------------- */
+  var OTHER_DISTRICT = 'أخرى (حي غير مدرج)';
+
+  function regionsData() { return window.SAUDI_REGIONS || []; }
+
+  function findRegion(name) {
+    var found = null;
+    regionsData().forEach(function (r) { if (r.name === name) found = r; });
+    return found;
+  }
+
+  function findCity(regionName, cityName) {
+    var region = findRegion(regionName);
+    if (!region) return null;
+    var found = null;
+    region.cities.forEach(function (c) { if (c.name === cityName) found = c; });
+    return found;
+  }
+
+  function fillOptions(sel, items, placeholder) {
+    sel.innerHTML = '';
+    var ph = document.createElement('option');
+    ph.value = '';
+    ph.textContent = placeholder;
+    sel.appendChild(ph);
+    items.forEach(function (name) {
+      var opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  }
+
+  function useDistrictSelect() {
+    $('#district').hidden = false;
+    $('#district').required = true;
+    $('#districtOther').hidden = true;
+    $('#districtOther').required = false;
+  }
+
+  function useDistrictFreeText() {
+    $('#district').hidden = true;
+    $('#district').required = false;
+    $('#districtOther').hidden = false;
+    $('#districtOther').required = true;
+  }
+
+  // Single source of truth for "which district did the user pick", regardless
+  // of whether it came from the dropdown or the manual fallback input.
+  function districtValue() {
+    var other = document.getElementById('districtOther');
+    if (other && !other.hidden) return other.value.trim();
+    var sel = document.getElementById('district');
+    if (!sel || sel.value === OTHER_DISTRICT) return '';
+    return sel.value.trim();
+  }
+
+  function fillCities(regionName, keepCity) {
+    var citySel = $('#city');
+    var region = findRegion(regionName);
+    if (!region) {
+      fillOptions(citySel, [], 'اختر المنطقة أولاً');
+      citySel.disabled = true;
+      return;
+    }
+    fillOptions(citySel, region.cities.map(function (c) { return c.name; }), 'اختر المدينة');
+    citySel.disabled = false;
+    if (keepCity) citySel.value = keepCity;
+  }
+
+  function fillDistricts(regionName, cityName, keepDistrict) {
+    var distSel = $('#district');
+    var other = $('#districtOther');
+    var city = findCity(regionName, cityName);
+
+    if (!city) {
+      fillOptions(distSel, [], 'اختر المدينة أولاً');
+      distSel.disabled = true;
+      useDistrictSelect();
+      other.value = '';
+      return;
+    }
+
+    if (!city.districts.length) {
+      // No verified district list exists for this city, so accept free text
+      // rather than offering invented names — see js/saudi-regions.js header.
+      fillOptions(distSel, [], 'غير متاح لهذه المدينة');
+      distSel.disabled = true;
+      useDistrictFreeText();
+      other.value = keepDistrict || '';
+      return;
+    }
+
+    fillOptions(distSel, city.districts.concat([OTHER_DISTRICT]), 'اختر الحي');
+    distSel.disabled = false;
+    useDistrictSelect();
+    other.value = '';
+
+    if (keepDistrict) {
+      distSel.value = keepDistrict;
+      if (distSel.value !== keepDistrict) {
+        // Saved district isn't in this city's list — it was typed manually.
+        distSel.value = OTHER_DISTRICT;
+        other.hidden = false;
+        other.required = true;
+        other.value = keepDistrict;
+      }
+    }
+  }
+
+  function initAddressCascade(saved) {
+    var regionSel = $('#region');
+    fillOptions(regionSel, regionsData().map(function (r) { return r.name; }), 'اختر المنطقة');
+
+    regionSel.addEventListener('change', function () {
+      fillCities(regionSel.value, '');
+      fillDistricts(regionSel.value, '', '');
+    });
+
+    $('#city').addEventListener('change', function () {
+      fillDistricts(regionSel.value, $('#city').value, '');
+    });
+
+    $('#district').addEventListener('change', function () {
+      var other = $('#districtOther');
+      if ($('#district').value === OTHER_DISTRICT) {
+        other.hidden = false;
+        other.required = true;
+        other.value = '';
+        other.focus();
+      } else {
+        other.hidden = true;
+        other.required = false;
+        other.value = '';
+      }
+    });
+
+    if (saved && saved.region) {
+      regionSel.value = saved.region;
+      fillCities(saved.region, saved.city);
+      fillDistricts(saved.region, saved.city, saved.district);
+    }
   }
 
   /* ---------------- Stepper / Progress ---------------- */
@@ -244,8 +407,8 @@
 
   function validateStep1() {
     var required = ['companyName', 'crExpiry', 'crIssue', 'crNumber', 'mainMobile', 'officialEmail',
-      'buildingNo', 'postalCode', 'district', 'city', 'detailedAddress', 'street'];
-    return required.every(function (id) { return !!val(id); });
+      'region', 'city', 'buildingNo', 'postalCode', 'detailedAddress', 'street'];
+    return required.every(function (id) { return !!val(id); }) && !!districtValue();
   }
 
   /* ---------------- Step 2: CR Upload ---------------- */
@@ -323,7 +486,7 @@
 
   /* ---------------- Step 3: Location ---------------- */
   function fillLocationFields() {
-    $('#locDistrict').value = val('district');
+    $('#locDistrict').value = districtValue();
     $('#locCity').value = val('city');
     $('#locAddress').value = val('detailedAddress');
   }
@@ -479,7 +642,8 @@
       '<div class="ob-review-card"><div class="ob-review-card-head"><strong>التواصل والعنوان</strong><span class="ob-review-edit" data-jump="1">تعديل</span></div><dl>' +
       row('الجوال الأساسي', val('mainMobile')) +
       row('البريد الرسمي', val('officialEmail')) +
-      row('المدينة / الحي', (val('city') || '—') + ' / ' + (val('district') || '—')) +
+      row('المنطقة', val('region')) +
+      row('المدينة / الحي', (val('city') || '—') + ' / ' + (districtValue() || '—')) +
       row('العنوان التفصيلي', val('detailedAddress')) +
       '</dl></div>'
     );
@@ -580,6 +744,10 @@
     } else {
       state.currentStep = 1;
     }
+
+    // Must run before the live-validation wiring so the cascade's own change
+    // handlers repopulate the dependent selects before state is re-saved.
+    initAddressCascade(state.savedAddress);
 
     initDropzone();
     initLocation();

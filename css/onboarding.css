@@ -276,6 +276,9 @@ ul { list-style: none; }
   padding: 24px 28px;
   box-shadow: var(--shadow-sm);
   margin-bottom: 24px;
+  /* Hard guarantee the stepper's connector lines can never paint outside the
+     card, whatever the step count or viewport width. */
+  overflow: hidden;
 }
 
 .ob-progress-ring { position: relative; width: 96px; height: 96px; flex-shrink: 0; }
@@ -317,18 +320,27 @@ ul { list-style: none; }
   min-width: 0;
 }
 
+/* Connector line: joins each step back to the PREVIOUS one. In RTL the
+   previous step sits to the right, so the line is anchored at its inline-end
+   edge (the left edge in RTL) at the circle's centre and runs rightwards.
+   Anchoring it the other way made the last step draw a full step-width of
+   line past the end of the row, spilling outside the card. */
 .ob-step::before {
   content: '';
   position: absolute;
   top: 17px;
-  right: 50%;
+  inset-inline-end: 50%;
   width: 100%;
   height: 2px;
   background: var(--line);
   z-index: 0;
 }
+/* Step 1 is the right-most step in RTL — nothing precedes it to connect to. */
 .ob-step:first-child::before { display: none; }
-.ob-step.is-done::before { background: var(--success); }
+/* Colour the trail travelled so far: a step's incoming line is green once the
+   step before it is complete, which is true for both done and current steps. */
+.ob-step.is-done::before,
+.ob-step.is-current::before { background: var(--success); }
 
 .ob-step-circle {
   width: 34px;
@@ -442,7 +454,31 @@ ul { list-style: none; }
 }
 .ob-field input[readonly] { background: var(--bg); color: var(--muted); }
 
-.ob-phone-group { display: flex; gap: 6px; min-width: 0; }
+/* Native date inputs lay their day/month/year segments out following the
+   inherited direction. Inside dir="rtl" the browser mirrors that order, so the
+   segment showing "يوم" ends up being the one that actually accepts the month
+   (and vice versa) — the value you type never matches the hint beside it.
+   Forcing the control itself to LTR restores the real يوم/شهر/سنة order and
+   the numeric keypad ranges that go with it, while text-align keeps the field
+   visually anchored to the right-hand edge like every other RTL input. */
+input[type="date"] {
+  direction: ltr;
+  text-align: right;
+}
+
+/* Phone entry: the country-code select sits to the LEFT of the number box, so
+   the pair reads as one continuous international number (+966 5X XXX XXXX)
+   left-to-right. `direction: rtl` is stated explicitly rather than inherited
+   so the ordering holds even if this group is reused in an LTR container;
+   `order` then places the select after the input along the RTL main axis,
+   which puts it on the left. */
+.ob-phone-group {
+  display: flex;
+  flex-direction: row;
+  direction: rtl;
+  gap: 6px;
+  min-width: 0;
+}
 .ob-cc {
   width: 76px;
   border: 1px solid var(--line);
@@ -452,8 +488,17 @@ ul { list-style: none; }
   background: var(--bg);
   color: var(--muted);
   flex-shrink: 0;
+  order: 1;
 }
-.ob-phone-group input { flex: 1; min-width: 0; }
+/* The number is a Latin-digit sequence, so it is typed and read left-to-right
+   and left-aligned — flush against the country code that now precedes it. */
+.ob-phone-group input {
+  flex: 1;
+  min-width: 0;
+  order: 0;
+  direction: ltr;
+  text-align: left;
+}
 
 .ob-subhead {
   display: flex;

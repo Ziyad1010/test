@@ -155,6 +155,14 @@
 
             <div class="ob-field-row cols-3">
               <div class="ob-field">
+                <label for="companyName">اسم الشركة <em>*</em></label>
+                <input type="text" id="companyName" placeholder="شركة البناء الحديث للمقاولات العامة" required />
+              </div>
+              <div class="ob-field">
+                <label for="companyNameEn">اسم الشركة بالإنجليزية (اختياري)</label>
+                <input type="text" id="companyNameEn" placeholder="Modern Building Co. for Contracting" dir="ltr" />
+              </div>
+              <div class="ob-field">
                 <label for="companyType">نوع الشركة <em>*</em></label>
                 <select id="companyType" required>
                   <option value="">اختر نوع الشركة</option>
@@ -164,28 +172,20 @@
                   <option value="partnership">شركة تضامن</option>
                 </select>
               </div>
-              <div class="ob-field">
-                <label for="companyNameEn">اسم الشركة بالإنجليزية (اختياري)</label>
-                <input type="text" id="companyNameEn" placeholder="Modern Building Co. for Contracting" />
-              </div>
-              <div class="ob-field">
-                <label for="companyName">اسم الشركة <em>*</em></label>
-                <input type="text" id="companyName" placeholder="شركة البناء الحديث للمقاولات العامة" required />
-              </div>
             </div>
 
             <div class="ob-field-row cols-3">
               <div class="ob-field">
-                <label for="crExpiry">تاريخ انتهاء السجل <em>*</em></label>
-                <input type="date" id="crExpiry" required />
+                <label for="crNumber">رقم السجل التجاري <em>*</em></label>
+                <input type="text" id="crNumber" placeholder="1010234567" inputmode="numeric" required />
               </div>
               <div class="ob-field">
                 <label for="crIssue">تاريخ إصدار السجل <em>*</em></label>
                 <input type="date" id="crIssue" required />
               </div>
               <div class="ob-field">
-                <label for="crNumber">رقم السجل التجاري <em>*</em></label>
-                <input type="text" id="crNumber" placeholder="1010234567" inputmode="numeric" required />
+                <label for="crExpiry">تاريخ انتهاء السجل <em>*</em></label>
+                <input type="date" id="crExpiry" required />
               </div>
             </div>
 
@@ -220,16 +220,16 @@
 
             <div class="ob-field-row cols-3">
               <div class="ob-field">
-                <label for="fax">فاكس (اختياري)</label>
-                <input type="tel" id="fax" placeholder="+966 11 234 5679" />
+                <label for="officialEmail">البريد الإلكتروني الرسمي <em>*</em></label>
+                <input type="email" id="officialEmail" placeholder="info@example.sa" dir="ltr" required />
               </div>
               <div class="ob-field">
                 <label for="altEmail">البريد الإلكتروني البديل (اختياري)</label>
-                <input type="email" id="altEmail" placeholder="sales@example.sa" />
+                <input type="email" id="altEmail" placeholder="sales@example.sa" dir="ltr" />
               </div>
               <div class="ob-field">
-                <label for="officialEmail">البريد الإلكتروني الرسمي <em>*</em></label>
-                <input type="email" id="officialEmail" placeholder="info@example.sa" required />
+                <label for="fax">فاكس (اختياري)</label>
+                <input type="tel" id="fax" placeholder="+966 11 234 5679" dir="ltr" />
               </div>
             </div>
 
@@ -240,52 +240,51 @@
 
             <div class="ob-field-row cols-4">
               <div class="ob-field">
-                <label for="buildingNo">رقم المبنى <em>*</em></label>
-                <input type="text" id="buildingNo" placeholder="2568" required />
-              </div>
-              <div class="ob-field">
-                <label for="postalCode">الرمز البريدي <em>*</em></label>
-                <input type="text" id="postalCode" placeholder="12836" required />
-              </div>
-              <div class="ob-field">
-                <label for="district">الحي <em>*</em></label>
-                <select id="district" required>
-                  <option value="">اختر الحي</option>
-                  <option>الملز</option>
-                  <option>العليا</option>
-                  <option>النرجس</option>
-                  <option>الشفا</option>
-                  <option>الروضة</option>
+                <label for="region">المنطقة الإدارية <em>*</em></label>
+                <select id="region" required>
+                  <option value="">اختر المنطقة</option>
                 </select>
               </div>
               <div class="ob-field">
                 <label for="city">المدينة <em>*</em></label>
-                <select id="city" required>
-                  <option value="">اختر المدينة</option>
-                  <option>الرياض</option>
-                  <option>جدة</option>
-                  <option>الدمام</option>
-                  <option>مكة المكرمة</option>
-                  <option>المدينة المنورة</option>
-                  <option>الخبر</option>
+                <select id="city" required disabled>
+                  <option value="">اختر المنطقة أولاً</option>
                 </select>
+              </div>
+              <div class="ob-field">
+                <label for="district">الحي <em>*</em></label>
+                <select id="district" required disabled>
+                  <option value="">اختر المدينة أولاً</option>
+                </select>
+                <!-- يظهر بدل القائمة للمدن التي لا تتوفر لها قائمة أحياء معتمدة،
+                     أو عند اختيار "حي آخر" — انظر js/saudi-regions.js -->
+                <input type="text" id="districtOther" placeholder="اكتب اسم الحي" hidden />
+              </div>
+              <div class="ob-field">
+                <label for="postalCode">الرمز البريدي <em>*</em></label>
+                <input type="text" id="postalCode" placeholder="12836" inputmode="numeric" maxlength="5" dir="ltr" required />
               </div>
             </div>
 
             <div class="ob-field-row cols-3">
-              <div class="ob-field">
-                <label for="poBox">صندوق البريد (اختياري)</label>
-                <input type="text" id="poBox" placeholder="76662" />
-              </div>
               <div class="ob-field span-2">
                 <label for="detailedAddress">العنوان التفصيلي <em>*</em></label>
                 <input type="text" id="detailedAddress" placeholder="مبنى رقم 2568 - الدور 3" required />
               </div>
+              <div class="ob-field">
+                <label for="buildingNo">رقم المبنى <em>*</em></label>
+                <input type="text" id="buildingNo" placeholder="2568" inputmode="numeric" maxlength="4" dir="ltr" required />
+              </div>
             </div>
+
             <div class="ob-field-row cols-3">
               <div class="ob-field span-2">
                 <label for="street">الشارع <em>*</em></label>
                 <input type="text" id="street" placeholder="شارع الأمير عبدالله بن سعود بن عبدالله" required />
+              </div>
+              <div class="ob-field">
+                <label for="poBox">صندوق البريد (اختياري)</label>
+                <input type="text" id="poBox" placeholder="76662" inputmode="numeric" dir="ltr" />
               </div>
             </div>
 
@@ -520,6 +519,8 @@
     </main>
   </div>
 
+  <!-- بيانات المناطق والمدن والأحياء — يجب تحميلها قبل onboarding.js -->
+  <script src="js/saudi-regions.js"></script>
   <script src="js/onboarding.js"></script>
 </body>
 </html>
