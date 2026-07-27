@@ -262,96 +262,220 @@
 .pd-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(9, 14, 28, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
-  padding: 24px;
+  padding: 32px 24px;
+  animation: pdOverlayIn 0.2s ease;
 }
+@keyframes pdOverlayIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* Wider than a typical dialog because the form runs 2–3 fields per row —
+   at the old 760px those rows were cramped enough to hurt scannability. */
 .pd-modal {
   background: var(--surface);
-  border-radius: var(--radius-lg);
+  border-radius: 20px;
   width: 100%;
-  max-width: 760px;
-  max-height: 88vh;
+  max-width: 1000px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-lg, 0 24px 60px rgba(15,23,42,0.25));
+  box-shadow: 0 32px 80px rgba(15, 23, 42, 0.3), 0 0 0 1px rgba(15, 23, 42, 0.05);
   overflow: hidden;
+  animation: pdModalIn 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes pdModalIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .pd-modal-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
+  gap: 14px;
+  padding: 22px 28px;
   border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
 }
-.pd-modal-header h2 { font-size: 1.1rem; font-weight: 700; }
+.pd-modal-header h2 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-inline-end: auto;
+  min-width: 0;
+}
+
+/* Square badge to the right of the title, echoing the panel icons elsewhere */
+.pd-modal-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--primary-50);
+  color: var(--primary-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pd-modal-icon svg { width: 20px; height: 20px; }
+
 .pd-modal-close {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
-  background: var(--bg);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.pd-modal-close:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
 }
 .pd-modal-close svg { width: 15px; height: 15px; }
 
-.pd-modal-tabs {
+/* ===================== Wizard step indicator ===================== */
+.pd-wizard-steps {
   display: flex;
-  gap: 4px;
-  padding: 0 24px;
+  align-items: flex-start;
+  gap: 0;
+  padding: 20px 28px 22px;
   border-bottom: 1px solid var(--line);
-  overflow-x: auto;
+  background: var(--bg);
+  flex-shrink: 0;
 }
-.pd-tab {
+
+.pd-wstep {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  position: relative;
   border: none;
   background: none;
-  padding: 14px 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--muted);
+  padding: 0;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
   font-family: inherit;
 }
-.pd-tab.is-active { color: var(--primary-600); border-bottom-color: var(--primary-600); }
 
-.pd-modal-body { padding: 22px 24px; overflow-y: auto; flex: 1; }
+/* Connector line joins each step back to the PREVIOUS one — anchored at the
+   inline-end edge so in RTL it runs rightwards, matching the reading order. */
+.pd-wstep::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  inset-inline-end: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--line);
+  z-index: 0;
+}
+.pd-wstep:first-child::before { display: none; }
+.pd-wstep.is-done::before,
+.pd-wstep.is-current::before { background: var(--primary-600); }
+
+.pd-wstep-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  position: relative;
+  z-index: 1;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.pd-wstep-circle svg { width: 14px; height: 14px; }
+
+.pd-wstep.is-current .pd-wstep-circle {
+  border-color: var(--primary-600);
+  background: var(--primary-600);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--primary-50);
+}
+.pd-wstep.is-done .pd-wstep-circle {
+  border-color: var(--primary-600);
+  background: var(--primary-600);
+  color: #fff;
+}
+
+.pd-wstep-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1.35;
+}
+.pd-wstep:not(.is-current) .pd-wstep-label { color: var(--muted); font-weight: 600; }
+
+.pd-modal-body {
+  padding: 26px 28px 30px;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.pd-modal-body::-webkit-scrollbar { width: 10px; }
+.pd-modal-body::-webkit-scrollbar-track { background: transparent; }
+.pd-modal-body::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 20px;
+  border: 3px solid var(--surface);
+}
+.pd-modal-body::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
 .pd-tab-panel { display: none; }
-.pd-tab-panel.is-active { display: block; }
+.pd-tab-panel.is-active { display: block; animation: pdPanelIn 0.22s ease; }
+@keyframes pdPanelIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-.pd-field-row { display: grid; gap: 16px; margin-bottom: 16px; }
+.pd-field-row { display: grid; gap: 18px; margin-bottom: 18px; }
 .pd-field-row.cols-2 { grid-template-columns: repeat(2, 1fr); }
 .pd-field-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
 
-.pd-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; position: relative; min-width: 0; }
+.pd-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; position: relative; min-width: 0; }
 .pd-field-row .pd-field { margin-bottom: 0; }
 .pd-field label { font-size: 0.82rem; font-weight: 600; color: var(--ink); }
 .pd-field label em { color: var(--danger); font-style: normal; }
 .pd-field input, .pd-field select, .pd-field textarea {
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 10px 12px;
-  font-size: 0.86rem;
+  border-radius: 11px;
+  padding: 11px 14px;
+  font-size: 0.87rem;
   color: var(--ink);
   background: var(--surface);
   font-family: inherit;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
-.pd-field textarea { resize: vertical; min-height: 80px; }
+.pd-field input:hover:not(:focus),
+.pd-field select:hover:not(:focus),
+.pd-field textarea:hover:not(:focus) { border-color: #cbd5e1; }
+.pd-field textarea { resize: vertical; min-height: 96px; line-height: 1.7; }
 .pd-field input:focus, .pd-field select:focus, .pd-field textarea:focus {
   outline: none;
   border-color: var(--primary-600);
   box-shadow: 0 0 0 3px var(--primary-50);
 }
+.pd-field input::placeholder, .pd-field textarea::placeholder { color: #b6c2d2; }
 .pd-counter { position: absolute; bottom: -18px; left: 0; font-size: 0.7rem; color: var(--muted); }
 
 .pd-check-label {
@@ -365,9 +489,34 @@
   justify-content: flex-end;
 }
 
-.pd-subhead { margin: 18px 0 14px; }
+/* Section heading with a coloured rule, so the long form reads as distinct
+   blocks instead of one continuous wall of inputs. */
+.pd-subhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
 .pd-subhead:first-child { margin-top: 0; }
-.pd-subhead strong { font-size: 0.92rem; }
+.pd-subhead strong {
+  font-size: 0.92rem;
+  font-weight: 700;
+  position: relative;
+  padding-inline-start: 11px;
+}
+.pd-subhead strong::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--primary-600);
+}
 
 .pd-dropzone-sm {
   border: 2px dashed var(--line);
@@ -389,15 +538,358 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
+  gap: 12px;
+  padding: 18px 28px;
   border-top: 1px solid var(--line);
+  background: var(--bg);
+  flex-shrink: 0;
 }
 .pd-modal-footer-end { display: flex; gap: 10px; }
 
+/* ===================== منتقي المدن المدعومة ===================== */
+.pd-city-picker {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.pd-city-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+.pd-city-search {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 7px 11px;
+}
+.pd-city-search svg { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; }
+.pd-city-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.84rem;
+  color: var(--ink);
+}
+.pd-city-search input::-webkit-search-cancel-button { cursor: pointer; }
+
+.pd-city-count {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--primary-600);
+  background: var(--primary-50);
+  padding: 4px 11px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.pd-city-link {
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 2px;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.pd-city-link:hover { color: var(--primary-600); }
+
+.pd-city-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px 0 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.pd-city-list::-webkit-scrollbar { width: 9px; }
+.pd-city-list::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 20px;
+  border: 3px solid var(--surface);
+}
+
+/* Region header doubles as a select-all toggle for the cities beneath it */
+.pd-region-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px 7px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+.pd-region-head:hover { color: var(--primary-600); }
+.pd-region-count { font-size: 0.7rem; font-weight: 600; color: var(--muted); }
+
+.pd-city-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 2px 8px;
+  padding: 0 14px 10px;
+}
+
+.pd-city-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--ink);
+  cursor: pointer;
+  min-width: 0;
+  transition: background 0.15s ease;
+}
+.pd-city-item:hover { background: var(--primary-50); }
+.pd-city-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pd-city-item input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--primary-600);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.pd-city-item.is-checked { color: var(--primary-600); font-weight: 600; }
+
+.pd-city-empty {
+  padding: 22px 14px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* ===================== شريط الإجراءات الجماعية ===================== */
+.pd-bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--primary-50);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.pd-bulk-count { font-size: 0.85rem; font-weight: 700; color: var(--primary-600); margin-inline-end: auto; }
+.pd-bulk-btn {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 7px 13px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.pd-bulk-btn:hover { border-color: var(--primary-600); color: var(--primary-600); }
+.pd-bulk-btn.danger { color: var(--danger); }
+.pd-bulk-btn.danger:hover { border-color: var(--danger); background: var(--danger-bg); }
+
+.pd-check { width: 16px; height: 16px; accent-color: var(--primary-600); cursor: pointer; }
+
+/* ===================== التحرير السريع داخل الجدول ===================== */
+.pd-inline {
+  width: 88px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 7px;
+  padding: 5px 7px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-align: right;
+  direction: ltr;
+}
+.pd-inline:hover { border-color: var(--line); background: var(--bg); }
+.pd-inline:focus {
+  outline: none;
+  border-color: var(--primary-600);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--primary-50);
+}
+.pd-inline.is-saved { border-color: var(--success); background: var(--success-bg); }
+
+/* ===================== حالة التوفر ===================== */
+.pd-avail { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.pd-avail.in_stock { background: var(--success-bg); color: var(--success); }
+.pd-avail.limited { background: var(--warning-bg); color: var(--warning); }
+.pd-avail.out_of_stock { background: var(--danger-bg); color: var(--danger); }
+.pd-avail.on_demand { background: var(--primary-50); color: var(--primary-600); }
+
+/* ===================== التسعير المتدرج ===================== */
+.pd-tier-table { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.pd-tier-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: center; }
+.pd-tier-row input {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 10px;
+  font-size: 0.84rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  min-width: 0;
+}
+.pd-tier-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 8px;
+  font-size: 0.74rem;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.pd-tier-head span:last-child { width: 30px; }
+.pd-tier-remove {
+  width: 30px; height: 30px; border-radius: 8px; border: none;
+  background: var(--bg); color: var(--muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.pd-tier-remove:hover { background: var(--danger-bg); color: var(--danger); }
+.pd-tier-remove svg { width: 14px; height: 14px; }
+
+.pd-add-row-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%;
+  background: var(--primary-50);
+  color: var(--primary-600);
+  border: 1px dashed #93c5fd;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.pd-add-row-btn svg { width: 14px; height: 14px; }
+
+/* ===================== ملخّص السعر مع الضريبة ===================== */
+.pd-vat-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+.pd-vat-summary div { display: flex; flex-direction: column; gap: 2px; }
+.pd-vat-summary small { font-size: 0.72rem; color: var(--muted); }
+.pd-vat-summary strong { font-size: 0.95rem; }
+.pd-vat-summary strong.final { color: var(--primary-600); }
+
+/* ===================== معرض الصور ===================== */
+.pd-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.pd-media-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.pd-media-item img { width: 100%; height: 100%; object-fit: cover; }
+.pd-media-remove {
+  position: absolute; top: 4px; inset-inline-start: 4px;
+  width: 22px; height: 22px; border-radius: 6px; border: none;
+  background: rgba(15,23,42,0.7); color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.pd-media-remove svg { width: 12px; height: 12px; }
+.pd-media-main {
+  position: absolute; bottom: 4px; inset-inline-end: 4px;
+  font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 20px;
+  background: var(--primary-600); color: #fff;
+}
+
+/* ===================== الخصائص المخصّصة للفئة ===================== */
+.pd-attr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.pd-attr-empty { font-size: 0.82rem; color: var(--muted); padding: 10px 0; }
+
+/* ===================== الاستيراد الجماعي ===================== */
+.pd-import-steps { display: flex; flex-direction: column; gap: 14px; }
+.pd-import-note {
+  background: var(--primary-50);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #1e3a8a;
+}
+.pd-import-note code {
+  background: rgba(255,255,255,0.7);
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  direction: ltr;
+  display: inline-block;
+}
+.pd-import-result { font-size: 0.84rem; line-height: 1.8; }
+.pd-import-result .ok { color: var(--success); font-weight: 700; }
+.pd-import-result .bad { color: var(--danger); font-weight: 700; }
+.pd-import-errors {
+  margin-top: 8px;
+  max-height: 160px;
+  overflow-y: auto;
+  font-size: 0.78rem;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
 /* ===================== Responsive ===================== */
+
+/* On laptops the 3-up rows get tight before the modal itself needs to shrink,
+   so step them down to 2 columns first rather than jumping straight to 1. */
+@media (max-width: 1080px) {
+  .pd-modal { max-width: 100%; }
+  .pd-field-row.cols-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 900px) {
   .pd-stat-strip { grid-template-columns: repeat(2, 1fr); }
   .pd-field-row.cols-2, .pd-field-row.cols-3 { grid-template-columns: 1fr; }
+  .pd-attr-grid { grid-template-columns: 1fr; }
+  .pd-tier-head { display: none; }
+  .pd-tier-row { grid-template-columns: 1fr 1fr; }
+  .pd-tier-row .pd-tier-remove { grid-column: 2; justify-self: end; }
+  .pd-modal-overlay { padding: 20px 16px; }
+  .pd-modal-header, .pd-modal-body, .pd-modal-footer { padding-inline: 20px; }
 }
 
 @media (max-width: 640px) {
@@ -405,10 +897,17 @@
   .pd-toolbar { padding: 12px; }
   .pd-view-toggle { margin-inline-start: 0; }
   .pd-modal-overlay { padding: 0; align-items: flex-end; }
-  .pd-modal { max-height: 92vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-  .pd-modal-body { padding: 16px 18px; }
-  .pd-modal-footer { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
+  .pd-modal { max-height: 94vh; border-radius: 20px 20px 0 0; }
+  .pd-modal-header { padding: 16px 18px; gap: 10px; }
+  .pd-modal-header h2 { font-size: 1.02rem; }
+  .pd-modal-icon { width: 34px; height: 34px; border-radius: 10px; }
+  .pd-modal-icon svg { width: 17px; height: 17px; }
+  .pd-modal-body { padding: 18px; }
+  .pd-modal-footer { flex-direction: column-reverse; align-items: stretch; gap: 10px; padding: 14px 18px; }
   .pd-modal-footer-start, .pd-modal-footer-end { width: 100%; }
   .pd-modal-footer-end { flex-direction: column; }
-  .pd-modal-tabs { padding: 0 16px; }
+  .pd-wizard-steps { padding: 14px 12px 16px; }
+  .pd-wstep-circle { width: 26px; height: 26px; font-size: 0.72rem; }
+  .pd-wstep::before { top: 13px; }
+  .pd-wstep-label { font-size: 0.66rem; }
 }

@@ -408,7 +408,14 @@
   function validateStep1() {
     var required = ['companyName', 'crExpiry', 'crIssue', 'crNumber', 'mainMobile', 'officialEmail',
       'region', 'city', 'buildingNo', 'postalCode', 'detailedAddress', 'street'];
-    return required.every(function (id) { return !!val(id); }) && !!districtValue();
+
+    var filled = required.every(function (id) { return !!val(id); }) && !!districtValue();
+
+    // بالإضافة لوجود القيمة، يجب أن تجتاز قواعد الصيغة (جوال، بريد، سجل تجاري…)
+    var panel = $('.ob-step-panel[data-step="1"]');
+    var formatOk = window.Validate ? Validate.isValid(panel) : true;
+
+    return filled && formatOk;
   }
 
   /* ---------------- Step 2: CR Upload ---------------- */
@@ -752,6 +759,9 @@
     // loadState() wrote the saved YYYY-MM-DD values straight into the hidden
     // date inputs; refill the visible يوم/شهر/سنة boxes from them.
     if (window.DateField) DateField.refresh();
+
+    // التحقق الفوري من صيغة الحقول (يقرأ data-validate من الـ HTML)
+    if (window.Validate) Validate.attachAll(document);
 
     initDropzone();
     initLocation();
