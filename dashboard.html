@@ -72,7 +72,7 @@
           <div class="profile-tasks" id="profileTasks"><!-- JS-populated --></div>
         </div>
 
-        <!-- 4 KPI Stat Cards -->
+        <!-- 4 KPI Stat Cards — all values computed live from js/store.js -->
         <div class="kpi-grid">
           <!-- Card 1 -->
           <div class="kpi-card">
@@ -80,9 +80,9 @@
               <div class="kpi-icon-box green">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               </div>
-              <span class="kpi-badge up">+12%</span>
+              <span class="kpi-badge up" id="kpiSalesChange">—</span>
             </div>
-            <div class="kpi-value">42,500 <span style="font-size:0.9rem;font-weight:600;">ر.س</span></div>
+            <div class="kpi-value"><span id="kpiWeeklySales" class="is-loading">—</span> <span style="font-size:0.9rem;font-weight:600;">ر.س</span></div>
             <div class="kpi-label">إجمالي المبيعات الأسبوعية</div>
           </div>
 
@@ -92,9 +92,9 @@
               <div class="kpi-icon-box blue">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               </div>
-              <span class="kpi-badge up">+8</span>
+              <span class="kpi-badge up" id="kpiOrdersChange">—</span>
             </div>
-            <div class="kpi-value">18</div>
+            <div class="kpi-value" id="kpiNewOrders">—</div>
             <div class="kpi-label">الطلبات الجديدة</div>
           </div>
 
@@ -105,7 +105,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
               </div>
             </div>
-            <div class="kpi-value">4</div>
+            <div class="kpi-value" id="kpiInDelivery">—</div>
             <div class="kpi-label">قيد التوصيل</div>
           </div>
 
@@ -115,9 +115,9 @@
               <div class="kpi-icon-box red">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               </div>
-              <span class="kpi-badge warn">عاجل</span>
+              <span class="kpi-badge warn" id="kpiStockBadge" hidden>عاجل</span>
             </div>
-            <div class="kpi-value">2</div>
+            <div class="kpi-value" id="kpiStockAlerts">—</div>
             <div class="kpi-label">تنبيهات المخزون</div>
           </div>
         </div>
@@ -131,21 +131,27 @@
                 <p>آخر 6 أشهر مقابل الشهر السابق</p>
               </div>
               <div class="chart-total">
-                <strong>186,400 ر.س</strong>
-                <span>+14.2% ▲</span>
+                <strong id="revenueTotal">—</strong>
+                <span id="revenueChange"></span>
               </div>
             </div>
-            <div class="chart-canvas-wrap"><canvas id="revenueChart"></canvas></div>
+            <div class="chart-canvas-wrap" data-chart-wrap>
+              <canvas id="revenueChart"></canvas>
+              <div class="chart-state is-loading" data-state-for="revenueChart"><span class="chart-spinner"></span>جارٍ تحميل البيانات…</div>
+            </div>
           </div>
 
           <div class="chart-card">
             <div class="chart-card-head">
               <div>
                 <h3>الأكثر مبيعاً</h3>
-                <p>حسب الإيراد هذا الشهر</p>
+                <p>حسب الإيراد خلال آخر 30 يوماً</p>
               </div>
             </div>
-            <div class="chart-canvas-wrap"><canvas id="topProductsChart"></canvas></div>
+            <div class="chart-canvas-wrap" data-chart-wrap>
+              <canvas id="topProductsChart"></canvas>
+              <div class="chart-state is-loading" data-state-for="topProductsChart"><span class="chart-spinner"></span>جارٍ تحميل البيانات…</div>
+            </div>
           </div>
         </div>
 
@@ -155,10 +161,13 @@
             <div class="chart-card-head">
               <div>
                 <h3>الطلبات حسب المدينة</h3>
-                <p>توزيع الطلبات الجغرافي هذا الشهر</p>
+                <p>حسب عنوان الشحن الفعلي لآخر 30 يوماً</p>
               </div>
             </div>
-            <div class="chart-canvas-wrap short"><canvas id="cityChart"></canvas></div>
+            <div class="chart-canvas-wrap short" data-chart-wrap>
+              <canvas id="cityChart"></canvas>
+              <div class="chart-state is-loading" data-state-for="cityChart"><span class="chart-spinner"></span>جارٍ تحميل البيانات…</div>
+            </div>
           </div>
 
           <div class="chart-card">
@@ -167,8 +176,14 @@
                 <h3>زوار المتجر</h3>
                 <p>عدد الزيارات خلال آخر 7 أيام</p>
               </div>
+              <div class="chart-total">
+                <strong id="visitorsTotal">—</strong>
+              </div>
             </div>
-            <div class="chart-canvas-wrap short"><canvas id="visitorsChart"></canvas></div>
+            <div class="chart-canvas-wrap short" data-chart-wrap>
+              <canvas id="visitorsChart"></canvas>
+              <div class="chart-state is-loading" data-state-for="visitorsChart"><span class="chart-spinner"></span>جارٍ تحميل البيانات…</div>
+            </div>
           </div>
         </div>
 
@@ -178,7 +193,7 @@
           <div class="panel-card">
             <div class="panel-header">
               <h2 class="panel-title">أحدث الطلبات</h2>
-              <a href="#" class="view-all-link">عرض الكل</a>
+              <a href="orders.html" class="view-all-link">عرض الكل</a>
             </div>
 
             <div style="overflow-x: auto;">
@@ -192,36 +207,7 @@
                     <th>الحالة</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td class="order-id">#1024</td>
-                    <td>شركة البناء الحديث</td>
-                    <td>100 كيس أسمنت...</td>
-                    <td><strong>2,850 ر.س</strong></td>
-                    <td><span class="status-tag prep">يتم التجهيز</span></td>
-                  </tr>
-                  <tr>
-                    <td class="order-id">#1023</td>
-                    <td>شركة البناء الحديث</td>
-                    <td>100 كيس أسمنت...</td>
-                    <td><strong>2,850 ر.س</strong></td>
-                    <td><span class="status-tag prep">يتم التجهيز</span></td>
-                  </tr>
-                  <tr>
-                    <td class="order-id">#1022</td>
-                    <td>شركة البناء الحديث</td>
-                    <td>100 كيس أسمنت...</td>
-                    <td><strong>2,850 ر.س</strong></td>
-                    <td><span class="status-tag prep">يتم التجهيز</span></td>
-                  </tr>
-                  <tr>
-                    <td class="order-id">#1021</td>
-                    <td>شركة البناء الحديث</td>
-                    <td>100 كيس أسمنت...</td>
-                    <td><strong>2,850 ر.س</strong></td>
-                    <td><span class="status-tag prep">يتم التجهيز</span></td>
-                  </tr>
-                </tbody>
+                <tbody id="latestOrdersBody"><!-- JS-populated from js/store.js --></tbody>
               </table>
             </div>
           </div>
@@ -232,33 +218,9 @@
               <h2 class="panel-title">تنبيهات المخزون</h2>
             </div>
 
-            <div class="stock-list">
-              <div class="stock-item">
-                <img src="assets/images/cat-cement.jpg" alt="أسمنت" class="stock-img" />
-                <div class="stock-info">
-                  <div class="stock-name">أسمنت بورتلاندي عادي</div>
-                  <div class="stock-remaining">باقي 10 وحدة</div>
-                </div>
-              </div>
+            <div class="stock-list" id="stockAlertList"><!-- JS-populated from js/store.js --></div>
 
-              <div class="stock-item">
-                <img src="assets/images/cat-cement.jpg" alt="أسمنت" class="stock-img" />
-                <div class="stock-info">
-                  <div class="stock-name">أسمنت بورتلاندي عادي</div>
-                  <div class="stock-remaining">باقي 10 وحدة</div>
-                </div>
-              </div>
-
-              <div class="stock-item">
-                <img src="assets/images/cat-cement.jpg" alt="أسمنت" class="stock-img" />
-                <div class="stock-info">
-                  <div class="stock-name">أسمنت بورتلاندي عادي</div>
-                  <div class="stock-remaining">باقي 10 وحدة</div>
-                </div>
-              </div>
-            </div>
-
-            <button class="btn-full">إدارة المخزون</button>
+            <a class="btn-full" href="products.html" style="display:block;text-align:center;text-decoration:none;">إدارة المخزون</a>
           </div>
         </div>
       </div>
@@ -266,6 +228,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="js/store.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/dashboard.js"></script>
 </body>

@@ -65,36 +65,118 @@
     }).join('');
   }
 
+  /* ---------------- Formatting ---------------- */
+  function fmt(n) {
+    return Number(n || 0).toLocaleString('ar-SA', { maximumFractionDigits: 0 });
+  }
+
+  function changeBadge(el, value, suffix) {
+    if (!el) return;
+    var rounded = Math.round(value * 10) / 10;
+    el.classList.remove('up', 'down', 'flat');
+    if (rounded > 0) {
+      el.classList.add('up');
+      el.textContent = '+' + rounded + (suffix || '%');
+    } else if (rounded < 0) {
+      el.classList.add('down');
+      el.textContent = rounded + (suffix || '%');
+    } else {
+      el.classList.add('flat');
+      el.textContent = 'بدون تغيّر';
+    }
+  }
+
+  /* ---------------- Chart loading / empty states ---------------- */
+  var EMPTY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>';
+
+  function stateEl(canvasId) {
+    return document.querySelector('[data-state-for="' + canvasId + '"]');
+  }
+
+  function showEmpty(canvasId, message) {
+    var el = stateEl(canvasId);
+    if (!el) return;
+    el.hidden = false;
+    el.classList.remove('is-loading');
+    el.innerHTML = '<span class="chart-empty-icon">' + EMPTY_ICON + '</span>' +
+      '<strong>لا توجد بيانات كافية بعد</strong>' +
+      '<span>' + message + '</span>';
+  }
+
+  function hideState(canvasId) {
+    var el = stateEl(canvasId);
+    if (el) el.hidden = true;
+  }
+
   /* ---------------- Charts ---------------- */
-  function initCharts() {
-    if (typeof Chart === 'undefined') return;
+  var charts = {};
 
-    Chart.defaults.font.family = "'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif";
-    Chart.defaults.color = '#64748b';
-    Chart.defaults.plugins.legend.rtl = true;
-    Chart.defaults.plugins.tooltip.rtl = true;
+  var PALETTE = {
+    primary: '#2563eb',
+    primaryLight: 'rgba(37, 99, 235, 0.12)',
+    success: '#16a34a',
+    successLight: 'rgba(22, 163, 74, 0.1)',
+    warning: '#f59e0b',
+    violet: '#7c3aed',
+    muted: '#94a3b8'
+  };
 
-    var primary = '#2563eb';
-    var primaryLight = 'rgba(37, 99, 235, 0.12)';
-    var success = '#16a34a';
-    var warning = '#f59e0b';
-    var danger = '#dc2626';
-    var muted = '#94a3b8';
+  function hasData(values) {
+    return values && values.length > 0 && values.some(function (v) { return v > 0; });
+  }
 
-    // Monthly Revenue
-    new Chart(document.getElementById('revenueChart'), {
+  // Rebuild a chart in place: create it the first time, then just swap the
+  // data so updates animate instead of flickering.
+  function upsert(canvasId, config, values, emptyMessage) {
+    if (!hasData(values)) {
+      if (charts[canvasId]) { charts[canvasId].destroy(); delete charts[canvasId]; }
+      showEmpty(canvasId, emptyMessage);
+      return;
+    }
+
+    hideState(canvasId);
+
+    if (charts[canvasId]) {
+      charts[canvasId].data.labels = config.data.labels;
+      charts[canvasId].data.datasets[0].data = config.data.datasets[0].data;
+      charts[canvasId].update();
+      return;
+    }
+
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    charts[canvasId] = new Chart(canvas, config);
+  }
+
+  function renderRevenue() {
+    var d = Store.monthlyRevenue(6);
+
+    document.getElementById('revenueTotal').textContent = fmt(d.total) + ' ر.س';
+    var changeEl = document.getElementById('revenueChange');
+    if (d.change > 0) {
+      changeEl.textContent = '+' + d.change + '% ▲';
+      changeEl.style.color = PALETTE.success;
+    } else if (d.change < 0) {
+      changeEl.textContent = d.change + '% ▼';
+      changeEl.style.color = '#dc2626';
+    } else {
+      changeEl.textContent = 'بدون تغيّر';
+      changeEl.style.color = PALETTE.muted;
+    }
+
+    upsert('revenueChart', {
       type: 'line',
       data: {
-        labels: ['فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو'],
+        labels: d.labels,
         datasets: [{
           label: 'الإيرادات (ر.س)',
-          data: [24000, 28500, 31000, 29800, 35200, 37900],
-          borderColor: primary,
-          backgroundColor: primaryLight,
+          data: d.values,
+          borderColor: PALETTE.primary,
+          backgroundColor: PALETTE.primaryLight,
           fill: true,
           tension: 0.35,
           pointRadius: 4,
-          pointBackgroundColor: primary,
+          pointBackgroundColor: PALETTE.primary,
           pointBorderColor: '#fff',
           pointBorderWidth: 2
         }]
@@ -104,21 +186,28 @@
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, grid: { color: '#e2e8f0' }, ticks: { callback: function (v) { return (v / 1000) + ' ألف'; } } },
+          y: {
+            beginAtZero: true,
+            grid: { color: '#e2e8f0' },
+            ticks: { callback: function (v) { return v >= 1000 ? (v / 1000) + ' ألف' : v; } }
+          },
           x: { grid: { display: false } }
         }
       }
-    });
+    }, d.values, 'ستظهر الإيرادات هنا بمجرد اكتمال أول طلب في متجرك.');
+  }
 
-    // Top Selling Products
-    new Chart(document.getElementById('topProductsChart'), {
+  function renderTopProducts() {
+    var d = Store.topProducts(30, 5);
+
+    upsert('topProductsChart', {
       type: 'bar',
       data: {
-        labels: ['حديد تسليح 12مم', 'أسمنت بورتلاندي', 'خرسانة جاهزة', 'طوب أسمنتي', 'بلاط بورسلين'],
+        labels: d.labels,
         datasets: [{
           label: 'الإيراد (ر.س)',
-          data: [52400, 41200, 33800, 21500, 15300],
-          backgroundColor: [primary, primary, primary, primary, primary],
+          data: d.values,
+          backgroundColor: PALETTE.primary,
           borderRadius: 6,
           maxBarThickness: 22
         }]
@@ -133,16 +222,19 @@
           y: { grid: { display: false } }
         }
       }
-    });
+    }, d.values, 'لم تُسجَّل مبيعات خلال آخر 30 يوماً — أضف منتجاتك لتبدأ.');
+  }
 
-    // Orders by City
-    new Chart(document.getElementById('cityChart'), {
+  function renderCity() {
+    var d = Store.ordersByCity(30, 6);
+
+    upsert('cityChart', {
       type: 'doughnut',
       data: {
-        labels: ['الرياض', 'جدة', 'الدمام', 'مكة المكرمة', 'الخبر'],
+        labels: d.labels,
         datasets: [{
-          data: [186, 124, 78, 52, 34],
-          backgroundColor: [primary, success, warning, '#7c3aed', muted],
+          data: d.values,
+          backgroundColor: [PALETTE.primary, PALETTE.success, PALETTE.warning, PALETTE.violet, PALETTE.muted, '#0ea5e9'],
           borderWidth: 0
         }]
       },
@@ -152,22 +244,26 @@
         cutout: '65%',
         plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 14 } } }
       }
-    });
+    }, d.values, 'سيظهر التوزيع الجغرافي بعد ورود أول طلب بعنوان شحن.');
+  }
 
-    // Visitors (last 7 days)
-    new Chart(document.getElementById('visitorsChart'), {
+  function renderVisitors() {
+    var d = Store.visitors(7);
+    document.getElementById('visitorsTotal').textContent = fmt(d.total) + ' زيارة';
+
+    upsert('visitorsChart', {
       type: 'line',
       data: {
-        labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+        labels: d.labels,
         datasets: [{
           label: 'الزوار',
-          data: [320, 410, 380, 460, 512, 470, 298],
-          borderColor: success,
-          backgroundColor: 'rgba(22, 163, 74, 0.1)',
+          data: d.values,
+          borderColor: PALETTE.success,
+          backgroundColor: PALETTE.successLight,
           fill: true,
           tension: 0.35,
           pointRadius: 3,
-          pointBackgroundColor: success
+          pointBackgroundColor: PALETTE.success
         }]
       },
       options: {
@@ -179,12 +275,132 @@
           x: { grid: { display: false } }
         }
       }
-    });
+    }, d.values, 'لم تُسجَّل زيارات بعد لصفحات متجرك.');
+  }
+
+  /* ---------------- KPI cards ---------------- */
+  function renderKpis() {
+    var k = Store.kpis();
+
+    var salesEl = document.getElementById('kpiWeeklySales');
+    salesEl.textContent = fmt(k.weeklySales);
+    salesEl.classList.remove('is-loading');
+
+    changeBadge(document.getElementById('kpiSalesChange'), k.weeklySalesChange);
+
+    document.getElementById('kpiNewOrders').textContent = fmt(k.newOrders);
+    changeBadge(document.getElementById('kpiOrdersChange'), k.newOrdersChange);
+
+    document.getElementById('kpiInDelivery').textContent = fmt(k.inDelivery);
+    document.getElementById('kpiStockAlerts').textContent = fmt(k.stockAlerts);
+    document.getElementById('kpiStockBadge').hidden = k.stockAlerts === 0;
+  }
+
+  /* ---------------- Latest orders panel ---------------- */
+  var ORDER_STATUS = {
+    'new': { label: 'جديد', cls: 'prep' },
+    processing: { label: 'يتم التجهيز', cls: 'prep' },
+    shipping: { label: 'قيد التوصيل', cls: 'prep' },
+    delivered: { label: 'تم التسليم', cls: 'prep' },
+    cancelled: { label: 'ملغي', cls: 'prep' }
+  };
+
+  function renderLatestOrders() {
+    var body = document.getElementById('latestOrdersBody');
+    if (!body) return;
+
+    var orders = Store.getOrders().slice();
+    orders.sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+    orders = orders.slice(0, 5);
+
+    if (!orders.length) {
+      body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:28px 12px;">' +
+        'لا توجد طلبات بعد — ستظهر هنا فور وصول أول طلب.</td></tr>';
+      return;
+    }
+
+    body.innerHTML = orders.map(function (o) {
+      var st = ORDER_STATUS[o.status] || ORDER_STATUS.processing;
+      var first = (o.items && o.items[0]) ? o.items[0] : null;
+      var summary = first
+        ? (first.qty + ' × ' + first.name + (o.items.length > 1 ? ' +' + (o.items.length - 1) : ''))
+        : '—';
+      return '<tr>' +
+        '<td class="order-id">' + o.id + '</td>' +
+        '<td>' + o.customer + '</td>' +
+        '<td>' + summary + '</td>' +
+        '<td><strong>' + fmt(o.total) + ' ر.س</strong></td>' +
+        '<td><span class="status-tag ' + st.cls + '">' + st.label + '</span></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  /* ---------------- Stock alerts panel ---------------- */
+  function renderStockAlerts() {
+    var wrap = document.getElementById('stockAlertList');
+    if (!wrap) return;
+
+    var low = Store.getProducts().filter(function (p) {
+      return p.status !== 'archived' && (p.stock <= 0 || (p.lowStock > 0 && p.stock <= p.lowStock));
+    }).sort(function (a, b) { return a.stock - b.stock; }).slice(0, 4);
+
+    if (!low.length) {
+      wrap.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;text-align:center;padding:24px 8px;">' +
+        'كل المنتجات ضمن المستوى الآمن للمخزون 👌</p>';
+      return;
+    }
+
+    wrap.innerHTML = low.map(function (p) {
+      var msg = p.stock <= 0 ? 'نفد المخزون' : 'باقي ' + p.stock + ' ' + (p.unit || 'وحدة');
+      return '<div class="stock-item">' +
+        '<img src="' + p.img + '" alt="' + p.name + '" class="stock-img" />' +
+        '<div class="stock-info">' +
+          '<div class="stock-name">' + p.name + '</div>' +
+          '<div class="stock-remaining">' + msg + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderAll() {
+    renderKpis();
+    renderLatestOrders();
+    renderStockAlerts();
+    if (typeof Chart === 'undefined') return;
+    renderRevenue();
+    renderTopProducts();
+    renderCity();
+    renderVisitors();
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     initCompanyName();
     renderProfileBanner();
-    initCharts();
+
+    if (typeof Chart !== 'undefined') {
+      Chart.defaults.font.family = "'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif";
+      Chart.defaults.color = '#64748b';
+      Chart.defaults.plugins.legend.rtl = true;
+      Chart.defaults.plugins.tooltip.rtl = true;
+    }
+
+    // Count this page view, then draw everything from the store.
+    Store.recordVisit();
+
+    // A tick of delay so the loading state is actually perceivable rather than
+    // flashing — the read itself is synchronous.
+    setTimeout(function () {
+      renderAll();
+      // Re-render whenever data changes here or in another open tab.
+      Store.subscribe(renderAll);
+    }, 260);
+
+    var refreshBtn = document.querySelector('.page-header .refresh-btn');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', function () {
+        renderAll();
+        if (window.Shell) Shell.toast('تم تحديث البيانات', 'success');
+      });
+    }
   });
 })();

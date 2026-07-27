@@ -454,6 +454,70 @@ ul { list-style: none; }
 }
 .ob-field input[readonly] { background: var(--bg); color: var(--muted); }
 
+/* ===================== التحقق الفوري من الحقول ===================== */
+.field-error {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--danger);
+  min-height: 1em;
+  line-height: 1.4;
+}
+.field-error:empty { display: none; }
+
+.ob-field input.is-invalid,
+.ob-field select.is-invalid,
+.pd-field input.is-invalid,
+.pd-field select.is-invalid,
+.pd-field textarea.is-invalid {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+.ob-field input.is-invalid:focus,
+.pd-field input.is-invalid:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-bg);
+}
+
+/* تلميح معلومات عند التمرير (أيقونة ؟ بجانب تسمية الحقل) */
+.field-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: help;
+  margin-inline-start: 5px;
+  position: relative;
+  vertical-align: middle;
+}
+.field-hint::after {
+  content: attr(data-hint);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  inset-inline-start: 50%;
+  transform: translateX(50%);
+  width: max-content;
+  max-width: 230px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: right;
+  padding: 7px 10px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+  z-index: 30;
+}
+.field-hint:hover::after, .field-hint:focus::after { opacity: 1; }
+
 /* Arabic date field — three plain text boxes instead of <input type="date">.
    The native control draws its "يوم/شهر/سنة" hints inside a shadow DOM that
    does not shape Arabic reliably, so they render letter-reversed ("ةنس/رهش/موي").

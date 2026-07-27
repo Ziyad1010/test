@@ -53,10 +53,20 @@
             <h1 class="page-title">المنتجات</h1>
             <p class="page-subtitle">إدارة جميع منتجاتك وعرضها للمشترين</p>
           </div>
-          <button class="pd-add-btn" id="pdAddBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            إضافة منتج
-          </button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <button class="ob-btn-secondary" id="pdExportBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              تصدير Excel
+            </button>
+            <button class="ob-btn-secondary" id="pdImportBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              إضافة جماعية
+            </button>
+            <button class="pd-add-btn" id="pdAddBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              إضافة منتج
+            </button>
+          </div>
         </div>
 
         <!-- Product Stat Strip -->
@@ -108,6 +118,17 @@
           </div>
         </div>
 
+        <!-- Bulk actions bar (appears once rows are selected in table view) -->
+        <div class="pd-bulk-bar" id="pdBulkBar" hidden>
+          <span class="pd-bulk-count" id="pdBulkCount">تم تحديد 0 منتج</span>
+          <button type="button" class="pd-bulk-btn" data-bulk="activate">تفعيل</button>
+          <button type="button" class="pd-bulk-btn" data-bulk="deactivate">تعطيل</button>
+          <button type="button" class="pd-bulk-btn" data-bulk="price">تعديل السعر %</button>
+          <button type="button" class="pd-bulk-btn" data-bulk="export">تصدير المحدد</button>
+          <button type="button" class="pd-bulk-btn danger" data-bulk="delete">حذف</button>
+          <button type="button" class="pd-bulk-btn" data-bulk="clear">إلغاء التحديد</button>
+        </div>
+
         <!-- Grid View -->
         <div class="pd-grid" id="pdGrid"><!-- JS-populated --></div>
 
@@ -116,13 +137,14 @@
           <table class="pd-table">
             <thead>
               <tr>
+                <th style="width:36px;"><input type="checkbox" class="pd-check" id="pdCheckAll" aria-label="تحديد الكل" /></th>
                 <th>المنتج</th>
                 <th>الفئة</th>
-                <th>العلامة التجارية</th>
-                <th>السعر</th>
-                <th>المخزون</th>
+                <th>السعر (تحرير سريع)</th>
+                <th>الكمية (تحرير سريع)</th>
+                <th>الوحدة</th>
+                <th>التوفر</th>
                 <th>المستودع</th>
-                <th>المشاهدات</th>
                 <th>الطلبات</th>
                 <th>الحالة</th>
                 <th></th>
@@ -141,23 +163,25 @@
   <div class="pd-modal-overlay" id="pdModalOverlay" hidden>
     <div class="pd-modal">
       <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </span>
         <h2 id="pdModalTitle">إضافة منتج جديد</h2>
         <button type="button" class="pd-modal-close" id="pdModalClose" aria-label="إغلاق">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
 
-      <div class="pd-modal-tabs" id="pdModalTabs">
-        <button type="button" class="pd-tab is-active" data-tab="basic">معلومات أساسية</button>
-        <button type="button" class="pd-tab" data-tab="pricing">التسعير والمخزون</button>
-        <button type="button" class="pd-tab" data-tab="shipping">التوصيل والوسائط</button>
-        <button type="button" class="pd-tab" data-tab="extra">خيارات إضافية</button>
-      </div>
+      <div class="pd-wizard-steps" id="pdWizardSteps"><!-- JS-populated --></div>
 
       <div class="pd-modal-body">
         <!-- TAB: Basic Info -->
         <section class="pd-tab-panel is-active" data-panel="basic">
           <div class="pd-field-row cols-2">
+            <div class="pd-field">
+              <label for="pfName">اسم المنتج <em>*</em></label>
+              <input type="text" id="pfName" placeholder="أدخل اسم المنتج" data-validate="text" data-required />
+            </div>
             <div class="pd-field">
               <label for="pfCategory">الفئة الرئيسية <em>*</em></label>
               <select id="pfCategory">
@@ -170,9 +194,28 @@
                 <option value="tools">أدوات ومعدات</option>
               </select>
             </div>
+          </div>
+
+          <div class="pd-field-row cols-2">
             <div class="pd-field">
-              <label for="pfName">اسم المنتج <em>*</em></label>
-              <input type="text" id="pfName" placeholder="أدخل اسم المنتج" />
+              <label for="pfSubcategory">التصنيف الفرعي</label>
+              <select id="pfSubcategory" disabled>
+                <option value="">اختر الفئة الرئيسية أولاً</option>
+              </select>
+            </div>
+            <div class="pd-field">
+              <label for="pfBrand">العلامة التجارية / المصنّع</label>
+              <select id="pfBrand">
+                <option value="">اختر العلامة التجارية</option>
+                <option>حديد الراجحي</option>
+                <option>أسمنت اليمامة</option>
+                <option>أسمنت العربية</option>
+                <option>الخرسانة السعودية</option>
+                <option>الخزف السعودي</option>
+                <option>الفوزان لمواد البناء</option>
+                <option>الزامل للصلب</option>
+                <option>عام</option>
+              </select>
             </div>
           </div>
 
@@ -189,28 +232,13 @@
               </select>
             </div>
             <div class="pd-field">
-              <label for="pfBrand">العلامة التجارية</label>
-              <select id="pfBrand">
-                <option value="">اختر العلامة التجارية</option>
-                <option>حديد الراجحي</option>
-                <option>أسمنت اليمامة</option>
-                <option>أسمنت العربية</option>
-                <option>الخرسانة السعودية</option>
-                <option>الخزف السعودي</option>
-                <option>الفوزان لمواد البناء</option>
-                <option>الزامل للصلب</option>
+              <label for="pfWarehouse">المستودع</label>
+              <select id="pfWarehouse">
+                <option value="">اختر المستودع</option>
+                <option>مستودع الرياض الرئيسي</option>
+                <option>مستودع جدة</option>
+                <option>مستودع الدمام</option>
               </select>
-            </div>
-          </div>
-
-          <div class="pd-field-row cols-2">
-            <div class="pd-field">
-              <label for="pfSku">رمز المنتج SKU</label>
-              <input type="text" id="pfSku" placeholder="STL-RJ-012" />
-            </div>
-            <div class="pd-field">
-              <label for="pfBarcode">الباركود (اختياري)</label>
-              <input type="text" id="pfBarcode" placeholder="6281012345678" />
             </div>
           </div>
 
@@ -219,6 +247,10 @@
             <textarea id="pfDesc" maxlength="1000" placeholder="اكتب وصفاً تفصيلياً عن المنتج ومميزاته..."></textarea>
             <span class="pd-counter"><span id="pfDescCount">0</span>/1000</span>
           </div>
+
+          <div class="pd-subhead"><strong>خصائص الفئة</strong></div>
+          <div class="pd-attr-grid" id="pfAttrGrid"><!-- JS-populated per category --></div>
+          <p class="pd-attr-empty" id="pfAttrEmpty">اختر الفئة الرئيسية لعرض خصائصها المخصّصة (مثل القطر والدرجة للحديد).</p>
         </section>
 
         <!-- TAB: Pricing & Inventory -->
@@ -226,54 +258,167 @@
           <div class="pd-subhead"><strong>التسعير</strong></div>
           <div class="pd-field-row cols-3">
             <div class="pd-field">
-              <label for="pfPrice">السعر <em>*</em></label>
-              <input type="number" id="pfPrice" placeholder="2450" min="0" />
+              <label for="pfPrice">السعر الأساسي (ر.س) <em>*</em></label>
+              <input type="text" id="pfPrice" placeholder="2450" inputmode="decimal" data-validate="decimal" data-required />
             </div>
             <div class="pd-field">
-              <label for="pfDiscount">نسبة الخصم %</label>
-              <input type="number" id="pfDiscount" placeholder="0" min="0" max="100" />
+              <label for="pfUnit">وحدة القياس <em>*</em></label>
+              <select id="pfUnit">
+                <option value="">اختر الوحدة</option>
+                <option>طن</option>
+                <option>كيس</option>
+                <option>م³</option>
+                <option>م²</option>
+                <option>متر طولي</option>
+                <option>حبة</option>
+                <option>لتر</option>
+                <option>لفة</option>
+              </select>
             </div>
             <div class="pd-field">
-              <label class="pd-check-label">
-                <input type="checkbox" id="pfVatIncluded" checked />
-                السعر شامل ضريبة القيمة المضافة
-              </label>
+              <label for="pfVatRate">نسبة ضريبة القيمة المضافة %</label>
+              <input type="text" id="pfVatRate" value="15" inputmode="decimal" data-validate="decimal" />
             </div>
           </div>
-          <div class="pd-field-row cols-2">
+
+          <div class="pd-field">
+            <label class="pd-check-label">
+              <input type="checkbox" id="pfVatIncluded" checked />
+              السعر المُدخل شامل ضريبة القيمة المضافة
+            </label>
+          </div>
+
+          <!-- VAT is recalculated live from the price + rate + inclusive flag -->
+          <div class="pd-vat-summary">
+            <div><small>السعر قبل الضريبة</small><strong id="pfVatBase">0.00 ر.س</strong></div>
+            <div><small>قيمة الضريبة</small><strong id="pfVatAmount">0.00 ر.س</strong></div>
+            <div><small>السعر المعروض للمشتري</small><strong class="final" id="pfVatFinal">0.00 ر.س</strong></div>
+          </div>
+
+          <div class="pd-subhead"><strong>سعر خاص / تخفيض مؤقّت</strong></div>
+          <div class="pd-field-row cols-3">
             <div class="pd-field">
-              <label for="pfMinOrder">الحد الأدنى للطلب</label>
-              <input type="number" id="pfMinOrder" placeholder="1" min="1" />
+              <label for="pfSpecialPrice">السعر الخاص (ر.س)</label>
+              <input type="text" id="pfSpecialPrice" placeholder="2200" inputmode="decimal" data-validate="decimal" />
             </div>
             <div class="pd-field">
-              <label for="pfMaxOrder">الحد الأقصى للطلب</label>
-              <input type="number" id="pfMaxOrder" placeholder="500" min="1" />
+              <label for="pfSpecialFromDay">تاريخ بداية العرض</label>
+              <div class="ob-date-group" data-date-for="pfSpecialFrom">
+                <input type="text" id="pfSpecialFromDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="pfSpecialFrom" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="pfSpecialToDay">تاريخ نهاية العرض</label>
+              <div class="ob-date-group" data-date-for="pfSpecialTo">
+                <input type="text" id="pfSpecialToDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="pfSpecialTo" />
+              </div>
             </div>
           </div>
+
+          <div class="pd-subhead"><strong>التسعير المتدرج حسب الكمية</strong></div>
+          <div class="pd-tier-head"><span>من كمية</span><span>إلى كمية</span><span>السعر للوحدة (ر.س)</span><span></span></div>
+          <div class="pd-tier-table" id="pfTierTable"><!-- JS-populated --></div>
+          <button type="button" class="pd-add-row-btn" id="pfAddTierBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            إضافة شريحة سعر
+          </button>
 
           <div class="pd-subhead"><strong>المخزون</strong></div>
           <div class="pd-field-row cols-3">
             <div class="pd-field">
               <label for="pfStock">الكمية المتوفرة <em>*</em></label>
-              <input type="number" id="pfStock" placeholder="50" min="0" />
-            </div>
-            <div class="pd-field">
-              <label for="pfReserved">الكمية المحجوزة</label>
-              <input type="number" id="pfReserved" placeholder="0" min="0" />
+              <input type="text" id="pfStock" placeholder="50" inputmode="numeric" data-validate="integer" data-required />
             </div>
             <div class="pd-field">
               <label for="pfLowStock">حد التنبيه للمخزون المنخفض</label>
-              <input type="number" id="pfLowStock" placeholder="10" min="0" />
+              <input type="text" id="pfLowStock" placeholder="10" inputmode="numeric" data-validate="integer" />
+            </div>
+            <div class="pd-field">
+              <label for="pfAvailability">حالة التوفر</label>
+              <select id="pfAvailability">
+                <option value="auto">تلقائي (حسب الكمية)</option>
+                <option value="in_stock">متوفر</option>
+                <option value="limited">كمية محدودة</option>
+                <option value="out_of_stock">غير متوفر</option>
+                <option value="on_demand">عند الطلب</option>
+              </select>
             </div>
           </div>
-          <div class="pd-field">
-            <label for="pfWarehouse">المستودع</label>
-            <select id="pfWarehouse">
-              <option value="">اختر المستودع</option>
-              <option>مستودع الرياض الرئيسي</option>
-              <option>مستودع جدة</option>
-              <option>مستودع الدمام</option>
-            </select>
+
+          <div class="pd-field-row cols-2">
+            <div class="pd-field">
+              <label for="pfMoq">الحد الأدنى لكمية الطلب (MOQ)</label>
+              <input type="text" id="pfMoq" placeholder="1" inputmode="numeric" data-validate="integer" />
+            </div>
+            <div class="pd-field">
+              <label for="pfReserved">الكمية المحجوزة</label>
+              <input type="text" id="pfReserved" placeholder="0" inputmode="numeric" data-validate="integer" />
+            </div>
+          </div>
+
+          <!-- الحقول المطلوبة حديثاً — صفوف من اثنين بمحاذاة RTL -->
+          <div class="pd-field-row cols-2">
+            <div class="pd-field">
+              <label for="pfWeight">وزن المنتج <em>*</em></label>
+              <input type="text" id="pfWeight" placeholder="1000" inputmode="decimal" data-validate="decimal" data-required />
+            </div>
+            <div class="pd-field">
+              <label for="pfWeightUnit">وحدة الوزن <em>*</em></label>
+              <select id="pfWeightUnit">
+                <option value="كجم">كجم</option>
+                <option value="طن">طن</option>
+                <option value="جرام">جرام</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="pd-field-row cols-2">
+            <div class="pd-field">
+              <label for="pfMaxPerCustomer">
+                أقصى كمية لكل عميل
+                <span class="field-hint" tabindex="0" data-hint="أعلى كمية يستطيع العميل الواحد شراؤها من هذا المنتج في الطلب الواحد. اتركه فارغاً لعدم وضع حد.">؟</span>
+              </label>
+              <input type="text" id="pfMaxPerCustomer" placeholder="بدون حد" inputmode="numeric" data-validate="integer" />
+            </div>
+            <div class="pd-field">
+              <label for="pfBarcode">الباركود</label>
+              <input type="text" id="pfBarcode" placeholder="6281012345678" inputmode="numeric" data-validate="barcode" dir="ltr" />
+            </div>
+          </div>
+
+          <div class="pd-field-row cols-2">
+            <div class="pd-field">
+              <label for="pfSku">رمز التخزين (SKU)</label>
+              <input type="text" id="pfSku" placeholder="STL-RJ-012" data-validate="code" dir="ltr" />
+            </div>
+            <div class="pd-field">
+              <label for="pfGtin">
+                رمز (GTIN)
+                <span class="field-hint" tabindex="0" data-hint="الرقم التجاري العالمي للسلعة — يُستخدم لتوحيد تعريف المنتج عالمياً.">؟</span>
+              </label>
+              <input type="text" id="pfGtin" placeholder="06281012345678" inputmode="numeric" data-validate="barcode" dir="ltr" />
+            </div>
+          </div>
+
+          <div class="pd-field-row cols-2">
+            <div class="pd-field">
+              <label for="pfMpn">
+                رمز (MPN)
+                <span class="field-hint" tabindex="0" data-hint="رقم القطعة لدى الشركة المصنّعة — يساعد المشتري على مطابقة المنتج بدقة.">؟</span>
+              </label>
+              <input type="text" id="pfMpn" placeholder="RJ-REBAR-12" data-validate="code" dir="ltr" />
+            </div>
+            <div class="pd-field"></div>
           </div>
         </section>
 
@@ -303,38 +448,38 @@
             </div>
           </div>
           <div class="pd-field">
-            <label for="pfCities">المدن المدعومة</label>
-            <select id="pfCities" multiple size="4">
-              <option selected>الرياض</option>
-              <option selected>جدة</option>
-              <option>الدمام</option>
-              <option>مكة المكرمة</option>
-              <option>المدينة المنورة</option>
-              <option>الخبر</option>
-            </select>
+            <label>المدن المدعومة</label>
+            <div class="pd-city-picker">
+              <div class="pd-city-toolbar">
+                <div class="pd-city-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input type="search" id="pfCitySearch" placeholder="ابحث عن مدينة أو منطقة..." />
+                </div>
+                <span class="pd-city-count" id="pfCityCount">0 مدينة</span>
+                <button type="button" class="pd-city-link" id="pfCityAll">تحديد الكل</button>
+                <button type="button" class="pd-city-link" id="pfCityNone">إلغاء الكل</button>
+              </div>
+              <div class="pd-city-list" id="pfCityList"><!-- JS-populated from js/saudi-regions.js --></div>
+            </div>
           </div>
 
-          <div class="pd-subhead"><strong>الوسائط</strong></div>
+          <div class="pd-subhead"><strong>صور المنتج</strong></div>
           <div class="pd-dropzone-sm" id="pdMediaDropzone">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <span>اسحب الصورة الرئيسية هنا أو اضغط للاختيار (يدعم معرض صور، فيديو، وكتالوج PDF)</span>
+            <span>اضغط لاختيار صور المنتج (يمكن اختيار أكثر من صورة) — الصورة الأولى هي الرئيسية</span>
+          </div>
+          <input type="file" id="pfImageInput" accept="image/*" multiple hidden />
+          <div class="pd-media-grid" id="pfMediaGrid"><!-- JS-populated --></div>
+
+          <div class="pd-subhead"><strong>فيديو المنتج (اختياري)</strong></div>
+          <div class="pd-field">
+            <label for="pfVideo">رابط الفيديو (YouTube أو Vimeo)</label>
+            <input type="url" id="pfVideo" placeholder="https://www.youtube.com/watch?v=..." dir="ltr" />
           </div>
         </section>
 
         <!-- TAB: Additional Options (Specs / SEO) -->
         <section class="pd-tab-panel" data-panel="extra">
-          <div class="pd-subhead"><strong>المواصفات الفنية</strong></div>
-          <div class="pd-field-row cols-2">
-            <div class="pd-field">
-              <label for="pfSpecKey1">الخاصية</label>
-              <input type="text" id="pfSpecKey1" placeholder="القطر" />
-            </div>
-            <div class="pd-field">
-              <label for="pfSpecVal1">القيمة</label>
-              <input type="text" id="pfSpecVal1" placeholder="12 مم" />
-            </div>
-          </div>
-
           <div class="pd-subhead"><strong>تحسين محركات البحث (SEO)</strong></div>
           <div class="pd-field">
             <label for="pfKeywords">الكلمات المفتاحية</label>
@@ -365,6 +510,61 @@
     </div>
   </div>
 
+  <!-- ===================== Bulk Import Modal ===================== -->
+  <div class="pd-modal-overlay" id="pdImportOverlay" hidden>
+    <div class="pd-modal" style="max-width:620px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </span>
+        <h2>إضافة منتجات جماعية</h2>
+        <button type="button" class="pd-modal-close" id="pdImportClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="pd-modal-body">
+        <div class="pd-import-steps">
+          <div class="pd-import-note">
+            <strong>الخطوة ١:</strong> نزّل ملف القالب وعبّئه ببيانات منتجاتك.<br />
+            الأعمدة المطلوبة: <code>name, category, brand, price, unit, stock, lowStock, moq, weight, weightUnit, sku, barcode, gtin, mpn, warehouse</code><br />
+            الأعمدة الإلزامية هي <code>name</code> و<code>price</code> و<code>stock</code> و<code>weight</code> فقط.
+          </div>
+
+          <button type="button" class="ob-btn-secondary" id="pdTemplateBtn" style="width:100%;">
+            تنزيل ملف القالب (CSV)
+          </button>
+
+          <div class="pd-import-note">
+            <strong>الخطوة ٢:</strong> ارفع الملف بعد تعبئته. الصيغة المدعومة هي <code>CSV</code>
+            — وهي صيغة يُصدّرها Excel مباشرة عبر «حفظ باسم ← CSV UTF-8».
+          </div>
+
+          <div class="pd-dropzone-sm" id="pdImportDropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="pdImportFileName">اضغط لاختيار ملف CSV</span>
+          </div>
+          <input type="file" id="pdImportInput" accept=".csv,text/csv" hidden />
+
+          <div class="pd-import-result" id="pdImportResult" hidden></div>
+        </div>
+      </div>
+
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="pdImportCancel">إلغاء</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-primary" id="pdImportConfirm" disabled>استيراد المنتجات</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/saudi-regions.js"></script>
+  <script src="js/validate.js"></script>
+  <script src="js/date-field.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/products.js"></script>
 </body>

@@ -590,6 +590,51 @@ button { font-family: inherit; }
 .chart-canvas-wrap { position: relative; height: 240px; }
 .chart-canvas-wrap.short { height: 200px; }
 
+/* Loading / empty overlays for charts fed by js/store.js */
+.chart-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 16px;
+  background: var(--surface);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.chart-state[hidden] { display: none !important; }
+.chart-state .chart-empty-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chart-state .chart-empty-icon svg { width: 20px; height: 20px; }
+.chart-state strong { color: var(--ink); font-size: 0.9rem; font-weight: 700; }
+
+.chart-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid var(--line);
+  border-top-color: var(--primary-600);
+  animation: chartSpin 0.7s linear infinite;
+}
+@keyframes chartSpin { to { transform: rotate(360deg); } }
+
+/* KPI values still waiting on the first read from the store */
+.kpi-value .is-loading,
+.kpi-value.is-loading { color: var(--muted); }
+.kpi-badge.flat { background: var(--bg); color: var(--muted); }
+.kpi-badge.down { background: var(--danger-bg); color: var(--danger); }
+
 /* Content Split Layout */
 .content-grid {
   display: grid;

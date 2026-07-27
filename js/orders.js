@@ -9,18 +9,36 @@
   var TIMELINE_STEPS = ['تم استلام الطلب', 'تم التأكيد وقيد التجهيز', 'تم الشحن', 'تم التسليم'];
   var STATUS_STEP_INDEX = { review: 0, prep: 1, shipped: 2, delivered: 3, cancelled: -1 };
 
-  var orders = [
-    { id: 1024, customer: 'شركة البناء الحديث للمقاولات', items: '100 كيس أسمنت بورتلاندي عادي', amount: 2850, payment: 'مدى', date: '2026-07-20', status: 'prep', address: 'الرياض - حي الملز - شارع الأمير عبدالله', phone: '+966 50 123 4567' },
-    { id: 1023, customer: 'مؤسسة الإعمار المتحدة', items: '5 طن حديد تسليح 12مم', amount: 12250, payment: 'تحويل بنكي', date: '2026-07-19', status: 'review', address: 'جدة - حي الروضة', phone: '+966 55 987 6543' },
-    { id: 1022, customer: 'شركة الرياض للمقاولات العامة', items: '20 م³ خرسانة جاهزة C30', amount: 4900, payment: 'Apple Pay', date: '2026-07-18', status: 'shipped', address: 'الدمام - حي الشاطئ', phone: '+966 54 321 0987' },
-    { id: 1021, customer: 'مجموعة التطوير العقاري', items: '300 م² بلاط بورسلين 60×60', amount: 11340, payment: 'مدى', date: '2026-07-17', status: 'delivered', address: 'الرياض - حي النرجس', phone: '+966 56 111 2222' },
-    { id: 1020, customer: 'مقاولات الخليج المحدودة', items: '1000 طوبة أسمنتية مصمتة', amount: 3200, payment: 'تحويل بنكي', date: '2026-07-16', status: 'cancelled', address: 'الخبر - حي العقربية', phone: '+966 53 444 5555' },
-    { id: 1019, customer: 'شركة البناء الحديث للمقاولات', items: '2 طن حديد تسليح 16مم', amount: 5040, payment: 'مدى', date: '2026-07-15', status: 'delivered', address: 'الرياض - حي الملز', phone: '+966 50 123 4567' },
-    { id: 1018, customer: 'مؤسسة النخبة للمقاولات', items: 'خلاطة خرسانة كهربائية 350 لتر', amount: 3850, payment: 'فيزا', date: '2026-07-14', status: 'prep', address: 'مكة المكرمة - حي العزيزية', phone: '+966 58 666 7777' },
-    { id: 1017, customer: 'شركة الرياض للمقاولات العامة', items: '150 كيس أسمنت مقاوم للكبريتات', amount: 3150, payment: 'تحويل بنكي', date: '2026-07-12', status: 'review', address: 'الدمام - حي الفيصلية', phone: '+966 54 321 0987' }
-  ];
+  // مفردات الحالة في هذه الصفحة تختلف عن المخزَّنة في js/store.js،
+  // فتُترجم في الاتجاهين بدل تكرار قائمة طلبات منفصلة.
+  var FROM_STORE = { 'new': 'review', processing: 'prep', shipping: 'shipped', delivered: 'delivered', cancelled: 'cancelled' };
+  var TO_STORE = { review: 'new', prep: 'processing', shipped: 'shipping', delivered: 'delivered', cancelled: 'cancelled' };
 
+  var orders = [];
   var currentFilter = '';
+
+  function itemsSummary(items) {
+    if (!items || !items.length) return '—';
+    var first = items[0].qty + ' × ' + items[0].name;
+    return items.length > 1 ? first + ' (+' + (items.length - 1) + ' أصناف)' : first;
+  }
+
+  // نفس مصدر بيانات لوحة التحكم — أي تغيير هنا ينعكس على الرسوم والبطاقات
+  function load() {
+    orders = Store.getOrders().map(function (o) {
+      return {
+        id: o.id,
+        customer: o.customer,
+        items: itemsSummary(o.items),
+        amount: o.total,
+        payment: o.payment || 'تحويل بنكي',
+        date: o.date,
+        status: FROM_STORE[o.status] || 'review',
+        address: o.city + (o.district ? ' - ' + o.district : ''),
+        phone: o.phone || '—'
+      };
+    }).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+  }
 
   function fmt(n) { return Number(n).toLocaleString('ar-SA'); }
 
@@ -38,7 +56,7 @@
 
     $('#ordTableBody').innerHTML = list.map(function (o) {
       return '<tr>' +
-        '<td class="order-id">#' + o.id + '</td>' +
+        '<td class="order-id">' + o.id + '</td>' +
         '<td>' + o.customer + '</td>' +
         '<td>' + o.items + '</td>' +
         '<td><strong>' + fmt(o.amount) + ' ر.س</strong></td>' +
@@ -52,7 +70,7 @@
     }).join('');
 
     $all('[data-view]').forEach(function (btn) {
-      btn.addEventListener('click', function () { openOrder(parseInt(btn.getAttribute('data-view'), 10)); });
+      btn.addEventListener('click', function () { openOrder(btn.getAttribute('data-view')); });
     });
   }
 
@@ -85,10 +103,10 @@
   }
 
   function openOrder(id) {
-    var o = orders.find(function (x) { return x.id === id; });
+    var o = orders.filter(function (x) { return x.id === id; })[0];
     if (!o) return;
 
-    $('#ordModalTitle').textContent = 'تفاصيل الطلب #' + o.id;
+    $('#ordModalTitle').textContent = 'تفاصيل الطلب ' + o.id;
     $('#ordModalBody').innerHTML =
       '<div class="pd-subhead"><strong>حالة الطلب</strong></div>' +
       timelineHtml(o) +
@@ -123,13 +141,18 @@
   }
 
   function setStatus(id, status) {
-    var o = orders.find(function (x) { return x.id === id; });
-    if (!o) return;
-    o.status = status;
+    // يُكتب في المتجر المشترك، فتتحدث معه بطاقات ورسوم لوحة التحكم تلقائياً
+    Store.setOrderStatus(id, TO_STORE[status] || status);
+    load();
     updateStats();
     renderTable();
     closeModal();
-    if (window.Shell) Shell.toast(status === 'prep' ? 'تم قبول الطلب #' + id + ' وبدء التجهيز' : 'تم رفض الطلب #' + id, status === 'prep' ? 'success' : 'danger');
+    if (window.Shell) {
+      Shell.toast(
+        status === 'prep' ? 'تم قبول الطلب ' + id + ' وبدء التجهيز' : 'تم رفض الطلب ' + id,
+        status === 'prep' ? 'success' : 'danger'
+      );
+    }
   }
 
   function closeModal() { $('#ordModalOverlay').hidden = true; }
@@ -141,9 +164,16 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    load();
     initTabs();
     initModal();
     updateStats();
     renderTable();
+
+    Store.subscribe(function () {
+      load();
+      updateStats();
+      renderTable();
+    });
   });
 })();

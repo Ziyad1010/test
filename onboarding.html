@@ -156,11 +156,11 @@
             <div class="ob-field-row cols-3">
               <div class="ob-field">
                 <label for="companyName">اسم الشركة <em>*</em></label>
-                <input type="text" id="companyName" placeholder="شركة البناء الحديث للمقاولات العامة" required />
+                <input type="text" id="companyName" placeholder="شركة البناء الحديث للمقاولات العامة" data-validate="text" data-required required />
               </div>
               <div class="ob-field">
                 <label for="companyNameEn">اسم الشركة بالإنجليزية (اختياري)</label>
-                <input type="text" id="companyNameEn" placeholder="Modern Building Co. for Contracting" dir="ltr" />
+                <input type="text" id="companyNameEn" placeholder="Modern Building Co. for Contracting" dir="ltr" data-validate="text" />
               </div>
               <div class="ob-field">
                 <label for="companyType">نوع الشركة <em>*</em></label>
@@ -177,7 +177,7 @@
             <div class="ob-field-row cols-3">
               <div class="ob-field">
                 <label for="crNumber">رقم السجل التجاري <em>*</em></label>
-                <input type="text" id="crNumber" placeholder="1010234567" inputmode="numeric" required />
+                <input type="text" id="crNumber" placeholder="1010234567" inputmode="numeric" maxlength="10" dir="ltr" data-validate="crNumber" data-required required />
               </div>
               <div class="ob-field">
                 <label for="crIssueDay">تاريخ إصدار السجل <em>*</em></label>
@@ -213,21 +213,21 @@
                 <label for="mainMobile">رقم الجوال الأساسي <em>*</em></label>
                 <div class="ob-phone-group">
                   <select class="ob-cc"><option>‎+966</option></select>
-                  <input type="tel" id="mainMobile" placeholder="50 123 4567" required />
+                  <input type="tel" id="mainMobile" placeholder="512345678" maxlength="10" data-validate="mobileSA" data-required required />
                 </div>
               </div>
               <div class="ob-field">
                 <label for="altMobile">رقم جوال آخر (اختياري)</label>
                 <div class="ob-phone-group">
                   <select class="ob-cc"><option>‎+966</option></select>
-                  <input type="tel" id="altMobile" placeholder="55 987 6543" />
+                  <input type="tel" id="altMobile" placeholder="559876543" maxlength="10" data-validate="mobileSA" />
                 </div>
               </div>
               <div class="ob-field">
                 <label for="landline">الهاتف الأرضي (اختياري)</label>
                 <div class="ob-phone-group">
                   <select class="ob-cc"><option>‎+966</option></select>
-                  <input type="tel" id="landline" placeholder="11 234 5678" />
+                  <input type="tel" id="landline" placeholder="112345678" maxlength="10" data-validate="landlineSA" />
                 </div>
               </div>
             </div>
@@ -235,15 +235,15 @@
             <div class="ob-field-row cols-3">
               <div class="ob-field">
                 <label for="officialEmail">البريد الإلكتروني الرسمي <em>*</em></label>
-                <input type="email" id="officialEmail" placeholder="info@example.sa" dir="ltr" required />
+                <input type="email" id="officialEmail" placeholder="info@example.sa" dir="ltr" data-validate="email" data-required required />
               </div>
               <div class="ob-field">
                 <label for="altEmail">البريد الإلكتروني البديل (اختياري)</label>
-                <input type="email" id="altEmail" placeholder="sales@example.sa" dir="ltr" />
+                <input type="email" id="altEmail" placeholder="sales@example.sa" dir="ltr" data-validate="email" />
               </div>
               <div class="ob-field">
                 <label for="fax">فاكس (اختياري)</label>
-                <input type="tel" id="fax" placeholder="+966 11 234 5679" dir="ltr" />
+                <input type="tel" id="fax" placeholder="112345679" maxlength="10" dir="ltr" data-validate="landlineSA" />
               </div>
             </div>
 
@@ -272,33 +272,33 @@
                 </select>
                 <!-- يظهر بدل القائمة للمدن التي لا تتوفر لها قائمة أحياء معتمدة،
                      أو عند اختيار "حي آخر" — انظر js/saudi-regions.js -->
-                <input type="text" id="districtOther" placeholder="اكتب اسم الحي" hidden />
+                <input type="text" id="districtOther" placeholder="اكتب اسم الحي" data-validate="text" hidden />
               </div>
               <div class="ob-field">
                 <label for="postalCode">الرمز البريدي <em>*</em></label>
-                <input type="text" id="postalCode" placeholder="12836" inputmode="numeric" maxlength="5" dir="ltr" required />
+                <input type="text" id="postalCode" placeholder="12836" inputmode="numeric" maxlength="5" dir="ltr" data-validate="postalCode" data-required required />
               </div>
             </div>
 
             <div class="ob-field-row cols-3">
               <div class="ob-field span-2">
                 <label for="detailedAddress">العنوان التفصيلي <em>*</em></label>
-                <input type="text" id="detailedAddress" placeholder="مبنى رقم 2568 - الدور 3" required />
+                <input type="text" id="detailedAddress" placeholder="مبنى رقم 2568 - الدور 3" data-validate="text" data-required required />
               </div>
               <div class="ob-field">
                 <label for="buildingNo">رقم المبنى <em>*</em></label>
-                <input type="text" id="buildingNo" placeholder="2568" inputmode="numeric" maxlength="4" dir="ltr" required />
+                <input type="text" id="buildingNo" placeholder="2568" inputmode="numeric" maxlength="4" dir="ltr" data-validate="buildingNo" data-required required />
               </div>
             </div>
 
             <div class="ob-field-row cols-3">
               <div class="ob-field span-2">
                 <label for="street">الشارع <em>*</em></label>
-                <input type="text" id="street" placeholder="شارع الأمير عبدالله بن سعود بن عبدالله" required />
+                <input type="text" id="street" placeholder="شارع الأمير عبدالله بن سعود بن عبدالله" data-validate="text" data-required required />
               </div>
               <div class="ob-field">
                 <label for="poBox">صندوق البريد (اختياري)</label>
-                <input type="text" id="poBox" placeholder="76662" inputmode="numeric" dir="ltr" />
+                <input type="text" id="poBox" placeholder="76662" inputmode="numeric" dir="ltr" data-validate="integer" />
               </div>
             </div>
 
@@ -536,6 +536,7 @@
   <!-- بيانات المناطق والمدن والأحياء — يجب تحميلها قبل onboarding.js -->
   <script src="js/saudi-regions.js"></script>
   <script src="js/date-field.js"></script>
+  <script src="js/validate.js"></script>
   <script src="js/onboarding.js"></script>
 </body>
 </html>
