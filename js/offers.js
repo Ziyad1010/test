@@ -98,7 +98,8 @@
   function closeModal() {
     $('#offModalOverlay').hidden = true;
     $('#ofName').value = ''; $('#ofDiscount').value = ''; $('#ofCode').value = '';
-    $('#ofStart').value = ''; $('#ofEnd').value = '';
+    // Clearing through DateField also empties the visible يوم/شهر/سنة boxes.
+    if (window.DateField) { DateField.clear('ofStart'); DateField.clear('ofEnd'); }
   }
 
   document.addEventListener('DOMContentLoaded', function () {

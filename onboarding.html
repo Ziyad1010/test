@@ -180,12 +180,26 @@
                 <input type="text" id="crNumber" placeholder="1010234567" inputmode="numeric" required />
               </div>
               <div class="ob-field">
-                <label for="crIssue">تاريخ إصدار السجل <em>*</em></label>
-                <input type="date" id="crIssue" required />
+                <label for="crIssueDay">تاريخ إصدار السجل <em>*</em></label>
+                <div class="ob-date-group" data-date-for="crIssue">
+                  <input type="text" id="crIssueDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                  <input type="hidden" id="crIssue" />
+                </div>
               </div>
               <div class="ob-field">
-                <label for="crExpiry">تاريخ انتهاء السجل <em>*</em></label>
-                <input type="date" id="crExpiry" required />
+                <label for="crExpiryDay">تاريخ انتهاء السجل <em>*</em></label>
+                <div class="ob-date-group" data-date-for="crExpiry">
+                  <input type="text" id="crExpiryDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                  <input type="hidden" id="crExpiry" />
+                </div>
               </div>
             </div>
 
@@ -521,6 +535,7 @@
 
   <!-- بيانات المناطق والمدن والأحياء — يجب تحميلها قبل onboarding.js -->
   <script src="js/saudi-regions.js"></script>
+  <script src="js/date-field.js"></script>
   <script src="js/onboarding.js"></script>
 </body>
 </html>

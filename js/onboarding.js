@@ -749,6 +749,10 @@
     // handlers repopulate the dependent selects before state is re-saved.
     initAddressCascade(state.savedAddress);
 
+    // loadState() wrote the saved YYYY-MM-DD values straight into the hidden
+    // date inputs; refill the visible يوم/شهر/سنة boxes from them.
+    if (window.DateField) DateField.refresh();
+
     initDropzone();
     initLocation();
     initWarehouses();

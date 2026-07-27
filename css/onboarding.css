@@ -454,16 +454,32 @@ ul { list-style: none; }
 }
 .ob-field input[readonly] { background: var(--bg); color: var(--muted); }
 
-/* Native date inputs lay their day/month/year segments out following the
-   inherited direction. Inside dir="rtl" the browser mirrors that order, so the
-   segment showing "يوم" ends up being the one that actually accepts the month
-   (and vice versa) — the value you type never matches the hint beside it.
-   Forcing the control itself to LTR restores the real يوم/شهر/سنة order and
-   the numeric keypad ranges that go with it, while text-align keeps the field
-   visually anchored to the right-hand edge like every other RTL input. */
-input[type="date"] {
-  direction: ltr;
-  text-align: right;
+/* Arabic date field — three plain text boxes instead of <input type="date">.
+   The native control draws its "يوم/شهر/سنة" hints inside a shadow DOM that
+   does not shape Arabic reliably, so they render letter-reversed ("ةنس/رهش/موي").
+   Ordinary inputs shape correctly, so the control is rebuilt from them and the
+   composed YYYY-MM-DD value is kept in a hidden input. See js/date-field.js.
+   Order is day → month → year, which in RTL puts يوم on the right. */
+.ob-date-group {
+  display: flex;
+  align-items: center;
+  direction: rtl;
+  gap: 6px;
+  min-width: 0;
+}
+.ob-date-group input[data-part] {
+  min-width: 0;
+  text-align: center;
+  padding-inline: 4px;
+}
+.ob-date-group input[data-part="day"],
+.ob-date-group input[data-part="month"] { flex: 1 1 0; }
+.ob-date-group input[data-part="year"] { flex: 1.5 1 0; }
+.ob-date-sep {
+  color: var(--muted);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  user-select: none;
 }
 
 /* Phone entry: the country-code select sits to the LEFT of the number box, so
