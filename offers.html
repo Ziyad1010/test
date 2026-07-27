@@ -93,12 +93,26 @@
         </div>
         <div class="pd-field-row cols-2">
           <div class="pd-field">
-            <label for="ofStart">تاريخ البداية <em>*</em></label>
-            <input type="date" id="ofStart" />
+            <label for="ofStartDay">تاريخ البداية <em>*</em></label>
+            <div class="ob-date-group" data-date-for="ofStart">
+              <input type="text" id="ofStartDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+              <span class="ob-date-sep">/</span>
+              <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+              <span class="ob-date-sep">/</span>
+              <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+              <input type="hidden" id="ofStart" />
+            </div>
           </div>
           <div class="pd-field">
-            <label for="ofEnd">تاريخ النهاية <em>*</em></label>
-            <input type="date" id="ofEnd" />
+            <label for="ofEndDay">تاريخ النهاية <em>*</em></label>
+            <div class="ob-date-group" data-date-for="ofEnd">
+              <input type="text" id="ofEndDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+              <span class="ob-date-sep">/</span>
+              <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+              <span class="ob-date-sep">/</span>
+              <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+              <input type="hidden" id="ofEnd" />
+            </div>
           </div>
         </div>
         <div class="pd-field">
@@ -134,6 +148,7 @@
   </div>
 
   <script src="js/shell.js"></script>
+  <script src="js/date-field.js"></script>
   <script src="js/offers.js"></script>
 </body>
 </html>

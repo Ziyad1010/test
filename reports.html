@@ -62,12 +62,26 @@
               </select>
             </div>
             <div class="pd-field">
-              <label for="repFrom">من تاريخ</label>
-              <input type="date" id="repFrom" value="2026-07-01" />
+              <label for="repFromDay">من تاريخ</label>
+              <div class="ob-date-group" data-date-for="repFrom">
+                <input type="text" id="repFromDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="repFrom" value="2026-07-01" />
+              </div>
             </div>
             <div class="pd-field">
-              <label for="repTo">إلى تاريخ</label>
-              <input type="date" id="repTo" value="2026-07-26" />
+              <label for="repToDay">إلى تاريخ</label>
+              <div class="ob-date-group" data-date-for="repTo">
+                <input type="text" id="repToDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="repTo" value="2026-07-26" />
+              </div>
             </div>
           </div>
           <div class="ob-actions" style="border-top:none;padding-top:0;margin-top:4px;">
@@ -103,6 +117,7 @@
   </div>
 
   <script src="js/shell.js"></script>
+  <script src="js/date-field.js"></script>
   <script src="js/reports.js"></script>
 </body>
 </html>
