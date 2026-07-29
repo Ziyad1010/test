@@ -297,14 +297,6 @@
   }
 
   /* ---------------- Latest orders panel ---------------- */
-  var ORDER_STATUS = {
-    'new': { label: 'جديد', cls: 'prep' },
-    processing: { label: 'يتم التجهيز', cls: 'prep' },
-    shipping: { label: 'قيد التوصيل', cls: 'prep' },
-    delivered: { label: 'تم التسليم', cls: 'prep' },
-    cancelled: { label: 'ملغي', cls: 'prep' }
-  };
-
   function renderLatestOrders() {
     var body = document.getElementById('latestOrdersBody');
     if (!body) return;
@@ -320,19 +312,28 @@
     }
 
     body.innerHTML = orders.map(function (o) {
-      var st = ORDER_STATUS[o.status] || ORDER_STATUS.processing;
+      var st = Store.STATUS_META[o.status] || Store.STATUS_META.pending;
       var first = (o.items && o.items[0]) ? o.items[0] : null;
       var summary = first
         ? (first.qty + ' × ' + first.name + (o.items.length > 1 ? ' +' + (o.items.length - 1) : ''))
         : '—';
-      return '<tr>' +
+      return '<tr class="ord-row" data-open="' + o.id + '" tabindex="0">' +
         '<td class="order-id">' + o.id + '</td>' +
         '<td>' + o.customer + '</td>' +
         '<td>' + summary + '</td>' +
         '<td><strong>' + fmt(o.total) + ' ر.س</strong></td>' +
-        '<td><span class="status-tag ' + st.cls + '">' + st.label + '</span></td>' +
+        '<td><span class="ord-status ' + st.tone + '">' + st.label + '</span></td>' +
       '</tr>';
     }).join('');
+
+    // الصف كله يفتح تفاصيل الطلب، مثل صفحة الطلبات
+    Array.prototype.slice.call(body.querySelectorAll('[data-open]')).forEach(function (row) {
+      function open() { window.location.href = 'order-details.html?id=' + encodeURIComponent(row.getAttribute('data-open')); }
+      row.addEventListener('click', open);
+      row.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+      });
+    });
   }
 
   /* ---------------- Stock alerts panel ---------------- */

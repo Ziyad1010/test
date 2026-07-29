@@ -50,9 +50,18 @@ var Shell = (function () {
     if (!mount) return;
     var active = currentPage();
 
+    // شارة الطلبات الجديدة التي لم يطّلع عليها البائع بعد
+    var unseen = 0;
+    if (window.Store && Store.unseenOrdersCount) {
+      try { unseen = Store.unseenOrdersCount(); } catch (e) { unseen = 0; }
+    }
+
     var navHtml = NAV_ITEMS.map(function (item) {
+      var badge = (item.href === 'orders.html' && unseen > 0)
+        ? '<span class="nav-badge">' + (unseen > 99 ? '99+' : unseen) + '</span>'
+        : '';
       return '<a href="' + item.href + '" class="nav-item' + (item.href === active ? ' active' : '') + '">' +
-        iconSvg(item.icon) + '<span>' + item.label + '</span></a>';
+        iconSvg(item.icon) + '<span>' + item.label + '</span>' + badge + '</a>';
     }).join('');
 
     var footerHtml = FOOTER_ITEMS.map(function (item) {
@@ -173,6 +182,9 @@ var Shell = (function () {
     renderSidebar();
     setCompanyName();
     initMobileMenu();
+
+    // أعد رسم الشريط الجانبي عند تغيّر الطلبات ليبقى عدد الشارة صحيحاً
+    if (window.Store && Store.subscribe) Store.subscribe(renderSidebar);
   });
 
   return { toast: toast, logout: logout, setTheme: setTheme, getTheme: getTheme };

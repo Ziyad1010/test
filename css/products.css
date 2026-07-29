@@ -685,6 +685,141 @@
   color: var(--muted);
 }
 
+/* ===================== منتقي مدن منسدل (Dropdown) — يُستخدم في العروض =====================
+   نفس مكوّنات .pd-city-* أعلاه (البحث/التجميع حسب المنطقة/الشبكة) تُعاد هنا
+   داخل لوحة منسدلة عائمة بدل صندوق ثابت دائم الظهور، مع شرائح (chips) تحت
+   الحقل لإظهار المدن المختارة وإزالتها بضغطة واحدة دون فتح القائمة. */
+.ofc-picker { position: relative; }
+
+.ofc-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 11px 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.87rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.ofc-trigger:hover { border-color: #cbd5e1; }
+.ofc-trigger.is-open { border-color: var(--primary-600); box-shadow: 0 0 0 3px var(--primary-50); }
+.ofc-trigger-text { color: var(--muted); }
+.ofc-trigger.has-value .ofc-trigger-text { color: var(--ink); font-weight: 700; }
+.ofc-trigger svg { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; transition: transform 0.18s ease; }
+.ofc-trigger.is-open svg { transform: rotate(180deg); }
+
+.ofc-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  z-index: 40;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg, 0 24px 48px rgba(15,23,42,0.18));
+  overflow: hidden;
+  animation: ofcPanelIn 0.15s ease;
+}
+.ofc-panel[hidden] { display: none !important; }
+@keyframes ofcPanelIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ofc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 9px;
+}
+.ofc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-50);
+  color: var(--primary-600);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 4px 6px 4px 12px;
+  border-radius: 20px;
+}
+.ofc-chip-x {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(37, 99, 235, 0.18);
+  color: var(--primary-600);
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ofc-chip-x:hover { background: var(--primary-600); color: #fff; }
+
+/* ===================== معاينة العرض الحية ===================== */
+.of-modal-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: start; }
+
+.of-preview-wrap { position: sticky; top: 0; }
+.of-preview-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.of-preview-label svg { width: 14px; height: 14px; }
+
+.of-preview-card {
+  background: linear-gradient(160deg, var(--primary-50), var(--surface) 55%);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+.of-preview-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.of-preview-badge {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary-600);
+  white-space: nowrap;
+}
+.of-preview-code {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: rgba(255,255,255,0.75);
+  border: 1px dashed #93c5fd;
+  border-radius: 20px;
+  padding: 3px 11px;
+  direction: ltr;
+  display: inline-block;
+}
+.of-preview-title { font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; min-height: 1.3em; }
+.of-preview-dates { font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; direction: ltr; text-align: right; }
+.of-preview-meta { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px dashed #bfdbfe; }
+.of-preview-meta-row { display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--ink); }
+.of-preview-meta-row span:first-child { color: var(--muted); }
+.of-preview-cities { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+
+@media (max-width: 900px) {
+  .of-modal-grid { grid-template-columns: 1fr; }
+  .of-preview-wrap { position: static; }
+}
+
 /* ===================== شريط الإجراءات الجماعية ===================== */
 .pd-bulk-bar {
   display: flex;
