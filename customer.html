@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ملف العميل | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <a href="orders.html" class="ord-link" style="font-size:0.84rem;display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              العودة إلى الطلبات
+            </a>
+            <h1 class="page-title" id="cuName">ملف العميل</h1>
+            <p class="page-subtitle" id="cuSubtitle">جارٍ التحميل…</p>
+          </div>
+        </div>
+
+        <div class="ord-state" id="cuLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل ملف العميل…</strong>
+        </div>
+
+        <div class="ord-state" id="cuNotFound" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <strong>لم يُعثر على هذا العميل</strong>
+          <p>ربما لا توجد له طلبات مسجّلة لديك.</p>
+          <a class="ob-btn-secondary" href="orders.html" style="text-decoration:none;">العودة إلى الطلبات</a>
+        </div>
+
+        <div id="cuContent" hidden>
+          <div class="pd-stat-strip">
+            <div class="pd-stat"><strong id="cuOrders">0</strong><span>إجمالي الطلبات</span></div>
+            <div class="pd-stat"><strong id="cuSpend">0</strong><span>إجمالي المشتريات (ر.س)</span></div>
+            <div class="pd-stat"><strong id="cuAvg">0</strong><span>متوسط قيمة الطلب (ر.س)</span></div>
+            <div class="pd-stat"><strong id="cuLast">—</strong><span>آخر طلب</span></div>
+          </div>
+
+          <div class="ord-detail-grid">
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  <h3>سجل الطلبات</h3>
+                </div>
+                <div style="overflow-x:auto;">
+                  <table class="ord-items-table">
+                    <thead>
+                      <tr>
+                        <th>رقم الطلب</th>
+                        <th>التاريخ</th>
+                        <th>الأصناف</th>
+                        <th>القيمة</th>
+                        <th>الحالة</th>
+                      </tr>
+                    </thead>
+                    <tbody id="cuOrdersBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <h3>بيانات التواصل</h3>
+                </div>
+                <div class="ord-info-list" id="cuInfo"></div>
+              </div>
+
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M4 6v12c0 1.1.9 2 2 2h14v-4"/><path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z"/></svg>
+                  <h3>الأصناف الأكثر طلباً</h3>
+                </div>
+                <div class="ord-info-list" id="cuTopItems"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/customer.js"></script>
+</body>
+</html>

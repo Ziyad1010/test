@@ -255,7 +255,9 @@
       var checked = selectedIds.indexOf(p.id) !== -1 ? ' checked' : '';
       return '<tr data-id="' + p.id + '">' +
         '<td><input type="checkbox" class="pd-check" data-select="' + p.id + '"' + checked + ' aria-label="تحديد" /></td>' +
-        '<td><div class="pd-table-product"><img src="' + p.img + '" alt="' + p.name + '"/><div><div class="pd-table-product-name">' + p.name + '</div><div class="pd-table-product-sku">' + (p.sku || '—') + '</div></div></div></td>' +
+        '<td><div class="pd-table-product"><img src="' + p.img + '" alt="' + p.name + '"/><div>' +
+          '<div class="pd-table-product-name"><a href="product-details.html?id=' + p.id + '" style="color:inherit;text-decoration:none;">' + p.name + '</a></div>' +
+          '<div class="pd-table-product-sku">' + (p.sku || '—') + '</div></div></div></td>' +
         '<td>' + (CATEGORY_LABELS[p.category] || p.category) + '</td>' +
         '<td><input type="text" class="pd-inline" data-inline="price" data-id="' + p.id + '" value="' + p.price + '" inputmode="decimal" aria-label="السعر" /></td>' +
         '<td><input type="text" class="pd-inline" data-inline="stock" data-id="' + p.id + '" value="' + p.stock + '" inputmode="numeric" aria-label="الكمية" /></td>' +

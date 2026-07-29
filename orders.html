@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
   <script>
     if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
       window.location.replace('onboarding.html');
@@ -50,67 +51,145 @@
           </div>
         </div>
 
+        <!-- تنبيه الطلبات المتأخرة عن موعد الشحن المتوقع -->
+        <div class="ord-alert bad" id="ordOverdueAlert" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="ordOverdueText"></span>
+        </div>
+
         <div class="pd-stat-strip">
           <div class="pd-stat"><strong id="ordStatTotal">0</strong><span>إجمالي الطلبات</span></div>
-          <div class="pd-stat"><strong id="ordStatPending">0</strong><span>قيد المراجعة</span></div>
-          <div class="pd-stat"><strong id="ordStatShipping">0</strong><span>يتم الشحن</span></div>
+          <div class="pd-stat"><strong id="ordStatPending">0</strong><span>قيد الانتظار</span></div>
+          <div class="pd-stat"><strong id="ordStatShipping">0</strong><span>قيد التوصيل</span></div>
           <div class="pd-stat"><strong id="ordStatDone">0</strong><span>تم التسليم</span></div>
         </div>
 
-        <div class="tab-bar" id="ordTabs">
-          <button type="button" class="tab-btn is-active" data-status="">الكل</button>
-          <button type="button" class="tab-btn" data-status="review">قيد المراجعة</button>
-          <button type="button" class="tab-btn" data-status="prep">يتم التجهيز</button>
-          <button type="button" class="tab-btn" data-status="shipped">تم الشحن</button>
-          <button type="button" class="tab-btn" data-status="delivered">تم التسليم</button>
-          <button type="button" class="tab-btn" data-status="cancelled">ملغي</button>
+        <!-- تبويبات الفلترة السريعة مع عدد الطلبات في كل تبويب -->
+        <div class="tab-bar" id="ordTabs"><!-- JS-populated --></div>
+
+        <!-- شريط البحث والفلترة -->
+        <div class="pd-toolbar">
+          <div class="pd-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="ordSearch" placeholder="ابحث برقم الطلب أو اسم العميل..." />
+          </div>
+          <button type="button" class="ob-btn-secondary" id="ordFilterToggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            فلترة متقدمة
+          </button>
+          <button type="button" class="ob-btn-secondary" id="ordExportBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            تصدير Excel
+          </button>
         </div>
 
-        <div class="pd-table-wrap">
+        <!-- الفلترة المتقدمة -->
+        <div class="ord-filters" id="ordFilters" hidden>
+          <div class="ord-filter-grid">
+            <div class="pd-field">
+              <label for="ordFromDay">من تاريخ</label>
+              <div class="ob-date-group" data-date-for="ordFrom">
+                <input type="text" id="ordFromDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="ordFrom" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="ordToDay">إلى تاريخ</label>
+              <div class="ob-date-group" data-date-for="ordTo">
+                <input type="text" id="ordToDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="ordTo" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="ordMinAmount">قيمة الطلب (ر.س)</label>
+              <div class="ord-range-row">
+                <input type="text" id="ordMinAmount" placeholder="من" inputmode="decimal" dir="ltr" />
+                <span class="ord-range-sep">—</span>
+                <input type="text" id="ordMaxAmount" placeholder="إلى" inputmode="decimal" dir="ltr" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="ordPayment">طريقة الدفع</label>
+              <select id="ordPayment">
+                <option value="">كل الطرق</option>
+                <option>مدى</option>
+                <option>تحويل بنكي</option>
+                <option>Apple Pay</option>
+                <option>فيزا</option>
+                <option>ماستركارد</option>
+              </select>
+            </div>
+            <div class="pd-field">
+              <label for="ordCity">المدينة</label>
+              <select id="ordCity"><option value="">كل المدن</option></select>
+            </div>
+          </div>
+          <div class="ord-filter-actions">
+            <button type="button" class="ob-btn-secondary" id="ordClearFilters">مسح الفلاتر</button>
+          </div>
+        </div>
+
+        <!-- شريط الإجراءات الجماعية -->
+        <div class="pd-bulk-bar" id="ordBulkBar" hidden>
+          <span class="pd-bulk-count" id="ordBulkCount">تم تحديد 0 طلب</span>
+          <select class="pd-filter" id="ordBulkStatus" style="min-width:170px;">
+            <option value="">تحديث الحالة إلى…</option>
+          </select>
+          <button type="button" class="pd-bulk-btn" data-obulk="invoices">طباعة الفواتير</button>
+          <button type="button" class="pd-bulk-btn" data-obulk="labels">طباعة بوليصات الشحن</button>
+          <button type="button" class="pd-bulk-btn" data-obulk="excel">تصدير Excel</button>
+          <button type="button" class="pd-bulk-btn" data-obulk="pdf">تصدير PDF</button>
+          <button type="button" class="pd-bulk-btn" data-obulk="clear">إلغاء التحديد</button>
+        </div>
+
+        <!-- حالة التحميل -->
+        <div class="ord-state" id="ordLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل الطلبات…</strong>
+        </div>
+
+        <div class="pd-table-wrap" id="ordTableWrap" hidden>
           <table class="pd-table">
             <thead>
               <tr>
+                <th style="width:36px;"><input type="checkbox" class="pd-check" id="ordCheckAll" aria-label="تحديد الكل" /></th>
                 <th>رقم الطلب</th>
                 <th>العميل</th>
                 <th>المنتجات</th>
-                <th>المبلغ</th>
-                <th>الدفع</th>
+                <th>الكمية</th>
                 <th>التاريخ</th>
+                <th>الدفع</th>
+                <th>القيمة</th>
                 <th>الحالة</th>
-                <th></th>
               </tr>
             </thead>
             <tbody id="ordTableBody"><!-- JS-populated --></tbody>
           </table>
         </div>
-        <p class="pd-empty" id="ordEmpty" hidden>لا توجد طلبات في هذه الحالة</p>
+
+        <!-- حالة فارغة -->
+        <div class="ord-state" id="ordEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </span>
+          <strong id="ordEmptyTitle">لا توجد طلبات</strong>
+          <p id="ordEmptyText">لم يُعثر على طلبات ضمن هذا التبويب أو الفلاتر المحددة.</p>
+          <button type="button" class="ob-btn-secondary" id="ordEmptyReset">مسح الفلاتر وعرض الكل</button>
+        </div>
       </div>
     </main>
   </div>
 
-  <!-- Order Detail Modal -->
-  <div class="pd-modal-overlay" id="ordModalOverlay" hidden>
-    <div class="pd-modal">
-      <div class="pd-modal-header">
-        <h2 id="ordModalTitle">تفاصيل الطلب #1024</h2>
-        <button type="button" class="pd-modal-close" id="ordModalClose" aria-label="إغلاق">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="pd-modal-body" id="ordModalBody"><!-- JS-populated --></div>
-      <div class="pd-modal-footer">
-        <div class="pd-modal-footer-start">
-          <button type="button" class="ob-btn-ghost" id="ordPrintBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            طباعة
-          </button>
-        </div>
-        <div class="pd-modal-footer-end" id="ordModalActions"><!-- JS-populated --></div>
-      </div>
-    </div>
-  </div>
-
   <script src="js/store.js"></script>
+  <script src="js/date-field.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/orders.js"></script>
 </body>

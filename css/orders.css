@@ -1,0 +1,345 @@
+/* ============================================================
+   عمار — صفحة الطلبات وتفاصيل الطلب
+   تُحمَّل بعد dashboard.css / products.css / portal.css
+   ============================================================ */
+
+/* ===================== شارات الحالة ===================== */
+.ord-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.ord-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.ord-status.warn { background: var(--warning-bg); color: var(--warning); }
+.ord-status.info { background: var(--primary-50); color: var(--primary-600); }
+.ord-status.ok { background: var(--success-bg); color: var(--success); }
+.ord-status.bad { background: var(--danger-bg); color: var(--danger); }
+
+.ord-flag {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-inline-start: 6px;
+  white-space: nowrap;
+}
+.ord-flag.overdue { background: var(--danger-bg); color: var(--danger); }
+.ord-flag.partial { background: var(--warning-bg); color: var(--warning); }
+.ord-flag.stock { background: #ede9fe; color: #7c3aed; }
+.ord-flag.new { background: var(--primary-600); color: #fff; }
+
+/* ===================== الفلترة المتقدمة ===================== */
+.ord-filters {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.ord-filters[hidden] { display: none !important; }
+
+.ord-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.ord-filter-grid .pd-field { margin-bottom: 0; }
+
+.ord-filter-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.ord-range-row { display: flex; align-items: center; gap: 8px; }
+.ord-range-row input { flex: 1; min-width: 0; }
+.ord-range-sep { color: var(--muted); font-size: 0.8rem; flex-shrink: 0; }
+
+/* ===================== الجدول ===================== */
+/* الصف كله قابل للنقر ويفتح تفاصيل الطلب */
+.ord-row { cursor: pointer; transition: background 0.15s ease; }
+.ord-row:hover { background: var(--primary-50); }
+.ord-row:focus-visible { outline: 2px solid var(--primary-600); outline-offset: -2px; }
+.ord-row td { vertical-align: middle; }
+
+/* خانة التحديد لا تفتح التفاصيل */
+.ord-row .ord-select-cell { cursor: default; }
+
+.ord-link {
+  color: var(--primary-600);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.ord-link:hover { border-bottom-color: currentColor; }
+
+.ord-id { font-weight: 800; color: var(--ink); direction: ltr; display: inline-block; }
+.ord-row:hover .ord-id { color: var(--primary-600); }
+
+.ord-items-cell { max-width: 260px; }
+.ord-items-cell small { color: var(--muted); font-size: 0.74rem; display: block; }
+
+.ord-amount { font-weight: 800; white-space: nowrap; }
+
+/* ===================== الحالات الفارغة والتحميل ===================== */
+.ord-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  padding: 60px 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.ord-state[hidden] { display: none !important; }
+.ord-state-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ord-state-icon svg { width: 25px; height: 25px; }
+.ord-state strong { font-size: 1rem; font-weight: 700; color: var(--ink); }
+.ord-state p { font-size: 0.86rem; color: var(--muted); max-width: 420px; line-height: 1.7; }
+
+.ord-spinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid var(--line);
+  border-top-color: var(--primary-600);
+  animation: ordSpin 0.7s linear infinite;
+}
+@keyframes ordSpin { to { transform: rotate(360deg); } }
+
+/* ===================== صفحة تفاصيل الطلب ===================== */
+.ord-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.ord-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+.ord-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.ord-card-head h3 { font-size: 0.98rem; font-weight: 700; margin-inline-end: auto; }
+.ord-card-head svg { width: 17px; height: 17px; color: var(--primary-600); }
+
+.ord-info-list { display: flex; flex-direction: column; gap: 12px; }
+.ord-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.86rem;
+}
+.ord-info-row > span:first-child {
+  color: var(--muted);
+  min-width: 108px;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+}
+.ord-info-row > span:last-child, .ord-info-row > a { font-weight: 600; min-width: 0; word-break: break-word; }
+
+/* ===================== سجل الحالة (Timeline) ===================== */
+.ord-timeline { display: flex; flex-direction: column; gap: 0; }
+.ord-tl-item {
+  display: flex;
+  gap: 14px;
+  position: relative;
+  padding-bottom: 20px;
+}
+.ord-tl-item:last-child { padding-bottom: 0; }
+.ord-tl-item::before {
+  content: '';
+  position: absolute;
+  top: 26px;
+  bottom: 0;
+  inset-inline-start: 12px;
+  width: 2px;
+  background: var(--line);
+}
+.ord-tl-item:last-child::before { display: none; }
+.ord-tl-item.is-done::before { background: var(--success); }
+
+.ord-tl-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.ord-tl-dot svg { width: 13px; height: 13px; }
+.ord-tl-item.is-done .ord-tl-dot { background: var(--success); border-color: var(--success); color: #fff; }
+.ord-tl-item.is-current .ord-tl-dot {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--primary-50);
+}
+.ord-tl-item.is-bad .ord-tl-dot { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+.ord-tl-body { padding-top: 3px; min-width: 0; }
+.ord-tl-title { font-size: 0.87rem; font-weight: 700; }
+.ord-tl-time { font-size: 0.75rem; color: var(--muted); direction: ltr; display: inline-block; }
+.ord-tl-note { font-size: 0.78rem; color: var(--muted); margin-top: 3px; line-height: 1.6; }
+.ord-tl-item.is-pending .ord-tl-title { color: var(--muted); font-weight: 600; }
+
+/* ===================== أزرار الإجراءات ===================== */
+.ord-actions { display: flex; flex-direction: column; gap: 9px; }
+.ord-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.ord-action-btn svg { width: 15px; height: 15px; }
+.ord-action-btn:hover { border-color: var(--primary-600); color: var(--primary-600); background: var(--primary-50); }
+.ord-action-btn.primary {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+}
+.ord-action-btn.primary:hover { background: var(--primary-700); border-color: var(--primary-700); color: #fff; }
+.ord-action-btn.danger { color: var(--danger); }
+.ord-action-btn.danger:hover { border-color: var(--danger); background: var(--danger-bg); color: var(--danger); }
+.ord-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ===================== جدول أصناف الطلب ===================== */
+.ord-items-table { width: 100%; border-collapse: collapse; text-align: right; }
+.ord-items-table th {
+  padding: 10px 12px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.ord-items-table td {
+  padding: 12px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.ord-items-table tr:last-child td { border-bottom: none; }
+.ord-item-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.ord-item-name img { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid var(--line); }
+
+.ord-totals {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ord-total-row { display: flex; justify-content: space-between; font-size: 0.86rem; }
+.ord-total-row.grand { font-size: 1rem; font-weight: 800; color: var(--primary-600); padding-top: 8px; border-top: 1px solid var(--line); }
+
+/* ===================== ملاحظة العميل ===================== */
+.ord-note-box {
+  background: var(--warning-bg);
+  border: 1px solid #fde68a;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: #78350f;
+}
+
+.ord-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border-radius: var(--radius);
+  padding: 13px 15px;
+  font-size: 0.83rem;
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.ord-alert svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: 1px; }
+.ord-alert.bad { background: var(--danger-bg); border: 1px solid #fecaca; color: #991b1b; }
+.ord-alert.warn { background: var(--warning-bg); border: 1px solid #fde68a; color: #78350f; }
+.ord-alert.info { background: var(--primary-50); border: 1px solid #bfdbfe; color: #1e3a8a; }
+
+/* ===================== شارة الشريط الجانبي ===================== */
+.nav-badge {
+  margin-inline-start: auto;
+  min-width: 19px;
+  height: 19px;
+  padding-inline: 6px;
+  border-radius: 20px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ===================== تجاوب ===================== */
+@media (max-width: 1080px) {
+  .ord-detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .ord-card { padding: 16px; }
+  .ord-info-row { flex-direction: column; gap: 3px; }
+  .ord-info-row > span:first-child { min-width: 0; }
+  .ord-state { padding: 40px 18px; }
+  .ord-filter-grid { grid-template-columns: 1fr; }
+}

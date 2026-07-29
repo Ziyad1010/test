@@ -71,69 +71,153 @@
   <div class="pd-modal-overlay" id="offModalOverlay" hidden>
     <div class="pd-modal">
       <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3.24H4a1 1 0 0 0-1 1v5.59a2 2 0 0 0 .59 1.41l9.58 9.59a2 2 0 0 0 2.82 0l4.6-4.6a2 2 0 0 0 0-2.82Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+        </span>
         <h2>إنشاء عرض جديد</h2>
         <button type="button" class="pd-modal-close" id="offModalClose" aria-label="إغلاق">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
       <div class="pd-modal-body">
-        <div class="pd-field">
-          <label for="ofName">اسم العرض <em>*</em></label>
-          <input type="text" id="ofName" placeholder="عرض نهاية الأسبوع على الحديد" />
-        </div>
-        <div class="pd-field-row cols-2">
-          <div class="pd-field">
-            <label for="ofDiscount">نسبة الخصم % <em>*</em></label>
-            <input type="number" id="ofDiscount" min="1" max="90" placeholder="15" />
-          </div>
-          <div class="pd-field">
-            <label for="ofCode">كود الخصم (اختياري)</label>
-            <input type="text" id="ofCode" placeholder="SAVE15" />
-          </div>
-        </div>
-        <div class="pd-field-row cols-2">
-          <div class="pd-field">
-            <label for="ofStartDay">تاريخ البداية <em>*</em></label>
-            <div class="ob-date-group" data-date-for="ofStart">
-              <input type="text" id="ofStartDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
-              <span class="ob-date-sep">/</span>
-              <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
-              <span class="ob-date-sep">/</span>
-              <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
-              <input type="hidden" id="ofStart" />
+        <div class="of-modal-grid">
+          <!-- عمود النموذج -->
+          <div>
+            <div class="pd-field">
+              <label for="ofName">اسم العرض <em>*</em></label>
+              <input type="text" id="ofName" placeholder="عرض نهاية الأسبوع على الحديد" />
+              <span class="field-error" id="ofNameError"></span>
+            </div>
+
+            <div class="pd-field-row cols-3">
+              <div class="pd-field">
+                <label for="ofDiscountType">نوع الخصم</label>
+                <select id="ofDiscountType">
+                  <option value="percentage">نسبة مئوية %</option>
+                  <option value="fixed">مبلغ ثابت (ر.س)</option>
+                </select>
+              </div>
+              <div class="pd-field">
+                <label for="ofDiscount" id="ofDiscountLabel">نسبة الخصم % <em>*</em></label>
+                <input type="text" id="ofDiscount" inputmode="decimal" placeholder="15" dir="ltr" />
+                <span class="field-error" id="ofDiscountError"></span>
+              </div>
+              <div class="pd-field">
+                <label for="ofCode">كود الخصم (اختياري)</label>
+                <input type="text" id="ofCode" placeholder="SAVE15" dir="ltr" />
+              </div>
+            </div>
+
+            <div class="pd-field-row cols-2">
+              <div class="pd-field">
+                <label for="ofStartDay">تاريخ البداية <em>*</em></label>
+                <div class="ob-date-group" data-date-for="ofStart">
+                  <input type="text" id="ofStartDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                  <input type="hidden" id="ofStart" />
+                </div>
+                <span class="field-error" id="ofStartError"></span>
+              </div>
+              <div class="pd-field">
+                <label for="ofEndDay">تاريخ النهاية <em>*</em></label>
+                <div class="ob-date-group" data-date-for="ofEnd">
+                  <input type="text" id="ofEndDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                  <span class="ob-date-sep">/</span>
+                  <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                  <input type="hidden" id="ofEnd" />
+                </div>
+                <span class="field-error" id="ofEndError"></span>
+              </div>
+            </div>
+
+            <div class="pd-field-row cols-2">
+              <div class="pd-field">
+                <label for="ofMinOrder">
+                  الحد الأدنى لقيمة الطلب (ر.س)
+                  <span class="field-hint" tabindex="0" data-hint="أقل قيمة لسلة العميل حتى يُفعَّل هذا العرض عليها. اتركه فارغاً لعدم وضع حد أدنى.">؟</span>
+                </label>
+                <input type="text" id="ofMinOrder" inputmode="decimal" placeholder="بدون حد" dir="ltr" />
+              </div>
+              <div class="pd-field">
+                <label for="ofUsageLimit">
+                  الحد الأقصى لعدد مرات الاستخدام
+                  <span class="field-hint" tabindex="0" data-hint="إجمالي عدد المرات التي يمكن لجميع العملاء استخدام هذا الكود فيها. اتركه فارغاً لاستخدام غير محدود.">؟</span>
+                </label>
+                <input type="text" id="ofUsageLimit" inputmode="numeric" placeholder="بدون حد" dir="ltr" />
+              </div>
+            </div>
+
+            <div class="pd-field">
+              <label>المدن المستهدفة</label>
+              <div class="ofc-picker" id="ofCitiesPicker">
+                <button type="button" class="ofc-trigger" id="ofCitiesTrigger">
+                  <span class="ofc-trigger-text" id="ofCitiesTriggerText">اختر المدن المستهدفة</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="ofc-panel" id="ofCitiesPanel" hidden>
+                  <div class="pd-city-toolbar">
+                    <div class="pd-city-search">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                      <input type="search" id="ofCitySearch" placeholder="ابحث عن مدينة أو منطقة..." />
+                    </div>
+                    <button type="button" class="pd-city-link" id="ofCityAll">تحديد الكل</button>
+                    <button type="button" class="pd-city-link" id="ofCityNone">إلغاء الكل</button>
+                  </div>
+                  <div class="pd-city-list" id="ofCityList"><!-- JS-populated from js/saudi-regions.js --></div>
+                </div>
+              </div>
+              <div class="ofc-chips" id="ofCitiesChips"></div>
+            </div>
+
+            <div class="pd-field">
+              <label>المنتجات المستهدفة</label>
+              <div class="ofc-picker" id="ofProductsPicker">
+                <button type="button" class="ofc-trigger" id="ofProductsTrigger">
+                  <span class="ofc-trigger-text" id="ofProductsTriggerText">اختر المنتجات المستهدفة</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="ofc-panel" id="ofProductsPanel" hidden>
+                  <div class="pd-city-toolbar">
+                    <div class="pd-city-search">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                      <input type="search" id="ofProductSearch" placeholder="ابحث عن منتج..." />
+                    </div>
+                    <button type="button" class="pd-city-link" id="ofProductAll">تحديد الكل</button>
+                    <button type="button" class="pd-city-link" id="ofProductNone">إلغاء الكل</button>
+                  </div>
+                  <div class="pd-city-list" id="ofProductList"><!-- JS-populated من كتالوج المنتجات الفعلي --></div>
+                </div>
+              </div>
+              <div class="ofc-chips" id="ofProductsChips"></div>
             </div>
           </div>
-          <div class="pd-field">
-            <label for="ofEndDay">تاريخ النهاية <em>*</em></label>
-            <div class="ob-date-group" data-date-for="ofEnd">
-              <input type="text" id="ofEndDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
-              <span class="ob-date-sep">/</span>
-              <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
-              <span class="ob-date-sep">/</span>
-              <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
-              <input type="hidden" id="ofEnd" />
+
+          <!-- عمود المعاينة الحية -->
+          <div class="of-preview-wrap">
+            <div class="of-preview-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              معاينة العرض كما سيظهر للعميل
+            </div>
+            <div class="of-preview-card">
+              <div class="of-preview-top">
+                <span class="of-preview-badge" id="ofPrevDiscount">-0%</span>
+                <span class="of-preview-code" id="ofPrevCode" hidden></span>
+              </div>
+              <div class="of-preview-title" id="ofPrevName">اسم العرض هنا</div>
+              <div class="of-preview-dates" id="ofPrevDates">حدّد تاريخ البداية والنهاية</div>
+              <div class="of-preview-meta">
+                <div class="of-preview-meta-row"><span>الحد الأدنى للطلب</span><span id="ofPrevMin">بدون حد</span></div>
+                <div class="of-preview-meta-row"><span>حد الاستخدام</span><span id="ofPrevLimit">غير محدود</span></div>
+                <div class="of-preview-meta-row"><span>المدن</span><span id="ofPrevCitiesCount">0 مدينة</span></div>
+              </div>
+              <div class="of-preview-cities" id="ofPrevCities"></div>
             </div>
           </div>
-        </div>
-        <div class="pd-field">
-          <label for="ofCities">المدن المستهدفة</label>
-          <select id="ofCities" multiple size="4">
-            <option selected>الرياض</option>
-            <option selected>جدة</option>
-            <option>الدمام</option>
-            <option>مكة المكرمة</option>
-            <option>المدينة المنورة</option>
-          </select>
-        </div>
-        <div class="pd-field">
-          <label for="ofProducts">المنتجات المستهدفة</label>
-          <select id="ofProducts" multiple size="5">
-            <option selected>حديد تسليح سعودي 12مم</option>
-            <option>أسمنت بورتلاندي عادي</option>
-            <option>خرسانة جاهزة C30</option>
-            <option>بلاط بورسلين مطفي 60×60</option>
-            <option>طوب أسمنتي مصمت 20سم</option>
-          </select>
         </div>
       </div>
       <div class="pd-modal-footer">
@@ -147,6 +231,8 @@
     </div>
   </div>
 
+  <script src="js/store.js"></script>
+  <script src="js/saudi-regions.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/date-field.js"></script>
   <script src="js/offers.js"></script>
