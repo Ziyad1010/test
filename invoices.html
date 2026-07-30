@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
   <script>
     if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
       window.location.replace('onboarding.html');
@@ -50,42 +51,148 @@
           </div>
         </div>
 
-        <div class="pd-stat-strip">
-          <div class="pd-stat"><strong id="invStatTotal">0</strong><span>إجمالي الفواتير</span></div>
-          <div class="pd-stat"><strong id="invStatPaid">0 ر.س</strong><span>محصّل</span></div>
-          <div class="pd-stat"><strong id="invStatPending">0 ر.س</strong><span>قيد التحصيل</span></div>
-          <div class="pd-stat"><strong id="invStatOverdue">0</strong><span>متأخرة السداد</span></div>
+        <!-- تنبيه الفواتير المتأخرة عن موعد الاستحقاق -->
+        <div class="ord-alert bad" id="invOverdueAlert" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="invOverdueText"></span>
         </div>
 
-        <div class="tab-bar" id="invTabs">
-          <button type="button" class="tab-btn is-active" data-status="">الكل</button>
-          <button type="button" class="tab-btn" data-status="paid">مسددة</button>
-          <button type="button" class="tab-btn" data-status="pending">قيد التحصيل</button>
-          <button type="button" class="tab-btn" data-status="overdue">متأخرة</button>
+        <!-- الملخص المالي -->
+        <div class="fin-summary">
+          <div class="fin-card">
+            <div class="fin-card-head">
+              <span class="fin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+              <span class="fin-card-label">فواتير هذا الشهر</span>
+            </div>
+            <div class="fin-card-value" id="finIssued">—</div>
+            <div class="fin-card-sub" id="finIssuedSub">—</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-head">
+              <span class="fin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="fin-card-label">إجمالي المحصّل</span>
+            </div>
+            <div class="fin-card-value" id="finCollected">—</div>
+            <div class="fin-card-sub">من الفواتير المدفوعة</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-head">
+              <span class="fin-card-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+              <span class="fin-card-label">مستحقات قيد التحصيل</span>
+            </div>
+            <div class="fin-card-value" id="finOutstanding">—</div>
+            <div class="fin-card-sub">معلقة + متأخرة</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-card-head">
+              <span class="fin-card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+              <span class="fin-card-label">متأخرات مستحقة</span>
+            </div>
+            <div class="fin-card-value" id="finOverdue">—</div>
+            <div class="fin-card-sub" id="finOverdueSub">—</div>
+          </div>
         </div>
 
-        <div class="pd-table-wrap">
+        <div class="tab-bar" id="invTabs"><!-- JS-populated --></div>
+
+        <div class="pd-toolbar">
+          <div class="pd-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="invSearch" placeholder="ابحث برقم الفاتورة أو اسم العميل..." />
+          </div>
+          <button type="button" class="ob-btn-secondary" id="invFilterToggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            فلترة متقدمة
+          </button>
+          <button type="button" class="ob-btn-secondary" id="invExportAll">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            تصدير Excel
+          </button>
+        </div>
+
+        <div class="ord-filters" id="invFilters" hidden>
+          <div class="ord-filter-grid">
+            <div class="pd-field">
+              <label for="invFromDay">من تاريخ الإصدار</label>
+              <div class="ob-date-group" data-date-for="invFrom">
+                <input type="text" id="invFromDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="invFrom" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="invToDay">إلى تاريخ الإصدار</label>
+              <div class="ob-date-group" data-date-for="invTo">
+                <input type="text" id="invToDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="invTo" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="invMinAmount">المبلغ (ر.س)</label>
+              <div class="ord-range-row">
+                <input type="text" id="invMinAmount" placeholder="من" inputmode="decimal" dir="ltr" />
+                <span class="ord-range-sep">—</span>
+                <input type="text" id="invMaxAmount" placeholder="إلى" inputmode="decimal" dir="ltr" />
+              </div>
+            </div>
+          </div>
+          <div class="ord-filter-actions">
+            <button type="button" class="ob-btn-secondary" id="invClearFilters">مسح الفلاتر</button>
+          </div>
+        </div>
+
+        <div class="pd-bulk-bar" id="invBulkBar" hidden>
+          <span class="pd-bulk-count" id="invBulkCount">تم تحديد 0 فاتورة</span>
+          <button type="button" class="pd-bulk-btn" data-ibulk="excel">تصدير Excel</button>
+          <button type="button" class="pd-bulk-btn" data-ibulk="pdf">تصدير / طباعة PDF</button>
+          <button type="button" class="pd-bulk-btn" data-ibulk="remind">إرسال تذكير</button>
+          <button type="button" class="pd-bulk-btn" data-ibulk="paid">تعليم كمدفوعة</button>
+          <button type="button" class="pd-bulk-btn" data-ibulk="clear">إلغاء التحديد</button>
+        </div>
+
+        <div class="ord-state" id="invLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل الفواتير…</strong>
+        </div>
+
+        <div class="pd-table-wrap" id="invTableWrap" hidden>
           <table class="pd-table">
             <thead>
               <tr>
+                <th style="width:36px;"><input type="checkbox" class="pd-check" id="invCheckAll" aria-label="تحديد الكل" /></th>
                 <th>رقم الفاتورة</th>
                 <th>العميل</th>
-                <th>الرقم الضريبي</th>
-                <th>المبلغ</th>
                 <th>تاريخ الإصدار</th>
                 <th>تاريخ الاستحقاق</th>
-                <th>الحالة</th>
-                <th></th>
+                <th>المبلغ الإجمالي</th>
+                <th>حالة الدفع</th>
               </tr>
             </thead>
             <tbody id="invTableBody"><!-- JS-populated --></tbody>
           </table>
         </div>
-        <p class="pd-empty" id="invEmpty" hidden>لا توجد فواتير في هذه الحالة</p>
+
+        <div class="ord-state" id="invEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <strong id="invEmptyTitle">لا توجد فواتير</strong>
+          <p id="invEmptyText">تُصدر الفواتير تلقائياً عند قبول الطلبات — ستظهر هنا فور إصدار أول فاتورة.</p>
+          <button type="button" class="ob-btn-secondary" id="invEmptyReset" hidden>مسح الفلاتر وعرض الكل</button>
+        </div>
       </div>
     </main>
   </div>
 
+  <script src="js/store.js"></script>
+  <script src="js/date-field.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/invoices.js"></script>
 </body>

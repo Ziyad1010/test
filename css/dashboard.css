@@ -10,6 +10,7 @@
   --primary-50:  #eff6ff;
   --bg:         #f8fafc;
   --surface:    #ffffff;
+  --surface-2:  #f1f5f9;
   --line:       #e2e8f0;
   --muted:      #64748b;
 
@@ -27,18 +28,37 @@
   --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.08);
 }
 
-/* Dark mode — toggled from Settings > Theme, applied instantly site-wide
-   via js/shell.js since every dashboard page shares these tokens. */
+/* ============================================================
+   Dark mode — toggled from Settings > Theme, applied site-wide by
+   js/shell.js. Token overrides alone are not enough: a lot of components
+   hardcode light hex values, so the block further down re-points those
+   too. Selectors there are prefixed with :root[data-theme="dark"], which
+   outranks the plain class rules regardless of stylesheet order.
+   ============================================================ */
 :root[data-theme="dark"] {
-  --ink:      #e2e8f0;
-  --bg:       #0b1220;
-  --surface:  #161f32;
-  --line:     #2a374f;
-  --muted:    #94a3b8;
-  --primary-50: rgba(37, 99, 235, 0.15);
-  --success-bg: rgba(22, 163, 74, 0.15);
-  --warning-bg: rgba(245, 158, 11, 0.15);
-  --danger-bg: rgba(220, 38, 38, 0.15);
+  --ink:        #e6edf7;
+  --bg:         #0d1424;
+  --surface:    #161f33;
+  --surface-2:  #1e293f;
+  --line:       #2c3a53;
+  --muted:      #94a3b8;
+
+  --primary-700: #60a5fa;
+  --primary-600: #3b82f6;
+  --primary-50:  rgba(59, 130, 246, 0.16);
+
+  --success:    #4ade80;
+  --success-bg: rgba(74, 222, 128, 0.15);
+  --warning:    #fbbf24;
+  --warning-bg: rgba(251, 191, 36, 0.15);
+  --danger:     #f87171;
+  --danger-bg:  rgba(248, 113, 113, 0.15);
+
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -781,6 +801,120 @@ button { font-family: inherit; }
   background-color: var(--primary-600);
   color: #fff;
 }
+
+/* ============================================================
+   Dark mode component fixes
+   Everything below re-points values that were hardcoded to light
+   colours in the component rules and therefore survive the token
+   overrides at the top of this file.
+   ============================================================ */
+
+/* --- Surfaces that assumed a white page --- */
+:root[data-theme="dark"] .dash-sidebar { background: linear-gradient(180deg, #0a1020, #111a2e); }
+:root[data-theme="dark"] .top-navbar,
+:root[data-theme="dark"] .chart-state,
+:root[data-theme="dark"] .pd-card-menu-btn { background: var(--surface); }
+:root[data-theme="dark"] .pd-card-menu-btn { color: var(--ink); }
+
+:root[data-theme="dark"] .orders-table th,
+:root[data-theme="dark"] .pd-table th,
+:root[data-theme="dark"] .ord-items-table th,
+:root[data-theme="dark"] .perm-table thead th,
+:root[data-theme="dark"] .pd-wizard-steps,
+:root[data-theme="dark"] .pd-modal-footer,
+:root[data-theme="dark"] .rp-preview-head,
+:root[data-theme="dark"] .pd-city-toolbar { background: var(--surface-2); }
+
+:root[data-theme="dark"] .stock-item,
+:root[data-theme="dark"] .pd-card-img-wrap,
+:root[data-theme="dark"] .ord-state-icon,
+:root[data-theme="dark"] .chart-empty-icon,
+:root[data-theme="dark"] .pd-media-item,
+:root[data-theme="dark"] .rp-format-badge { background: var(--surface-2); }
+
+/* --- Status pills that used a fixed grey --- */
+:root[data-theme="dark"] .pd-status-pill.archived,
+:root[data-theme="dark"] .pd-card-status.archived { background: var(--surface-2); color: var(--muted); }
+
+/* --- Inputs --- */
+:root[data-theme="dark"] .pd-field input,
+:root[data-theme="dark"] .pd-field select,
+:root[data-theme="dark"] .pd-field textarea,
+:root[data-theme="dark"] .ob-field input,
+:root[data-theme="dark"] .ob-field select,
+:root[data-theme="dark"] .pd-filter,
+:root[data-theme="dark"] .pd-search,
+:root[data-theme="dark"] .pd-city-search,
+:root[data-theme="dark"] .ofc-trigger,
+:root[data-theme="dark"] .chat-input-row input,
+:root[data-theme="dark"] .chat-list-search input { background: var(--surface-2); color: var(--ink); }
+
+:root[data-theme="dark"] .pd-field input:hover:not(:focus),
+:root[data-theme="dark"] .pd-field select:hover:not(:focus),
+:root[data-theme="dark"] .pd-field textarea:hover:not(:focus),
+:root[data-theme="dark"] .ofc-trigger:hover { border-color: #3d4d69; }
+:root[data-theme="dark"] .pd-field input::placeholder,
+:root[data-theme="dark"] .pd-field textarea::placeholder,
+:root[data-theme="dark"] .ob-field input::placeholder { color: #64748b; }
+
+:root[data-theme="dark"] .ob-cc,
+:root[data-theme="dark"] .ob-field input[readonly] { background: var(--surface-2); }
+
+/* --- Coloured callouts: light tints need light text on dark --- */
+:root[data-theme="dark"] .ord-alert.bad { background: rgba(248, 113, 113, 0.12); border-color: rgba(248, 113, 113, 0.35); color: #fca5a5; }
+:root[data-theme="dark"] .ord-alert.warn { background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.35); color: #fcd34d; }
+:root[data-theme="dark"] .ord-alert.info { background: rgba(59, 130, 246, 0.12); border-color: rgba(59, 130, 246, 0.35); color: #93c5fd; }
+:root[data-theme="dark"] .ord-note-box { background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.3); color: #fcd34d; }
+
+:root[data-theme="dark"] .pd-import-note,
+:root[data-theme="dark"] .an-compare-box { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #bfdbfe; }
+:root[data-theme="dark"] .pd-import-note code { background: rgba(255, 255, 255, 0.08); color: #e6edf7; }
+:root[data-theme="dark"] .an-compare-cell { background: var(--surface); }
+
+:root[data-theme="dark"] .ob-callout-green { background: rgba(74, 222, 128, 0.1); border-color: rgba(74, 222, 128, 0.3); color: #86efac; }
+:root[data-theme="dark"] .ob-callout-blue { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #bfdbfe; }
+:root[data-theme="dark"] .ob-ocr-box { background: rgba(74, 222, 128, 0.1); border-color: rgba(74, 222, 128, 0.3); }
+:root[data-theme="dark"] .ob-ocr-head { color: #86efac; }
+
+:root[data-theme="dark"] .pd-bulk-bar,
+:root[data-theme="dark"] .pd-add-row-btn { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); }
+
+/* --- Violet accents used for "other" categories --- */
+:root[data-theme="dark"] .notif-icon.message,
+:root[data-theme="dark"] .nt-icon.offer { background: rgba(167, 139, 250, 0.18); color: #c4b5fd; }
+
+/* --- Offer preview card --- */
+:root[data-theme="dark"] .of-preview-card {
+  background: linear-gradient(160deg, rgba(59, 130, 246, 0.14), var(--surface) 55%);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+:root[data-theme="dark"] .of-preview-code { background: rgba(255, 255, 255, 0.06); border-color: rgba(59, 130, 246, 0.4); }
+:root[data-theme="dark"] .of-preview-meta { border-top-color: rgba(59, 130, 246, 0.3); }
+
+/* --- Modal chrome --- */
+:root[data-theme="dark"] .pd-modal-overlay { background: rgba(2, 6, 16, 0.72); }
+:root[data-theme="dark"] .pd-modal { box-shadow: 0 32px 80px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+:root[data-theme="dark"] .pd-modal-close { background: var(--surface-2); }
+:root[data-theme="dark"] .pd-modal-body::-webkit-scrollbar-thumb,
+:root[data-theme="dark"] .pd-city-list::-webkit-scrollbar-thumb { border-color: var(--surface); }
+
+/* --- Misc --- */
+:root[data-theme="dark"] .ord-row:hover,
+:root[data-theme="dark"] .pd-city-item:hover,
+:root[data-theme="dark"] .nt-item:hover,
+:root[data-theme="dark"] .rp-history-item:hover,
+:root[data-theme="dark"] .chat-item:hover { background: rgba(59, 130, 246, 0.1); }
+:root[data-theme="dark"] .nt-item.is-unread { background: rgba(59, 130, 246, 0.07); }
+:root[data-theme="dark"] .pd-region-head { background: var(--surface); }
+:root[data-theme="dark"] .dash-backdrop { background: rgba(2, 6, 16, 0.7); }
+:root[data-theme="dark"] .kpi-card:hover { border-color: var(--primary-600); }
+:root[data-theme="dark"] .pd-inline:focus { background: var(--surface-2); }
+:root[data-theme="dark"] .ob-toggle-switch { background: #3d4d69; }
+
+/* Images sit on dark surfaces now — take the glare off slightly */
+:root[data-theme="dark"] .pd-card-img,
+:root[data-theme="dark"] .stock-img,
+:root[data-theme="dark"] .ord-item-name img { filter: brightness(0.88); }
 
 /* Responsive */
 @media (max-width: 1100px) {

@@ -98,13 +98,19 @@
       return localStorage.getItem('ammar_supplier_onboarded') === 'true' ? 'dashboard.html' : 'onboarding.html';
     }
 
+    // نوع الحساب يحدّد البوابة: المورد إلى لوحة التحكم، والمشتري إلى بوابته
+    function destination() {
+      try { localStorage.setItem('ammar_account_type', currentRole); } catch (e) { /* ignore */ }
+      return currentRole === 'supplier' ? supplierDestination() : 'buyer-home.html';
+    }
+
     function handleLoginSubmit(e) {
       e.preventDefault();
-      window.location.href = currentRole === 'supplier' ? supplierDestination() : 'index.html';
+      window.location.href = destination();
     }
 
     function handleGoogleSignIn() {
-      window.location.href = currentRole === 'supplier' ? supplierDestination() : 'index.html';
+      window.location.href = destination();
     }
   </script>
 </body>

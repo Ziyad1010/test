@@ -121,6 +121,12 @@
     muted: '#94a3b8'
   };
 
+  // Grid lines must follow the active theme — a light grid is invisible on the
+  // dark surface and vice versa.
+  function gridColor() {
+    return (window.Shell && Shell.chartColors) ? Shell.chartColors().grid : '#e2e8f0';
+  }
+
   function hasData(values) {
     return values && values.length > 0 && values.some(function (v) { return v > 0; });
   }
@@ -188,7 +194,7 @@
         scales: {
           y: {
             beginAtZero: true,
-            grid: { color: '#e2e8f0' },
+            grid: { color: gridColor() },
             ticks: { callback: function (v) { return v >= 1000 ? (v / 1000) + ' ألف' : v; } }
           },
           x: { grid: { display: false } }
@@ -218,7 +224,7 @@
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          x: { beginAtZero: true, grid: { color: '#e2e8f0' } },
+          x: { beginAtZero: true, grid: { color: gridColor() } },
           y: { grid: { display: false } }
         }
       }
@@ -271,7 +277,7 @@
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, grid: { color: '#e2e8f0' } },
+          y: { beginAtZero: true, grid: { color: gridColor() } },
           x: { grid: { display: false } }
         }
       }
@@ -378,12 +384,7 @@
     initCompanyName();
     renderProfileBanner();
 
-    if (typeof Chart !== 'undefined') {
-      Chart.defaults.font.family = "'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif";
-      Chart.defaults.color = '#64748b';
-      Chart.defaults.plugins.legend.rtl = true;
-      Chart.defaults.plugins.tooltip.rtl = true;
-    }
+    if (window.Shell) Shell.applyChartTheme();
 
     // Count this page view, then draw everything from the store.
     Store.recordVisit();

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>فواتيري | بوابة المشتري - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">المشتري</span>
+            <span class="user-role">حساب مشترٍ</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">فواتيري</h1>
+            <p class="page-subtitle">فواتير مشترياتك — اعرضها أو نزّلها بصيغة PDF</p>
+          </div>
+        </div>
+
+        <div class="tab-bar" id="biTabs"></div>
+
+        <div class="ord-state" id="biLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل فواتيرك…</strong>
+        </div>
+
+        <div class="pd-table-wrap" id="biTableWrap" hidden>
+          <table class="pd-table">
+            <thead>
+              <tr><th>رقم الفاتورة</th><th>الطلب</th><th>تاريخ الإصدار</th><th>تاريخ الاستحقاق</th><th>المبلغ</th><th>الحالة</th></tr>
+            </thead>
+            <tbody id="biTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="ord-state" id="biEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <strong id="biEmptyTitle">لا توجد فواتير</strong>
+          <p id="biEmptyText">تُصدر الفواتير تلقائياً بعد تأكيد طلباتك.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="pd-modal-overlay" id="biOverlay" hidden>
+    <div class="pd-modal" style="max-width:680px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </span>
+        <h2 id="biModalTitle">الفاتورة</h2>
+        <button type="button" class="pd-modal-close" id="biClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body" id="biModalBody"></div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="biCancel">إغلاق</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-primary" id="biPrint">تنزيل / طباعة PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-invoices.js"></script>
+</body>
+</html>

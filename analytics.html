@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
   <script>
     if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
       window.location.replace('onboarding.html');
@@ -51,53 +52,223 @@
         </div>
 
         <div class="tab-bar" id="rangeTabs">
-          <button type="button" class="tab-btn" data-range="7">آخر 7 أيام</button>
-          <button type="button" class="tab-btn is-active" data-range="30">آخر 30 يوم</button>
-          <button type="button" class="tab-btn" data-range="90">آخر 90 يوم</button>
+          <button type="button" class="tab-btn" data-range="7">أسبوعي</button>
+          <button type="button" class="tab-btn is-active" data-range="30">شهري</button>
+          <button type="button" class="tab-btn" data-range="90">ربع سنوي</button>
+          <button type="button" class="tab-btn" data-range="365">سنوي</button>
+          <button type="button" class="tab-btn" data-range="custom">مخصص</button>
         </div>
 
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <div class="kpi-header"><div class="kpi-icon-box blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
-            <div class="kpi-value" id="anRevenue">0 ر.س</div>
-            <div class="kpi-label">إجمالي الإيرادات</div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-header"><div class="kpi-icon-box green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div></div>
-            <div class="kpi-value" id="anOrders">0</div>
-            <div class="kpi-label">عدد الطلبات</div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-header"><div class="kpi-icon-box orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
-            <div class="kpi-value" id="anVisitors">0</div>
-            <div class="kpi-label">إجمالي الزوار</div>
-          </div>
-          <div class="kpi-card">
-            <div class="kpi-header"><div class="kpi-icon-box red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div></div>
-            <div class="kpi-value" id="anConversion">0%</div>
-            <div class="kpi-label">معدل التحويل</div>
-          </div>
-        </div>
-
-        <div class="chart-grid">
-          <div class="chart-card">
-            <div class="chart-card-head"><div><h3>الإيرادات</h3><p>حسب الفترة المحددة</p></div></div>
-            <div class="chart-canvas-wrap"><canvas id="anRevenueChart"></canvas></div>
-          </div>
-          <div class="chart-card">
-            <div class="chart-card-head"><div><h3>الطلبات</h3><p>عدد الطلبات يومياً</p></div></div>
-            <div class="chart-canvas-wrap"><canvas id="anOrdersChart"></canvas></div>
+        <!-- نطاق مخصص -->
+        <div class="ord-filters" id="anCustomRange" hidden>
+          <div class="ord-filter-grid">
+            <div class="pd-field">
+              <label for="anFromDay">من تاريخ</label>
+              <div class="ob-date-group" data-date-for="anFrom">
+                <input type="text" id="anFromDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="anFrom" />
+              </div>
+            </div>
+            <div class="pd-field">
+              <label for="anToDay">إلى تاريخ</label>
+              <div class="ob-date-group" data-date-for="anTo">
+                <input type="text" id="anToDay" data-part="day" inputmode="numeric" maxlength="2" placeholder="يوم" aria-label="اليوم" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
+                <span class="ob-date-sep">/</span>
+                <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
+                <input type="hidden" id="anTo" />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="chart-grid-secondary">
-          <div class="chart-card">
-            <div class="chart-card-head"><div><h3>الأكثر مبيعاً</h3><p>حسب الإيراد</p></div></div>
-            <div class="chart-canvas-wrap short"><canvas id="anProductsChart"></canvas></div>
+        <!-- فلترة حسب الفئة والمدينة -->
+        <div class="an-toolbar">
+          <div class="pd-field">
+            <label for="anCategory">فئة المنتج</label>
+            <select id="anCategory" class="pd-filter">
+              <option value="">كل الفئات</option>
+              <option value="steel">حديد وصلب</option>
+              <option value="cement">أسمنت</option>
+              <option value="concrete">خرسانة جاهزة</option>
+              <option value="finishing">مواد تشطيب</option>
+              <option value="blocks">طوب وبلوك</option>
+              <option value="tools">أدوات ومعدات</option>
+            </select>
           </div>
-          <div class="chart-card">
-            <div class="chart-card-head"><div><h3>الطلبات حسب المدينة</h3><p>التوزيع الجغرافي</p></div></div>
-            <div class="chart-canvas-wrap short"><canvas id="anCityChart"></canvas></div>
+          <div class="pd-field">
+            <label for="anCity">المنطقة / المدينة</label>
+            <select id="anCity" class="pd-filter"><option value="">كل المدن</option></select>
+          </div>
+          <div class="pd-field" style="align-self:flex-end;">
+            <button type="button" class="ob-btn-secondary" id="anExportAll">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              تصدير التقرير التحليلي PDF
+            </button>
+          </div>
+          <div class="pd-field" style="align-self:flex-end;margin-inline-start:auto;">
+            <span id="anRangeLabel" style="font-size:0.8rem;color:var(--muted);"></span>
+          </div>
+        </div>
+
+        <div class="ord-state" id="anLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ حساب التحليلات…</strong>
+        </div>
+
+        <div class="ord-state" id="anEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          </span>
+          <strong>لا توجد بيانات كافية في هذه الفترة</strong>
+          <p>لم تُسجَّل طلبات ضمن النطاق أو الفلاتر المحددة. جرّب توسيع الفترة أو إزالة الفلاتر.</p>
+        </div>
+
+        <div id="anContent" hidden>
+          <!-- مؤشرات الأداء مع مقارنة حقيقية بالفترة السابقة -->
+          <div class="fin-summary">
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                <span class="fin-card-label">إجمالي المبيعات</span>
+                <span class="kpi-change flat" id="anSalesChange" style="margin-inline-start:auto;">—</span>
+              </div>
+              <div class="fin-card-value" id="anSales">—</div>
+              <div class="fin-card-sub" id="anSalesPrev">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span>
+                <span class="fin-card-label">عدد الطلبات</span>
+                <span class="kpi-change flat" id="anOrdersChange" style="margin-inline-start:auto;">—</span>
+              </div>
+              <div class="fin-card-value" id="anOrders">—</div>
+              <div class="fin-card-sub" id="anOrdersPrev">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+                <span class="fin-card-label">متوسط قيمة الطلب</span>
+                <span class="kpi-change flat" id="anAovChange" style="margin-inline-start:auto;">—</span>
+              </div>
+              <div class="fin-card-value" id="anAov">—</div>
+              <div class="fin-card-sub" id="anAovPrev">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></span>
+                <span class="fin-card-label">معدل تكرار الشراء</span>
+                <span class="kpi-change flat" id="anRepeatChange" style="margin-inline-start:auto;">—</span>
+              </div>
+              <div class="fin-card-value" id="anRepeat">—</div>
+              <div class="fin-card-sub" id="anRepeatPrev">—</div>
+            </div>
+          </div>
+
+          <!-- مقارنة الفترتين -->
+          <div class="an-compare-box">
+            <div style="font-size:0.86rem;font-weight:700;margin-bottom:12px;" id="anCompareTitle">مقارنة الأداء بين الفترتين</div>
+            <div class="an-compare-grid" id="anCompareGrid"></div>
+          </div>
+
+          <!-- أداء المبيعات عبر الزمن -->
+          <div class="an-chart-card">
+            <div class="an-chart-head">
+              <div>
+                <h3>أداء المبيعات عبر الزمن</h3>
+                <p id="anSalesChartSub">الإيرادات مقابل الطلبات خلال الفترة المحددة</p>
+              </div>
+              <div class="an-chart-actions">
+                <button type="button" class="ob-btn-secondary" data-export-chart="anSalesChart">تصدير كصورة</button>
+              </div>
+            </div>
+            <div class="an-chart-body"><canvas id="anSalesChart"></canvas></div>
+          </div>
+
+          <div class="an-grid-2">
+            <!-- أكثر المنتجات مبيعاً -->
+            <div class="an-chart-card">
+              <div class="an-chart-head">
+                <div>
+                  <h3>أكثر المنتجات مبيعاً</h3>
+                  <p>حسب الإيراد — اضغط على أي منتج لفتح صفحته</p>
+                </div>
+                <div class="an-chart-actions">
+                  <button type="button" class="ob-btn-secondary" data-export-chart="anTopProductsChart">تصدير كصورة</button>
+                </div>
+              </div>
+              <div class="an-chart-body short is-clickable"><canvas id="anTopProductsChart"></canvas></div>
+              <p class="an-hint">اضغط على أي عمود لفتح صفحة تفاصيل المنتج</p>
+            </div>
+
+            <!-- أقل المنتجات مبيعاً -->
+            <div class="an-chart-card">
+              <div class="an-chart-head">
+                <div>
+                  <h3>أقل المنتجات مبيعاً</h3>
+                  <p>المنتجات التي تحتاج دفعة تسويقية</p>
+                </div>
+                <div class="an-chart-actions">
+                  <button type="button" class="ob-btn-secondary" data-export-chart="anLowProductsChart">تصدير كصورة</button>
+                </div>
+              </div>
+              <div class="an-chart-body short is-clickable"><canvas id="anLowProductsChart"></canvas></div>
+              <p class="an-hint">اضغط على أي عمود لفتح صفحة تفاصيل المنتج</p>
+            </div>
+          </div>
+
+          <div class="an-grid-2">
+            <!-- التحليل الجغرافي -->
+            <div class="an-chart-card">
+              <div class="an-chart-head">
+                <div>
+                  <h3>التحليل الجغرافي</h3>
+                  <p>الإيرادات حسب المدينة — اضغط على أي مدينة لعرض طلباتها</p>
+                </div>
+                <div class="an-chart-actions">
+                  <button type="button" class="ob-btn-secondary" data-export-chart="anCityChart">تصدير كصورة</button>
+                </div>
+              </div>
+              <div class="an-chart-body short is-clickable"><canvas id="anCityChart"></canvas></div>
+              <p class="an-hint">اضغط على أي شريحة لفتح تفصيل طلبات تلك المدينة</p>
+            </div>
+
+            <!-- سلوك العملاء -->
+            <div class="an-chart-card">
+              <div class="an-chart-head">
+                <div>
+                  <h3>سلوك العملاء</h3>
+                  <p>عملاء جدد مقابل عملاء متكررين</p>
+                </div>
+                <div class="an-chart-actions">
+                  <button type="button" class="ob-btn-secondary" data-export-chart="anCustomersChart">تصدير كصورة</button>
+                </div>
+              </div>
+              <div class="an-chart-body short"><canvas id="anCustomersChart"></canvas></div>
+            </div>
+          </div>
+
+          <!-- أكثر العملاء شراءً -->
+          <div class="an-chart-card">
+            <div class="an-chart-head">
+              <div>
+                <h3>أكثر العملاء شراءً</h3>
+                <p>اضغط على أي عميل لفتح ملفه الكامل وسجل مشترياته</p>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="ord-items-table">
+                <thead>
+                  <tr><th>العميل</th><th>عدد الطلبات</th><th>إجمالي الإنفاق</th><th>متوسط الطلب</th></tr>
+                </thead>
+                <tbody id="anTopCustomers"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -105,6 +276,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/date-field.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/analytics.js"></script>
 </body>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تفاصيل الفاتورة | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <a href="invoices.html" class="ord-link" style="font-size:0.84rem;display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              العودة إلى الفواتير
+            </a>
+            <h1 class="page-title" id="ivTitle">تفاصيل الفاتورة</h1>
+            <p class="page-subtitle" id="ivSubtitle">جارٍ التحميل…</p>
+          </div>
+        </div>
+
+        <div class="ord-state" id="ivLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل تفاصيل الفاتورة…</strong>
+        </div>
+
+        <div class="ord-state" id="ivNotFound" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </span>
+          <strong>لم يُعثر على هذه الفاتورة</strong>
+          <p>ربما تم حذفها أو أن الرابط غير صحيح.</p>
+          <a class="ob-btn-secondary" href="invoices.html" style="text-decoration:none;">العودة إلى الفواتير</a>
+        </div>
+
+        <div id="ivContent" hidden>
+          <div id="ivAlerts"></div>
+
+          <div class="ord-detail-grid">
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <h3>بنود الفاتورة</h3>
+                </div>
+                <div style="overflow-x:auto;">
+                  <table class="ord-items-table">
+                    <thead>
+                      <tr><th>البند</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr>
+                    </thead>
+                    <tbody id="ivItems"></tbody>
+                  </table>
+                </div>
+                <div class="ord-totals" id="ivTotals"></div>
+              </div>
+
+              <div class="ord-card" id="ivCreditCard" hidden>
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                  <h3>الإشعارات الدائنة</h3>
+                </div>
+                <div style="overflow-x:auto;">
+                  <table class="ord-items-table">
+                    <thead>
+                      <tr><th>رقم الإشعار</th><th>التاريخ</th><th>السبب</th><th>القيمة</th></tr>
+                    </thead>
+                    <tbody id="ivCreditNotes"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="ord-card" id="ivRemindersCard" hidden>
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  <h3>سجل التذكيرات</h3>
+                </div>
+                <div class="ord-info-list" id="ivReminders"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <h3>معلومات العميل</h3>
+                </div>
+                <div class="ord-info-list" id="ivCustomer"></div>
+              </div>
+
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  <h3>بيانات الفاتورة والدفع</h3>
+                </div>
+                <div class="ord-info-list" id="ivMeta"></div>
+              </div>
+
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  <h3>الإجراءات</h3>
+                </div>
+                <div class="ord-actions" id="ivActions"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- نافذة الإجراءات (إشعار دائن / إلغاء) -->
+  <div class="pd-modal-overlay" id="ivPromptOverlay" hidden>
+    <div class="pd-modal" style="max-width:520px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </span>
+        <h2 id="ivPromptTitle">تأكيد</h2>
+        <button type="button" class="pd-modal-close" id="ivPromptClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body" id="ivPromptBody"></div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="ivPromptCancel">إلغاء</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-primary" id="ivPromptConfirm">تأكيد</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/invoice-details.js"></script>
+</body>
+</html>

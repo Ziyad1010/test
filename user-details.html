@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بيانات المستخدم | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <a href="users.html" class="ord-link" style="font-size:0.84rem;display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              العودة إلى المستخدمين
+            </a>
+            <h1 class="page-title" id="udName">بيانات المستخدم</h1>
+            <p class="page-subtitle" id="udSubtitle">جارٍ التحميل…</p>
+          </div>
+          <button class="ob-btn-primary" id="udSaveBtn" hidden>حفظ التعديلات</button>
+        </div>
+
+        <div class="ord-state" id="udLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل بيانات المستخدم…</strong>
+        </div>
+
+        <div class="ord-state" id="udNotFound" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <strong>لم يُعثر على هذا المستخدم</strong>
+          <p>ربما تم حذفه أو أن الرابط غير صحيح.</p>
+          <a class="ob-btn-secondary" href="users.html" style="text-decoration:none;">العودة إلى المستخدمين</a>
+        </div>
+
+        <div id="udContent" hidden>
+          <div id="udAlerts"></div>
+
+          <div class="ord-detail-grid">
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <h3>البيانات الأساسية</h3>
+                </div>
+                <div class="pd-field-row cols-2">
+                  <div class="pd-field">
+                    <label for="udNameInput">الاسم الكامل <em>*</em></label>
+                    <input type="text" id="udNameInput" data-validate="text" data-required />
+                  </div>
+                  <div class="pd-field">
+                    <label for="udEmail">البريد الإلكتروني <em>*</em></label>
+                    <input type="email" id="udEmail" dir="ltr" data-validate="email" data-required />
+                  </div>
+                </div>
+                <div class="pd-field-row cols-2">
+                  <div class="pd-field">
+                    <label for="udPhone">رقم الجوال</label>
+                    <input type="tel" id="udPhone" dir="ltr" inputmode="numeric" maxlength="10" data-validate="mobileSA" />
+                  </div>
+                  <div class="pd-field">
+                    <label for="udRole">الدور المُسند <em>*</em></label>
+                    <select id="udRole"></select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <h3>صلاحيات الدور الحالي</h3>
+                </div>
+                <p style="font-size:0.81rem;color:var(--muted);line-height:1.7;margin-bottom:12px;" id="udRoleDesc"></p>
+                <div class="perm-tree" id="udPermTree"></div>
+                <p style="font-size:0.78rem;color:var(--muted);margin-top:12px;">
+                  الصلاحيات تُدار على مستوى الدور — لتعديلها
+                  <a class="ord-link" href="users.html">افتح تبويب الأدوار والصلاحيات</a>.
+                </p>
+              </div>
+
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <h3>سجل نشاط المستخدم</h3>
+                </div>
+                <div id="udActivity"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <h3>الحالة والوصول</h3>
+                </div>
+                <div class="ord-info-list" id="udMeta"></div>
+              </div>
+
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  <h3>الإجراءات</h3>
+                </div>
+                <div class="ord-actions" id="udActions"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/validate.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/user-details.js"></script>
+</body>
+</html>

@@ -116,25 +116,27 @@
       }
     }
 
-    function handleSignupSubmit(e) {
-      e.preventDefault();
+    // نوع الحساب يحدّد الوجهة: المورد يبدأ بالتسجيل، والمشتري يدخل بوابته مباشرة
+    function routeAfterSignup() {
+      localStorage.setItem('ammar_account_type', currentRole);
+
       if (currentRole === 'supplier') {
         localStorage.removeItem('ammar_supplier_onboarded');
-        var fullname = document.getElementById('fullname').value.trim();
-        if (fullname) localStorage.setItem('ammar_user_name', fullname);
         window.location.href = 'onboarding.html';
       } else {
-        window.location.href = 'index.html';
+        window.location.href = 'buyer-home.html';
       }
     }
 
+    function handleSignupSubmit(e) {
+      e.preventDefault();
+      var fullname = document.getElementById('fullname').value.trim();
+      if (fullname) localStorage.setItem('ammar_user_name', fullname);
+      routeAfterSignup();
+    }
+
     function handleGoogleSignIn() {
-      if (currentRole === 'supplier') {
-        localStorage.removeItem('ammar_supplier_onboarded');
-        window.location.href = 'onboarding.html';
-      } else {
-        window.location.href = 'index.html';
-      }
+      routeAfterSignup();
     }
   </script>
 </body>

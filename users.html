@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>المستخدمين والصلاحيات | بوابة الموردين - عمار</title>
+  <title>المستخدمون والصلاحيات | بوابة الموردين - عمار</title>
   <link rel="icon" type="image/png" href="assets/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
   <script>
     if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
       window.location.replace('onboarding.html');
@@ -45,84 +46,175 @@
       <div class="dash-body">
         <div class="page-header">
           <div>
-            <h1 class="page-title">المستخدمين والصلاحيات</h1>
-            <p class="page-subtitle">إدارة فريق العمل وصلاحيات الوصول للوحة التحكم</p>
+            <h1 class="page-title">المستخدمون والصلاحيات</h1>
+            <p class="page-subtitle">أضف موظفيك تحت حساب الشركة وحدّد صلاحيات كل منهم بدقة</p>
           </div>
-          <button class="pd-add-btn" id="usrInviteBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
-            دعوة مستخدم
-          </button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="ob-btn-secondary" id="usAddRoleBtn">إنشاء دور مخصص</button>
+            <button class="pd-add-btn" id="usAddUserBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              دعوة مستخدم
+            </button>
+          </div>
         </div>
 
-        <div class="pd-table-wrap" style="margin-bottom:24px;">
-          <table class="pd-table">
-            <thead>
-              <tr>
-                <th>الاسم</th>
-                <th>البريد الإلكتروني</th>
-                <th>الدور</th>
-                <th>الحالة</th>
-                <th>آخر نشاط</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="usrTableBody"><!-- JS-populated --></tbody>
-          </table>
+        <div class="ord-state" id="usLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل المستخدمين…</strong>
         </div>
 
-        <div class="panel-card">
-          <div class="panel-header">
-            <h2 class="panel-title">مصفوفة الصلاحيات</h2>
-            <p class="page-subtitle" style="margin:0;">تحديد ما يمكن لكل دور الوصول إليه</p>
+        <div id="usContent" hidden>
+          <div class="tab-bar" id="usTabs">
+            <button type="button" class="tab-btn is-active" data-tab="users">المستخدمون</button>
+            <button type="button" class="tab-btn" data-tab="roles">الأدوار والصلاحيات</button>
           </div>
-          <div class="perm-table-wrap">
-            <table class="perm-table" id="permTable"><!-- JS-populated --></table>
-          </div>
+
+          <!-- ============ المستخدمون ============ -->
+          <section class="co-panel is-active" data-panel="users">
+            <div class="pd-stat-strip">
+              <div class="pd-stat"><strong id="usStatTotal">0</strong><span>إجمالي المستخدمين</span></div>
+              <div class="pd-stat"><strong id="usStatActive">0</strong><span>نشط</span></div>
+              <div class="pd-stat"><strong id="usStatDisabled">0</strong><span>معطّل</span></div>
+              <div class="pd-stat"><strong id="usStatRoles">0</strong><span>الأدوار المتاحة</span></div>
+            </div>
+
+            <div class="pd-toolbar">
+              <div class="pd-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="search" id="usSearch" placeholder="ابحث بالاسم أو البريد الإلكتروني..." />
+              </div>
+              <select class="pd-filter" id="usRoleFilter"><option value="">كل الأدوار</option></select>
+              <select class="pd-filter" id="usStatusFilter">
+                <option value="">كل الحالات</option>
+                <option value="active">نشط</option>
+                <option value="disabled">معطّل</option>
+              </select>
+            </div>
+
+            <div class="pd-table-wrap" id="usTableWrap">
+              <table class="pd-table">
+                <thead>
+                  <tr>
+                    <th>الاسم</th>
+                    <th>البريد الإلكتروني</th>
+                    <th>الدور المُسند</th>
+                    <th>الحالة</th>
+                    <th>آخر دخول</th>
+                  </tr>
+                </thead>
+                <tbody id="usTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="ord-state" id="usEmpty" hidden>
+              <span class="ord-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <strong id="usEmptyTitle">لا يوجد مستخدمون</strong>
+              <p id="usEmptyText">ادعُ موظفيك للعمل تحت حساب الشركة بصلاحيات محددة.</p>
+            </div>
+          </section>
+
+          <!-- ============ الأدوار ============ -->
+          <section class="co-panel" data-panel="roles">
+            <div class="ord-alert info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>الأدوار الأساسية جاهزة ولا يمكن حذفها. يمكنك إنشاء أدوار مخصصة بصلاحيات دقيقة لكل قسم.</span>
+            </div>
+            <div id="usRoles"></div>
+          </section>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Invite User Modal -->
-  <div class="pd-modal-overlay" id="usrModalOverlay" hidden>
-    <div class="pd-modal" style="max-width:480px;">
+  <!-- نافذة دعوة/تعديل مستخدم -->
+  <div class="pd-modal-overlay" id="usUserOverlay" hidden>
+    <div class="pd-modal" style="max-width:560px;">
       <div class="pd-modal-header">
-        <h2>دعوة مستخدم جديد</h2>
-        <button type="button" class="pd-modal-close" id="usrModalClose" aria-label="إغلاق">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        </span>
+        <h2 id="usUserTitle">دعوة مستخدم جديد</h2>
+        <button type="button" class="pd-modal-close" id="usUserClose" aria-label="إغلاق">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
       <div class="pd-modal-body">
         <div class="pd-field">
-          <label for="usrName">الاسم الكامل</label>
-          <input type="text" id="usrName" placeholder="سعود الحربي" />
+          <label for="usName">الاسم الكامل <em>*</em></label>
+          <input type="text" id="usName" placeholder="محمد العتيبي" data-validate="text" data-required />
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="usEmail">البريد الإلكتروني <em>*</em></label>
+            <input type="email" id="usEmail" dir="ltr" placeholder="name@company.sa" data-validate="email" data-required />
+          </div>
+          <div class="pd-field">
+            <label for="usPhone">رقم الجوال</label>
+            <input type="tel" id="usPhone" dir="ltr" inputmode="numeric" maxlength="10" placeholder="512345678" data-validate="mobileSA" />
+          </div>
         </div>
         <div class="pd-field">
-          <label for="usrEmail">البريد الإلكتروني <em>*</em></label>
-          <input type="email" id="usrEmail" placeholder="name@example.sa" />
+          <label for="usRole">الدور <em>*</em></label>
+          <select id="usRole"></select>
+          <span class="field-error" id="usRoleError"></span>
         </div>
-        <div class="pd-field">
-          <label for="usrRole">الدور</label>
-          <select id="usrRole">
-            <option value="admin">مدير</option>
-            <option value="sales">مبيعات</option>
-            <option value="warehouse">مستودعات</option>
-            <option value="finance">مالية</option>
-            <option value="readonly">قراءة فقط</option>
-          </select>
-        </div>
+        <div id="usRolePreview"></div>
       </div>
       <div class="pd-modal-footer">
         <div class="pd-modal-footer-start">
-          <button type="button" class="ob-btn-ghost" id="usrCancelBtn">إلغاء</button>
+          <button type="button" class="ob-btn-ghost" id="usUserCancel">إلغاء</button>
         </div>
         <div class="pd-modal-footer-end">
-          <button type="button" class="ob-btn-primary" id="usrSendBtn">إرسال الدعوة</button>
+          <button type="button" class="ob-btn-primary" id="usUserSave">حفظ</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- نافذة إنشاء/تعديل دور -->
+  <div class="pd-modal-overlay" id="usRoleOverlay" hidden>
+    <div class="pd-modal" style="max-width:700px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        <h2 id="usRoleTitle">إنشاء دور مخصص</h2>
+        <button type="button" class="pd-modal-close" id="usRoleClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body">
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="usRoleName">اسم الدور <em>*</em></label>
+            <input type="text" id="usRoleName" placeholder="مسؤول التسويق" data-validate="text" data-required />
+          </div>
+          <div class="pd-field">
+            <label for="usRoleDesc">وصف مختصر</label>
+            <input type="text" id="usRoleDesc" placeholder="يدير العروض والحملات فقط" />
+          </div>
+        </div>
+        <div class="pd-subhead"><strong>شجرة الصلاحيات</strong></div>
+        <p style="font-size:0.81rem;color:var(--muted);line-height:1.7;margin-bottom:12px;">
+          حدّد مستوى الوصول لكل قسم: لا وصول (لا يظهر القسم إطلاقاً)، عرض فقط (قراءة دون تعديل)، أو تعديل (صلاحية كاملة).
+        </p>
+        <div class="perm-tree" id="usPermTree"></div>
+      </div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="usRoleCancel">إلغاء</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-primary" id="usRoleSave">حفظ الدور</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/validate.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/users.js"></script>
 </body>

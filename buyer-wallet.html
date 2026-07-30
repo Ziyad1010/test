@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المحفظة والمدفوعات | بوابة المشتري - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">المشتري</span>
+            <span class="user-role">حساب مشترٍ</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">المحفظة والمدفوعات</h1>
+            <p class="page-subtitle">طرق الدفع المحفوظة وسجل معاملاتك المالية</p>
+          </div>
+          <button class="pd-add-btn" id="bwaAddBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            إضافة بطاقة
+          </button>
+        </div>
+
+        <div class="ord-state" id="bwaLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل المحفظة…</strong>
+        </div>
+
+        <div id="bwaContent" hidden>
+          <div class="fin-summary">
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                <span class="fin-card-label">إجمالي المدفوع</span>
+              </div>
+              <div class="fin-card-value" id="bwaTotalPaid">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span>
+                <span class="fin-card-label">عدد المعاملات</span>
+              </div>
+              <div class="fin-card-value" id="bwaTxCount">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+                <span class="fin-card-label">فواتير مستحقة</span>
+              </div>
+              <div class="fin-card-value" id="bwaDue">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></span>
+                <span class="fin-card-label">مبالغ مستردّة</span>
+              </div>
+              <div class="fin-card-value" id="bwaRefunded">—</div>
+            </div>
+          </div>
+
+          <div class="an-chart-card">
+            <div class="an-chart-head"><div><h3>طرق الدفع المحفوظة</h3><p>اضغط على أي بطاقة لعرض تفاصيلها أو تعديلها</p></div></div>
+            <div class="by-card-grid" id="bwaCards"></div>
+            <div class="ord-state" id="bwaCardsEmpty" hidden style="box-shadow:none;border:none;">
+              <span class="ord-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              </span>
+              <strong>لا توجد طرق دفع محفوظة</strong>
+              <p>أضف بطاقة لتسريع إتمام طلباتك القادمة.</p>
+            </div>
+          </div>
+
+          <div class="an-chart-card">
+            <div class="an-chart-head"><div><h3>سجل المعاملات</h3><p>اضغط على أي معاملة لعرض تفاصيلها وفاتورتها</p></div></div>
+            <div style="overflow-x:auto;">
+              <table class="ord-items-table">
+                <thead><tr><th>رقم المعاملة</th><th>التاريخ</th><th>الطلب</th><th>طريقة الدفع</th><th>المبلغ</th><th>الحالة</th></tr></thead>
+                <tbody id="bwaTx"></tbody>
+              </table>
+            </div>
+            <div class="ord-state" id="bwaTxEmpty" hidden style="box-shadow:none;border:none;">
+              <span class="ord-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </span>
+              <strong>لا توجد معاملات بعد</strong>
+              <p>ستظهر معاملاتك المالية هنا بعد إتمام أول طلب.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="pd-modal-overlay" id="bwaOverlay" hidden>
+    <div class="pd-modal" style="max-width:520px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </span>
+        <h2 id="bwaModalTitle">إضافة بطاقة</h2>
+        <button type="button" class="pd-modal-close" id="bwaClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body">
+        <div class="ord-alert info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>هذه نسخة تجريبية: تُحفظ آخر 4 أرقام فقط للعرض. الربط ببوابة دفع حقيقية يتم عند الإطلاق.</span>
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="bwaBrand">نوع البطاقة <em>*</em></label>
+            <select id="bwaBrand">
+              <option value="">اختر النوع</option>
+              <option>مدى</option><option>فيزا</option><option>ماستركارد</option><option>Apple Pay</option>
+            </select>
+          </div>
+          <div class="pd-field">
+            <label for="bwaLast4">آخر 4 أرقام <em>*</em></label>
+            <input type="text" id="bwaLast4" dir="ltr" inputmode="numeric" maxlength="4" placeholder="4821" />
+            <span class="field-error" id="bwaError"></span>
+          </div>
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="bwaHolder">اسم حامل البطاقة <em>*</em></label>
+            <input type="text" id="bwaHolder" placeholder="الاسم كما يظهر على البطاقة" />
+          </div>
+          <div class="pd-field">
+            <label for="bwaExpiry">تاريخ الانتهاء</label>
+            <input type="text" id="bwaExpiry" dir="ltr" maxlength="5" placeholder="09/28" />
+          </div>
+        </div>
+        <div class="pd-field">
+          <label class="pd-check-label">
+            <input type="checkbox" id="bwaDefault" />
+            تعيينها كطريقة الدفع الافتراضية
+          </label>
+        </div>
+      </div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="bwaDelete" style="color:var(--danger);" hidden>حذف البطاقة</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-ghost" id="bwaCancel">إلغاء</button>
+          <button type="button" class="ob-btn-primary" id="bwaSave">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-wallet.js"></script>
+</body>
+</html>

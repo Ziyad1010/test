@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>العناوين المحفوظة | بوابة المشتري - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">المشتري</span>
+            <span class="user-role">حساب مشترٍ</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">العناوين المحفوظة</h1>
+            <p class="page-subtitle">أدر عناوين الشحن وحدّد العنوان الافتراضي</p>
+          </div>
+          <button class="pd-add-btn" id="baAddBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            إضافة عنوان
+          </button>
+        </div>
+
+        <div class="ord-state" id="baLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل عناوينك…</strong>
+        </div>
+
+        <div class="by-card-grid" id="baGrid" hidden></div>
+
+        <div class="ord-state" id="baEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+          <strong>لا توجد عناوين محفوظة</strong>
+          <p>أضف عنوان الشحن الخاص بك لتسريع إتمام طلباتك القادمة.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="pd-modal-overlay" id="baOverlay" hidden>
+    <div class="pd-modal" style="max-width:560px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <h2 id="baModalTitle">إضافة عنوان</h2>
+        <button type="button" class="pd-modal-close" id="baClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body">
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="baLabel">اسم العنوان <em>*</em></label>
+            <input type="text" id="baLabel" placeholder="المنزل، المكتب، موقع المشروع" />
+            <span class="field-error" id="baLabelError"></span>
+          </div>
+          <div class="pd-field">
+            <label for="baRecipient">اسم المستلم <em>*</em></label>
+            <input type="text" id="baRecipient" placeholder="الاسم الكامل" />
+          </div>
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="baPhone">رقم الجوال <em>*</em></label>
+            <input type="tel" id="baPhone" dir="ltr" inputmode="numeric" maxlength="10" placeholder="512345678" />
+            <span class="field-error" id="baPhoneError"></span>
+          </div>
+          <div class="pd-field">
+            <label for="baCity">المدينة <em>*</em></label>
+            <select id="baCity"><option value="">اختر المدينة</option></select>
+          </div>
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="baDistrict">الحي</label>
+            <input type="text" id="baDistrict" placeholder="حي النرجس" />
+          </div>
+          <div class="pd-field">
+            <label for="baStreet">الشارع</label>
+            <input type="text" id="baStreet" placeholder="شارع الأمير محمد" />
+          </div>
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="baBuildingNo">رقم المبنى</label>
+            <input type="text" id="baBuildingNo" dir="ltr" inputmode="numeric" maxlength="4" placeholder="2568" />
+          </div>
+          <div class="pd-field">
+            <label for="baPostalCode">الرمز البريدي</label>
+            <input type="text" id="baPostalCode" dir="ltr" inputmode="numeric" maxlength="5" placeholder="12836" />
+          </div>
+        </div>
+        <div class="pd-field">
+          <label class="pd-check-label">
+            <input type="checkbox" id="baDefault" />
+            تعيينه كعنوان افتراضي للشحن
+          </label>
+        </div>
+      </div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="baDelete" style="color:var(--danger);" hidden>حذف العنوان</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-ghost" id="baCancel">إلغاء</button>
+          <button type="button" class="ob-btn-primary" id="baSave">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/saudi-regions.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-addresses.js"></script>
+</body>
+</html>

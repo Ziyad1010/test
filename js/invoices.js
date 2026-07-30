@@ -4,110 +4,350 @@
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $all = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
-  var STATUS_LABELS = { paid: 'مسددة', pending: 'قيد التحصيل', overdue: 'متأخرة' };
-  var STATUS_CLASS = { paid: 'active', pending: 'draft', overdue: 'archived' };
+  var S = Store.INVOICE_STATUS;
 
-  var invoices = [
-    { id: 'INV-3021', taxNo: '3100234567', customer: 'شركة البناء الحديث للمقاولات', amount: 2850, issue: '2026-07-20', due: '2026-07-27', status: 'pending', items: '100 كيس أسمنت بورتلاندي' },
-    { id: 'INV-3020', taxNo: '3100987654', customer: 'مؤسسة الإعمار المتحدة', amount: 12250, issue: '2026-07-19', due: '2026-07-26', status: 'pending', items: '5 طن حديد تسليح 12مم' },
-    { id: 'INV-3019', taxNo: '3100456789', customer: 'شركة الرياض للمقاولات العامة', amount: 4900, issue: '2026-07-18', due: '2026-07-25', status: 'paid', items: '20 م³ خرسانة جاهزة C30' },
-    { id: 'INV-3018', taxNo: '3100112233', customer: 'مجموعة التطوير العقاري', amount: 11340, issue: '2026-07-17', due: '2026-07-24', status: 'paid', items: '300 م² بلاط بورسلين 60×60' },
-    { id: 'INV-3016', taxNo: '3100778899', customer: 'مؤسسة النخبة للمقاولات', amount: 3850, issue: '2026-06-28', due: '2026-07-05', status: 'overdue', items: 'خلاطة خرسانة كهربائية 350 لتر' },
-    { id: 'INV-3012', taxNo: '3100445566', customer: 'شركة الرياض للمقاولات العامة', amount: 3150, issue: '2026-06-20', due: '2026-06-27', status: 'overdue', items: '150 كيس أسمنت مقاوم للكبريتات' }
+  var TABS = [
+    { key: '', label: 'الكل' },
+    { key: 'paid', label: S.paid.label },
+    { key: 'pending', label: S.pending.label },
+    { key: 'overdue', label: S.overdue.label },
+    { key: 'cancelled', label: S.cancelled.label }
   ];
 
-  var currentFilter = '';
+  var invoices = [];
+  var currentTab = '';
+  var selectedIds = [];
+  var filters = { q: '', from: '', to: '', min: '', max: '' };
 
-  function fmt(n) { return Number(n).toLocaleString('ar-SA'); }
+  function fmt(n) { return Number(n || 0).toLocaleString('ar-SA', { maximumFractionDigits: 2 }); }
 
-  function updateStats() {
-    $('#invStatTotal').textContent = invoices.length;
-    $('#invStatPaid').textContent = fmt(invoices.filter(function (i) { return i.status === 'paid'; }).reduce(function (s, i) { return s + i.amount; }, 0)) + ' ر.س';
-    $('#invStatPending').textContent = fmt(invoices.filter(function (i) { return i.status === 'pending'; }).reduce(function (s, i) { return s + i.amount; }, 0)) + ' ر.س';
-    $('#invStatOverdue').textContent = invoices.filter(function (i) { return i.status === 'overdue'; }).length;
+  function esc(s) {
+    return String(s === undefined || s === null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function renderTable() {
-    var list = currentFilter ? invoices.filter(function (i) { return i.status === currentFilter; }) : invoices;
-    $('#invEmpty').hidden = list.length > 0;
-    document.querySelector('.pd-table-wrap').hidden = list.length === 0;
+  function toast(msg, kind) { if (window.Shell) Shell.toast(msg, kind); }
 
-    $('#invTableBody').innerHTML = list.map(function (i) {
-      return '<tr>' +
-        '<td class="order-id">' + i.id + '</td>' +
-        '<td>' + i.customer + '</td>' +
-        '<td>' + i.taxNo + '</td>' +
-        '<td><strong>' + fmt(i.amount) + ' ر.س</strong></td>' +
-        '<td>' + i.issue + '</td>' +
-        '<td>' + i.due + '</td>' +
-        '<td><span class="pd-status-pill ' + STATUS_CLASS[i.status] + '">' + STATUS_LABELS[i.status] + '</span></td>' +
-        '<td><div class="pd-table-actions"><button type="button" title="تحميل PDF" data-download="' + i.id + '">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
-        '</button></div></td>' +
-      '</tr>';
-    }).join('');
-
-    $all('[data-download]').forEach(function (btn) {
-      btn.addEventListener('click', function () { downloadInvoice(btn.getAttribute('data-download')); });
+  function load() {
+    invoices = Store.getInvoices().sort(function (a, b) {
+      return a.issue < b.issue ? 1 : a.issue > b.issue ? -1 : 0;
     });
   }
 
-  function initTabs() {
-    $all('#invTabs .tab-btn').forEach(function (btn) {
+  function matches(inv) {
+    if (currentTab && inv.status !== currentTab) return false;
+    var q = filters.q.trim().toLowerCase();
+    if (q && (inv.id + ' ' + inv.customer).toLowerCase().indexOf(q) === -1) return false;
+    if (filters.from && inv.issue < filters.from) return false;
+    if (filters.to && inv.issue > filters.to) return false;
+    if (filters.min !== '' && inv.netAmount < parseFloat(filters.min)) return false;
+    if (filters.max !== '' && inv.netAmount > parseFloat(filters.max)) return false;
+    return true;
+  }
+
+  function visible() { return invoices.filter(matches); }
+
+  function hasActiveFilters() {
+    return filters.q !== '' || filters.from !== '' || filters.to !== '' || filters.min !== '' || filters.max !== '';
+  }
+
+  /* ---------------- الملخص المالي ---------------- */
+  function renderSummary() {
+    var s = Store.invoiceSummary();
+
+    $('#finIssued').textContent = s.issuedThisMonth + ' فاتورة';
+    $('#finIssuedSub').textContent = 'بقيمة ' + fmt(s.issuedThisMonthAmount) + ' ر.س';
+    $('#finCollected').textContent = fmt(s.collected) + ' ر.س';
+    $('#finOutstanding').textContent = fmt(s.outstanding) + ' ر.س';
+    $('#finOverdue').textContent = fmt(s.overdueAmount) + ' ر.س';
+    $('#finOverdueSub').textContent = s.overdueCount + ' فاتورة متأخرة';
+
+    $('#invOverdueAlert').hidden = s.overdueCount === 0;
+    if (s.overdueCount) {
+      $('#invOverdueText').innerHTML = '<strong>' + s.overdueCount + ' فاتورة تجاوزت تاريخ الاستحقاق</strong> ' +
+        'بإجمالي ' + fmt(s.overdueAmount) + ' ر.س. افتح الفاتورة لإرسال تذكير للعميل.';
+    }
+  }
+
+  function renderTabs() {
+    $('#invTabs').innerHTML = TABS.map(function (t) {
+      var count = t.key ? invoices.filter(function (i) { return i.status === t.key; }).length : invoices.length;
+      return '<button type="button" class="tab-btn' + (currentTab === t.key ? ' is-active' : '') + '" data-tab="' + t.key + '">' +
+        esc(t.label) + '<span class="count">(' + count + ')</span></button>';
+    }).join('');
+
+    $all('[data-tab]', $('#invTabs')).forEach(function (btn) {
       btn.addEventListener('click', function () {
-        $all('#invTabs .tab-btn').forEach(function (b) { b.classList.remove('is-active'); });
-        btn.classList.add('is-active');
-        currentFilter = btn.getAttribute('data-status');
-        renderTable();
+        currentTab = btn.getAttribute('data-tab');
+        selectedIds = [];
+        render();
       });
     });
   }
 
-  function downloadInvoice(id) {
-    var inv = invoices.find(function (i) { return i.id === id; });
-    if (!inv) return;
+  /* ---------------- الجدول ---------------- */
+  function renderTable() {
+    var list = visible();
 
-    var companyName = 'شركة البناء الحديث للمقاولات';
-    try { companyName = localStorage.getItem('ammar_company_name') || companyName; } catch (e) { /* ignore */ }
+    $('#invLoading').hidden = true;
+    $('#invTableWrap').hidden = list.length === 0;
+    $('#invEmpty').hidden = list.length > 0;
 
-    var vat = inv.amount * 0.15 / 1.15;
-    var subtotal = inv.amount - vat;
-
-    var win = window.open('', '_blank');
-    if (!win) {
-      if (window.Shell) Shell.toast('يرجى السماح بالنوافذ المنبثقة لتحميل الفاتورة', 'danger');
+    if (!list.length) {
+      var label = '';
+      TABS.forEach(function (t) { if (t.key === currentTab) label = t.label; });
+      $('#invEmptyTitle').textContent = hasActiveFilters() ? 'لا توجد نتائج مطابقة' : 'لا توجد فواتير في «' + label + '»';
+      $('#invEmptyText').textContent = hasActiveFilters()
+        ? 'جرّب توسيع نطاق البحث أو مسح الفلاتر المطبّقة.'
+        : 'تُصدر الفواتير تلقائياً عند قبول الطلبات — ستظهر هنا فور إصدار أول فاتورة.';
+      $('#invEmptyReset').hidden = !hasActiveFilters();
       return;
     }
 
-    win.document.write(
-      '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8">' +
-      '<title>فاتورة ' + inv.id + '</title>' +
-      '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">' +
-      '<style>' +
-      'body{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;padding:40px;color:#0f172a;}' +
-      '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #0f172a;padding-bottom:16px;margin-bottom:24px;}' +
-      '.head h1{font-size:1.4rem;} .muted{color:#64748b;font-size:0.85rem;}' +
-      'table{width:100%;border-collapse:collapse;margin-top:20px;} td,th{padding:10px;border-bottom:1px solid #e2e8f0;text-align:right;font-size:0.9rem;}' +
-      '.totals{margin-top:20px;width:280px;margin-inline-start:auto;} .totals div{display:flex;justify-content:space-between;padding:6px 0;}' +
-      '.totals .grand{font-weight:800;font-size:1.1rem;border-top:2px solid #0f172a;padding-top:10px;}' +
-      '</style></head><body>' +
-      '<div class="head"><div><h1>فاتورة ضريبية</h1><div class="muted">' + companyName + '</div></div>' +
-      '<div><div><strong>' + inv.id + '</strong></div><div class="muted">تاريخ الإصدار: ' + inv.issue + '</div></div></div>' +
-      '<p><strong>العميل:</strong> ' + inv.customer + ' &nbsp;&nbsp; <strong>الرقم الضريبي:</strong> ' + inv.taxNo + '</p>' +
-      '<table><thead><tr><th>الوصف</th><th>المبلغ قبل الضريبة</th><th>ضريبة القيمة المضافة (15%)</th><th>الإجمالي</th></tr></thead>' +
-      '<tbody><tr><td>' + inv.items + '</td><td>' + subtotal.toFixed(2) + ' ر.س</td><td>' + vat.toFixed(2) + ' ر.س</td><td>' + inv.amount.toFixed(2) + ' ر.س</td></tr></tbody></table>' +
-      '<div class="totals"><div><span>المجموع الفرعي</span><span>' + subtotal.toFixed(2) + ' ر.س</span></div>' +
-      '<div><span>ضريبة القيمة المضافة</span><span>' + vat.toFixed(2) + ' ر.س</span></div>' +
-      '<div class="grand"><span>الإجمالي</span><span>' + inv.amount.toFixed(2) + ' ر.س</span></div></div>' +
-      '</body></html>'
-    );
+    $('#invTableBody').innerHTML = list.map(function (i) {
+      var meta = S[i.status] || S.pending;
+      var checked = selectedIds.indexOf(i.id) !== -1 ? ' checked' : '';
+      var credit = i.creditTotal > 0
+        ? '<span class="ord-flag partial">إشعار دائن ' + fmt(i.creditTotal) + '</span>' : '';
+
+      return '<tr class="ord-row" data-open="' + esc(i.id) + '" tabindex="0">' +
+        '<td class="ord-select-cell"><input type="checkbox" class="pd-check" data-isel="' + esc(i.id) + '"' + checked + ' aria-label="تحديد الفاتورة" /></td>' +
+        '<td><span class="ord-id">' + esc(i.id) + '</span>' + credit + '</td>' +
+        '<td><a class="ord-link" href="customer.html?id=' + encodeURIComponent(i.customerId) + '" data-stop>' + esc(i.customer) + '</a></td>' +
+        '<td dir="ltr">' + esc(i.issue) + '</td>' +
+        '<td dir="ltr">' + esc(i.due) + '</td>' +
+        '<td class="ord-amount">' + fmt(i.netAmount) + ' ر.س</td>' +
+        '<td><span class="ord-status ' + meta.tone + '">' + meta.label + '</span></td>' +
+      '</tr>';
+    }).join('');
+
+    bindRows();
+  }
+
+  function bindRows() {
+    var body = $('#invTableBody');
+
+    $all('[data-open]', body).forEach(function (row) {
+      function open() { window.location.href = 'invoice-details.html?id=' + encodeURIComponent(row.getAttribute('data-open')); }
+      row.addEventListener('click', open);
+      row.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+      });
+    });
+
+    $all('[data-stop], .ord-select-cell', body).forEach(function (el) {
+      el.addEventListener('click', function (e) { e.stopPropagation(); });
+    });
+
+    $all('[data-isel]', body).forEach(function (box) {
+      box.addEventListener('change', function (e) {
+        e.stopPropagation();
+        var id = box.getAttribute('data-isel');
+        if (box.checked) {
+          if (selectedIds.indexOf(id) === -1) selectedIds.push(id);
+        } else {
+          selectedIds = selectedIds.filter(function (x) { return x !== id; });
+        }
+        renderBulk();
+      });
+    });
+  }
+
+  function renderBulk() {
+    $('#invBulkBar').hidden = selectedIds.length === 0;
+    $('#invBulkCount').textContent = 'تم تحديد ' + selectedIds.length + ' فاتورة';
+
+    var list = visible();
+    $('#invCheckAll').checked = list.length > 0 && list.every(function (i) { return selectedIds.indexOf(i.id) !== -1; });
+  }
+
+  function selectedInvoices() {
+    return invoices.filter(function (i) { return selectedIds.indexOf(i.id) !== -1; });
+  }
+
+  /* ---------------- التصدير والطباعة ---------------- */
+  function exportExcel(list) {
+    if (!list.length) { toast('لا توجد فواتير للتصدير', 'danger'); return; }
+
+    var cols = [
+      { key: 'id', label: 'رقم الفاتورة' },
+      { key: 'orderId', label: 'رقم الطلب' },
+      { key: 'customer', label: 'العميل' },
+      { key: 'taxNo', label: 'الرقم الضريبي' },
+      { key: 'issue', label: 'تاريخ الإصدار' },
+      { key: 'due', label: 'تاريخ الاستحقاق' },
+      { key: 'amount', label: 'المبلغ قبل الإشعارات الدائنة' },
+      { key: 'creditTotal', label: 'إشعارات دائنة' },
+      { key: 'netAmount', label: 'الصافي' },
+      { key: 'payment', label: 'طريقة الدفع' },
+      { key: 'status', label: 'الحالة' }
+    ];
+
+    var header = cols.map(function (c) { return c.label; }).join(',');
+    var rows = list.map(function (i) {
+      return cols.map(function (c) {
+        var v = c.key === 'status' ? (S[i.status] ? S[i.status].label : i.status) : i[c.key];
+        var s = String(v === undefined || v === null ? '' : v);
+        return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+      }).join(',');
+    });
+
+    var blob = new Blob(['﻿' + header + '\n' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'الفواتير-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+
+    toast('تم تصدير ' + list.length + ' فاتورة', 'success');
+  }
+
+  function printInvoices(list) {
+    if (!list.length) { toast('لا توجد فواتير للطباعة', 'danger'); return; }
+
+    var company = 'شركتك';
+    try { company = localStorage.getItem('ammar_company_name') || company; } catch (e) { /* ignore */ }
+
+    var win = window.open('', '_blank');
+    if (!win) { toast('تعذّر فتح نافذة الطباعة — يرجى السماح بالنوافذ المنبثقة', 'danger'); return; }
+
+    var body = list.map(function (i) {
+      var rows = (i.items || []).map(function (it) {
+        return '<tr><td>' + esc(it.name) + '</td><td>' + it.qty + ' ' + esc(it.unit || '') + '</td>' +
+          '<td>' + fmt(it.price) + '</td><td>' + fmt(it.price * it.qty) + '</td></tr>';
+      }).join('');
+      var vat = i.amount * Store.VAT_RATE / (1 + Store.VAT_RATE);
+
+      return '<div class="doc"><h1>فاتورة ضريبية</h1>' +
+        '<div class="muted">المورد: ' + esc(company) + '</div>' +
+        '<h2>' + esc(i.id) + ' — الطلب ' + esc(i.orderId) + '</h2>' +
+        '<div class="muted">العميل: ' + esc(i.customer) + '<br />الرقم الضريبي: ' + esc(i.taxNo) +
+        '<br />الإصدار: ' + esc(i.issue) + ' — الاستحقاق: ' + esc(i.due) + '<br />الدفع: ' + esc(i.payment) + '</div>' +
+        '<table><thead><tr><th>الصنف</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="tot">الإجمالي شامل الضريبة: ' + fmt(i.amount) + ' ر.س</div>' +
+        '<div class="muted tot">منها ضريبة القيمة المضافة (15%): ' + fmt(vat) + ' ر.س</div>' +
+        (i.creditTotal > 0 ? '<div class="tot">إشعارات دائنة: -' + fmt(i.creditTotal) + ' ر.س<br />الصافي المستحق: ' + fmt(i.netAmount) + ' ر.س</div>' : '') +
+      '</div>';
+    }).join('');
+
+    win.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8" /><title>الفواتير</title>' +
+      '<style>body{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;padding:28px;color:#0f172a;}' +
+      'h1{font-size:1.25rem;margin:0 0 4px;}h2{font-size:1rem;margin:8px 0 12px;}' +
+      '.doc{page-break-after:always;border:1px solid #e2e8f0;border-radius:12px;padding:22px;margin-bottom:20px;}' +
+      '.doc:last-child{page-break-after:auto;}.muted{color:#64748b;font-size:0.85rem;line-height:1.8;}' +
+      'table{width:100%;border-collapse:collapse;margin-top:14px;}' +
+      'th,td{border-bottom:1px solid #e2e8f0;padding:9px;text-align:right;font-size:0.85rem;}' +
+      'th{background:#f8fafc;color:#64748b;}.tot{text-align:left;font-weight:800;margin-top:10px;}</style></head><body>' +
+      body + '</body></html>');
     win.document.close();
-    setTimeout(function () { win.print(); }, 400);
+    win.focus();
+    setTimeout(function () { win.print(); }, 300);
+  }
+
+  function handleBulk(action) {
+    if (action === 'clear') { selectedIds = []; render(); return; }
+
+    var list = selectedInvoices();
+    if (!list.length) return;
+
+    if (action === 'excel') { exportExcel(list); return; }
+    if (action === 'pdf') { printInvoices(list); return; }
+
+    if (action === 'remind') {
+      var due = list.filter(function (i) { return i.status === 'pending' || i.status === 'overdue'; });
+      if (!due.length) { toast('الفواتير المحددة لا تحتاج تذكيراً', 'danger'); return; }
+      due.forEach(function (i) { Store.remindInvoice(i.id); });
+      toast('تم تسجيل تذكير لـ ' + due.length + ' فاتورة', 'success');
+    } else if (action === 'paid') {
+      if (!window.confirm('سيتم تعليم ' + list.length + ' فاتورة كمدفوعة. هل تريد المتابعة؟')) return;
+      list.forEach(function (i) { Store.markInvoicePaid(i.id); });
+      toast('تم تحديث ' + list.length + ' فاتورة', 'success');
+    }
+
+    selectedIds = [];
+    load();
+    render();
+  }
+
+  /* ---------------- الفلاتر ---------------- */
+  function clearFilters() {
+    filters = { q: '', from: '', to: '', min: '', max: '' };
+    $('#invSearch').value = '';
+    $('#invMinAmount').value = '';
+    $('#invMaxAmount').value = '';
+    if (window.DateField) { DateField.clear('invFrom'); DateField.clear('invTo'); }
+    render();
+  }
+
+  function initFilters() {
+    $('#invSearch').addEventListener('input', function () { filters.q = this.value; selectedIds = []; render(); });
+
+    $('#invFilterToggle').addEventListener('click', function () {
+      var box = $('#invFilters');
+      box.hidden = !box.hidden;
+    });
+
+    ['#invMinAmount', '#invMaxAmount'].forEach(function (sel) {
+      $(sel).addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9.]/g, '');
+        filters[sel === '#invMinAmount' ? 'min' : 'max'] = this.value;
+        render();
+      });
+    });
+
+    ['#invFrom', '#invTo'].forEach(function (sel) {
+      $(sel).addEventListener('change', function () {
+        filters[sel === '#invFrom' ? 'from' : 'to'] = this.value;
+        render();
+      });
+    });
+
+    $('#invClearFilters').addEventListener('click', clearFilters);
+    $('#invEmptyReset').addEventListener('click', function () { currentTab = ''; clearFilters(); });
+    $('#invExportAll').addEventListener('click', function () { exportExcel(visible()); });
+
+    $('#invCheckAll').addEventListener('change', function () {
+      var list = visible();
+      if (this.checked) {
+        list.forEach(function (i) { if (selectedIds.indexOf(i.id) === -1) selectedIds.push(i.id); });
+      } else {
+        var ids = list.map(function (i) { return i.id; });
+        selectedIds = selectedIds.filter(function (id) { return ids.indexOf(id) === -1; });
+      }
+      render();
+    });
+
+    $all('[data-ibulk]').forEach(function (btn) {
+      btn.addEventListener('click', function () { handleBulk(btn.getAttribute('data-ibulk')); });
+    });
+  }
+
+  function render() {
+    renderSummary();
+    renderTabs();
+    renderTable();
+    renderBulk();
+  }
+
+  function initCompanyName() {
+    var name = null;
+    try { name = localStorage.getItem('ammar_company_name'); } catch (e) { /* ignore */ }
+    if (name) document.getElementById('dashCompanyName').textContent = name;
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    initTabs();
-    updateStats();
-    renderTable();
+    initCompanyName();
+    initFilters();
+
+    var tab = new URLSearchParams(window.location.search).get('tab');
+    if (tab) TABS.forEach(function (t) { if (t.key === tab) currentTab = tab; });
+
+    setTimeout(function () {
+      load();
+      render();
+      Store.subscribe(function () { load(); render(); });
+    }, 220);
   });
 })();
