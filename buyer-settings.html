@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إعدادات الحساب | بوابة المشتري - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">المشتري</span>
+            <span class="user-role">حساب مشترٍ</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">إعدادات الحساب</h1>
+            <p class="page-subtitle">بياناتك الشخصية وتفضيلات اللغة والإشعارات</p>
+          </div>
+        </div>
+
+        <div class="settings-shell">
+          <nav class="settings-nav">
+            <button type="button" class="settings-nav-btn is-active" data-panel="profile">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              البيانات الشخصية
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="security">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              كلمة المرور
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="prefs">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/></svg>
+              اللغة والمظهر
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="notifs">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              الإشعارات
+            </button>
+          </nav>
+
+          <div>
+            <section class="settings-panel is-active" data-panel="profile">
+              <h3>بياناتك الشخصية</h3>
+              <p class="settings-panel-sub">تُستخدم في الفواتير والتواصل بخصوص طلباتك</p>
+              <div class="pd-field-row cols-2">
+                <div class="pd-field">
+                  <label for="bsName">الاسم الكامل <em>*</em></label>
+                  <input type="text" id="bsName" data-validate="text" data-required />
+                </div>
+                <div class="pd-field">
+                  <label for="bsEmail">البريد الإلكتروني <em>*</em></label>
+                  <input type="email" id="bsEmail" dir="ltr" data-validate="email" data-required />
+                </div>
+              </div>
+              <div class="pd-field-row cols-2">
+                <div class="pd-field">
+                  <label for="bsPhone">رقم الجوال <em>*</em></label>
+                  <input type="tel" id="bsPhone" dir="ltr" inputmode="numeric" maxlength="10" data-validate="mobileSA" data-required />
+                </div>
+                <div class="pd-field">
+                  <label for="bsCity">المدينة</label>
+                  <select id="bsCity"><option value="">اختر المدينة</option></select>
+                </div>
+              </div>
+              <button type="button" class="ob-btn-primary" id="bsSaveProfile">حفظ البيانات</button>
+            </section>
+
+            <section class="settings-panel" data-panel="security">
+              <h3>تغيير كلمة المرور</h3>
+              <p class="settings-panel-sub">يُفضّل استخدام كلمة مرور قوية لا تقل عن 8 أحرف</p>
+              <div class="pd-field-row cols-3">
+                <div class="pd-field">
+                  <label for="bsPwCurrent">كلمة المرور الحالية</label>
+                  <input type="password" id="bsPwCurrent" dir="ltr" />
+                </div>
+                <div class="pd-field">
+                  <label for="bsPwNew">كلمة المرور الجديدة</label>
+                  <input type="password" id="bsPwNew" dir="ltr" />
+                </div>
+                <div class="pd-field">
+                  <label for="bsPwConfirm">تأكيد كلمة المرور</label>
+                  <input type="password" id="bsPwConfirm" dir="ltr" />
+                  <span class="field-error" id="bsPwError"></span>
+                </div>
+              </div>
+              <button type="button" class="ob-btn-secondary" id="bsSavePw">تحديث كلمة المرور</button>
+            </section>
+
+            <section class="settings-panel" data-panel="prefs">
+              <h3>اللغة والمظهر</h3>
+              <p class="settings-panel-sub">تُطبَّق على واجهة بوابة المشتري</p>
+              <div class="pd-field-row cols-2">
+                <div class="pd-field">
+                  <label for="bsLanguage">لغة الواجهة</label>
+                  <select id="bsLanguage"><option value="ar">العربية</option><option value="en">English</option></select>
+                </div>
+                <div class="pd-field">
+                  <label for="bsCurrency">العملة المعروضة</label>
+                  <select id="bsCurrency">
+                    <option value="SAR">ريال سعودي (ر.س)</option>
+                    <option value="USD">دولار أمريكي ($)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="pd-subhead" style="margin-top:24px;"><strong>مظهر الواجهة</strong></div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button type="button" class="ob-btn-secondary" id="bsThemeLight">الوضع الفاتح</button>
+                <button type="button" class="ob-btn-secondary" id="bsThemeDark">الوضع الداكن</button>
+              </div>
+            </section>
+
+            <section class="settings-panel" data-panel="notifs">
+              <h3>تفضيلات الإشعارات</h3>
+              <p class="settings-panel-sub">اختر ما تريد أن يصلك من تحديثات</p>
+              <div id="bsNotifs"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/validate.js"></script>
+  <script src="js/saudi-regions.js"></script>
+  <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-settings.js"></script>
+</body>
+</html>

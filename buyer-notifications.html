@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>الإشعارات | بوابة الموردين - عمار</title>
+  <title>الإشعارات | بوابة المشتري - عمار</title>
   <link rel="icon" type="image/png" href="assets/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,11 +13,7 @@
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
   <link rel="stylesheet" href="css/orders.css" />
-  <script>
-    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
-      window.location.replace('onboarding.html');
-    }
-  </script>
+  <link rel="stylesheet" href="css/buyer.css" />
 </head>
 <body>
 
@@ -31,8 +27,8 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <div class="user-info">
-            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
-            <span class="user-role">مورد معتمد</span>
+            <span class="user-name" id="dashCompanyName">المشتري</span>
+            <span class="user-role">حساب مشترٍ</span>
           </div>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
@@ -47,57 +43,46 @@
         <div class="page-header">
           <div>
             <h1 class="page-title">الإشعارات</h1>
-            <p class="page-subtitle">آخر التحديثات على طلباتك ومخزونك ومحادثاتك</p>
+            <p class="page-subtitle">تحديثات طلباتك وشحناتك وفواتيرك</p>
           </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <a class="ob-btn-secondary" href="notification-settings.html" style="text-decoration:none;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              إعدادات التنبيهات
-            </a>
-            <button class="ob-btn-secondary" id="notifMarkAllBtn">تحديد الكل كمقروء</button>
-          </div>
+          <button class="ob-btn-secondary" id="bnMarkAll">تحديد الكل كمقروء</button>
         </div>
 
-        <!-- التنبيهات الحرجة ذات الأولوية العالية -->
-        <div class="ord-alert bad" id="notifHighAlert" hidden>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span id="notifHighText"></span>
-        </div>
-
-        <div class="tab-bar" id="notifTabs"><!-- JS-populated --></div>
+        <div class="tab-bar" id="bnTabs"></div>
 
         <div class="pd-toolbar">
           <div class="pd-search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="notifSearch" placeholder="ابحث في الإشعارات..." />
+            <input type="search" id="bnSearch" placeholder="ابحث في الإشعارات..." />
           </div>
-          <select class="pd-filter" id="notifReadFilter">
+          <select class="pd-filter" id="bnReadFilter">
             <option value="">كل الحالات</option>
             <option value="unread">غير مقروء</option>
             <option value="read">مقروء</option>
           </select>
         </div>
 
-        <div class="ord-state" id="notifLoading">
+        <div class="ord-state" id="bnLoading">
           <span class="ord-spinner"></span>
           <strong>جارٍ تحميل الإشعارات…</strong>
         </div>
 
-        <div class="nt-list" id="notifList" hidden><!-- JS-populated --></div>
+        <div class="nt-list" id="bnList" hidden></div>
 
-        <div class="ord-state" id="notifEmpty" hidden>
+        <div class="ord-state" id="bnEmpty" hidden>
           <span class="ord-state-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           </span>
-          <strong id="notifEmptyTitle">لا توجد إشعارات</strong>
-          <p id="notifEmptyText">ستظهر هنا التنبيهات المتعلقة بطلباتك ومخزونك وفواتيرك.</p>
+          <strong id="bnEmptyTitle">لا توجد إشعارات</strong>
+          <p id="bnEmptyText">ستظهر هنا تحديثات طلباتك وشحناتك.</p>
         </div>
       </div>
     </main>
   </div>
 
   <script src="js/store.js"></script>
-  <script src="js/shell.js"></script>
-  <script src="js/notifications.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-notifications.js"></script>
 </body>
 </html>

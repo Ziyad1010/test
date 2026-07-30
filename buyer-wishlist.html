@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>المستودعات | بوابة الموردين - عمار</title>
+  <title>المفضلة | بوابة المشتري - عمار</title>
   <link rel="icon" type="image/png" href="assets/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,11 +12,8 @@
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
-  <script>
-    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
-      window.location.replace('onboarding.html');
-    }
-  </script>
+  <link rel="stylesheet" href="css/orders.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
 </head>
 <body>
 
@@ -30,8 +27,8 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <div class="user-info">
-            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
-            <span class="user-role">مورد معتمد</span>
+            <span class="user-name" id="dashCompanyName">المشتري</span>
+            <span class="user-role">حساب مشترٍ</span>
           </div>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
@@ -45,36 +42,33 @@
       <div class="dash-body">
         <div class="page-header">
           <div>
-            <h1 class="page-title">المستودعات</h1>
-            <p class="page-subtitle">إدارة مستودعاتك ومتابعة حركة المخزون بين الفروع</p>
+            <h1 class="page-title">المفضلة</h1>
+            <p class="page-subtitle">منتجات حفظتها للشراء لاحقاً</p>
           </div>
-          <a href="onboarding.html?step=4" class="pd-add-btn" style="text-decoration:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            إضافة مستودع
-          </a>
         </div>
 
-        <div class="card-grid" id="whGrid"><!-- JS-populated --></div>
-
-        <div class="tab-bar" id="whTabs">
-          <button type="button" class="tab-btn is-active" data-tab="inventory">المخزون</button>
-          <button type="button" class="tab-btn" data-tab="incoming">الوارد</button>
-          <button type="button" class="tab-btn" data-tab="outgoing">الصادر</button>
-          <button type="button" class="tab-btn" data-tab="transfers">التحويلات بين المستودعات</button>
+        <div class="ord-state" id="bwLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل المفضلة…</strong>
         </div>
 
-        <div class="pd-table-wrap">
-          <table class="pd-table" id="whTable">
-            <thead id="whTableHead"></thead>
-            <tbody id="whTableBody"><!-- JS-populated --></tbody>
-          </table>
+        <div class="pd-grid" id="bwGrid" hidden></div>
+
+        <div class="ord-state" id="bwEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </span>
+          <strong>قائمة المفضلة فارغة</strong>
+          <p>احفظ المنتجات التي تهمّك بالضغط على أيقونة القلب لتجدها هنا لاحقاً.</p>
+          <a class="ob-btn-secondary" href="buyer-home.html" style="text-decoration:none;">تصفّح المنتجات</a>
         </div>
       </div>
     </main>
   </div>
 
   <script src="js/store.js"></script>
-  <script src="js/shell.js"></script>
-  <script src="js/warehouses.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-wishlist.js"></script>
 </body>
 </html>

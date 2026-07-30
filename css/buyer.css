@@ -1,0 +1,210 @@
+/* ============================================================
+   عمار — بوابة المشتري
+   لا تعرّف هذه الورقة أي ألوان أو خطوط جديدة: كل شيء يرث متغيّرات
+   dashboard.css نفسها، فتبقى الهوية البصرية موحّدة مع بوابة المورد.
+   ما هنا هو فقط مكوّنات خاصة بالمشتري غير موجودة في بوابة المورد.
+   ============================================================ */
+
+/* ===================== شريط البحث الموحّد ===================== */
+.by-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.by-search-bar > svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; }
+.by-search-bar input[type="search"] {
+  flex: 1;
+  min-width: 180px;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: var(--ink);
+  padding: 8px 0;
+}
+.by-search-bar select {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 9px 12px;
+  flex-shrink: 0;
+}
+.by-search-btn {
+  border: none;
+  background: var(--primary-600);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+.by-search-btn:hover { background: var(--primary-700); }
+
+/* ===================== بطاقات الوصول السريع ===================== */
+.by-link-card {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+.by-link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-600);
+}
+
+/* ===================== شبكة الفئات ===================== */
+.by-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.by-category {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: right;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.by-category:hover { border-color: var(--primary-600); background: var(--primary-50); }
+.by-category.is-active { border-color: var(--primary-600); background: var(--primary-50); }
+.by-category-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--primary-50); color: var(--primary-600);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.by-category-icon svg { width: 18px; height: 18px; }
+.by-category-body { min-width: 0; }
+.by-category-body strong { display: block; font-size: 0.86rem; font-weight: 700; }
+.by-category-body small { font-size: 0.74rem; color: var(--muted); }
+
+/* ===================== زر المفضلة على بطاقة المنتج ===================== */
+.by-fav-btn {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 8px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: color 0.18s ease, transform 0.15s ease;
+}
+.by-fav-btn svg { width: 15px; height: 15px; }
+.by-fav-btn:hover { transform: scale(1.08); }
+.by-fav-btn.is-on { color: var(--danger); }
+.by-fav-btn.is-on svg { fill: currentColor; }
+:root[data-theme="dark"] .by-fav-btn { background: rgba(22, 31, 51, 0.92); }
+
+/* ===================== العروض ===================== */
+.by-offer-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.by-offer {
+  background: linear-gradient(150deg, var(--primary-50), var(--surface) 60%);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+:root[data-theme="dark"] .by-offer {
+  background: linear-gradient(150deg, rgba(59, 130, 246, 0.14), var(--surface) 60%);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+.by-offer-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.by-offer-badge { font-size: 1.4rem; font-weight: 800; color: var(--primary-600); }
+.by-offer-code {
+  font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  background: var(--surface); border: 1px dashed var(--primary-600); color: var(--primary-600);
+  direction: ltr; display: inline-block;
+}
+.by-offer strong { display: block; font-size: 0.92rem; margin-bottom: 3px; }
+.by-offer small { font-size: 0.76rem; color: var(--muted); }
+
+/* ===================== النجوم ===================== */
+.by-stars { display: inline-flex; gap: 3px; }
+.by-stars svg { width: 16px; height: 16px; color: var(--line); }
+.by-stars svg.is-on { color: var(--warning); fill: currentColor; }
+
+.by-star-input { display: inline-flex; gap: 5px; }
+.by-star-input button {
+  border: none; background: none; padding: 2px; cursor: pointer;
+  color: var(--line); line-height: 0;
+}
+.by-star-input button svg { width: 28px; height: 28px; }
+.by-star-input button.is-on { color: var(--warning); }
+.by-star-input button.is-on svg { fill: currentColor; }
+
+/* ===================== بطاقات العناوين وطرق الدفع ===================== */
+.by-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.by-tile {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  text-align: right;
+  font-family: inherit;
+  color: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.by-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--primary-600); }
+.by-tile.is-default { border-color: var(--primary-600); }
+.by-tile-head { display: flex; align-items: center; gap: 9px; }
+.by-tile-head strong { font-size: 0.92rem; font-weight: 700; margin-inline-end: auto; }
+.by-tile p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
+
+.by-card-brand {
+  width: 42px; height: 28px; border-radius: 6px;
+  background: var(--surface-2); color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.68rem; font-weight: 800; flex-shrink: 0;
+  border: 1px solid var(--line);
+}
+
+/* ===================== تجاوب ===================== */
+@media (max-width: 640px) {
+  .by-search-bar { padding: 10px 12px; }
+  .by-search-bar select, .by-search-btn { width: 100%; }
+  .by-category-grid { grid-template-columns: 1fr 1fr; }
+}

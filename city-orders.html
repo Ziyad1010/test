@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>طلبات المدينة | بوابة الموردين - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <script>
+    if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
+      window.location.replace('onboarding.html');
+    }
+  </script>
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">شركة البناء الحديث</span>
+            <span class="user-role">مورد معتمد</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <a href="analytics.html" class="ord-link" style="font-size:0.84rem;display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              العودة إلى التحليلات
+            </a>
+            <h1 class="page-title" id="coTitle">طلبات المدينة</h1>
+            <p class="page-subtitle" id="coSubtitle">جارٍ التحميل…</p>
+          </div>
+          <button class="ob-btn-secondary" id="coExportBtn" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            تصدير Excel
+          </button>
+        </div>
+
+        <div class="ord-state" id="coLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل طلبات المدينة…</strong>
+        </div>
+
+        <div class="ord-state" id="coEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </span>
+          <strong>لا توجد طلبات لهذه المدينة</strong>
+          <p>لم تُسجَّل طلبات من هذه المدينة ضمن الفترة المحددة.</p>
+          <a class="ob-btn-secondary" href="analytics.html" style="text-decoration:none;">العودة إلى التحليلات</a>
+        </div>
+
+        <div id="coContent" hidden>
+          <div class="fin-summary">
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span>
+                <span class="fin-card-label">عدد الطلبات</span>
+              </div>
+              <div class="fin-card-value" id="coOrders">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                <span class="fin-card-label">إجمالي الإيرادات</span>
+              </div>
+              <div class="fin-card-value" id="coRevenue">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+                <span class="fin-card-label">متوسط قيمة الطلب</span>
+              </div>
+              <div class="fin-card-value" id="coAov">—</div>
+            </div>
+            <div class="fin-card">
+              <div class="fin-card-head">
+                <span class="fin-card-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                <span class="fin-card-label">عدد العملاء</span>
+              </div>
+              <div class="fin-card-value" id="coCustomers">—</div>
+            </div>
+          </div>
+
+          <div class="ord-detail-grid">
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  <h3>طلبات المدينة</h3>
+                </div>
+                <div style="overflow-x:auto;">
+                  <table class="ord-items-table">
+                    <thead>
+                      <tr><th>رقم الطلب</th><th>التاريخ</th><th>العميل</th><th>الحي</th><th>القيمة</th><th>الحالة</th></tr>
+                    </thead>
+                    <tbody id="coOrdersBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+                  <h3>أكثر الأصناف طلباً</h3>
+                </div>
+                <div class="ord-info-list" id="coTopProducts"></div>
+              </div>
+
+              <div class="ord-card">
+                <div class="ord-card-head">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <h3>عملاء المدينة</h3>
+                </div>
+                <div class="ord-info-list" id="coTopCustomers"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/city-orders.js"></script>
+</body>
+</html>

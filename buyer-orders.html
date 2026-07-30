@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>طلباتي | بوابة المشتري - عمار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/products.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
+</head>
+<body>
+
+  <div class="dash-shell">
+    <aside class="dash-sidebar" id="dashSidebar"></aside>
+
+    <main class="dash-main">
+      <header class="top-navbar">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="user-info">
+            <span class="user-name" id="dashCompanyName">المشتري</span>
+            <span class="user-role">حساب مشترٍ</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+            الرئيسية للموقع
+          </a>
+        </div>
+      </header>
+
+      <div class="dash-body">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">طلباتي</h1>
+            <p class="page-subtitle">تابع حالة طلباتك وتتبّع شحناتك لحظة بلحظة</p>
+          </div>
+        </div>
+
+        <div class="tab-bar" id="boTabs"></div>
+
+        <div class="pd-toolbar">
+          <div class="pd-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="boSearch" placeholder="ابحث برقم الطلب أو اسم المنتج..." />
+          </div>
+        </div>
+
+        <div class="ord-state" id="boLoading">
+          <span class="ord-spinner"></span>
+          <strong>جارٍ تحميل طلباتك…</strong>
+        </div>
+
+        <div class="pd-table-wrap" id="boTableWrap" hidden>
+          <table class="pd-table">
+            <thead>
+              <tr>
+                <th>رقم الطلب</th>
+                <th>التاريخ</th>
+                <th>المنتجات</th>
+                <th>الكمية</th>
+                <th>القيمة</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody id="boTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="ord-state" id="boEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </span>
+          <strong id="boEmptyTitle">لا توجد طلبات</strong>
+          <p id="boEmptyText">ابدأ التسوّق وستظهر طلباتك هنا.</p>
+          <a class="ob-btn-secondary" href="buyer-home.html" style="text-decoration:none;">تصفّح المنتجات</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-orders.js"></script>
+</body>
+</html>

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
   <script>
     if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
       window.location.replace('onboarding.html');
@@ -46,133 +47,182 @@
         <div class="page-header">
           <div>
             <h1 class="page-title">الإعدادات</h1>
-            <p class="page-subtitle">إدارة حسابك وتفضيلات المنصة</p>
+            <p class="page-subtitle">إدارة حسابك، التحصيل، الشحن، وتفضيلات المنصة</p>
           </div>
         </div>
 
         <div class="settings-shell">
-          <nav class="settings-nav" id="settingsNav">
-            <button type="button" class="settings-nav-btn is-active" data-panel="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>الملف الشخصي</button>
-            <button type="button" class="settings-nav-btn" data-panel="password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>كلمة المرور</button>
-            <button type="button" class="settings-nav-btn" data-panel="security"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>الأمان (2FA)</button>
-            <button type="button" class="settings-nav-btn" data-panel="api"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 2-9.6 9.6"/><circle cx="7" cy="17" r="4"/><path d="m17 2 5 5-3 3-2.5-1.5L14 11l-3-3 2.5-2.5L12 4l3-2z"/></svg>مفاتيح API</button>
-            <button type="button" class="settings-nav-btn" data-panel="payment"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>الدفع</button>
-            <button type="button" class="settings-nav-btn" data-panel="shipping"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>الشحن</button>
-            <button type="button" class="settings-nav-btn" data-panel="notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>الإشعارات</button>
-            <button type="button" class="settings-nav-btn" data-panel="language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>اللغة</button>
-            <button type="button" class="settings-nav-btn" data-panel="theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>المظهر</button>
+          <nav class="settings-nav">
+            <button type="button" class="settings-nav-btn is-active" data-panel="account">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              الحساب والأمان
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="payment">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              الدفع والتحصيل
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="shipping">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              الشحن واللوجستيات
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="preferences">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              اللغة والعملة والمظهر
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              منطقة الخطر
+            </button>
           </nav>
 
           <div>
-            <!-- Profile -->
-            <section class="settings-panel is-active" data-panel="profile">
-              <h3>الملف الشخصي</h3>
-              <p class="settings-panel-sub">بيانات حسابك الشخصي داخل بوابة الموردين</p>
-              <div class="pd-field-row cols-2">
-                <div class="pd-field"><label>الاسم الكامل</label><input type="text" id="setName" value="محمد العتيبي" /></div>
-                <div class="pd-field"><label>البريد الإلكتروني</label><input type="email" id="setEmail" value="mohammed@example.sa" /></div>
-              </div>
-              <div class="pd-field-row cols-2">
-                <div class="pd-field"><label>رقم الجوال</label><input type="tel" id="setPhone" value="+966 50 123 4567" /></div>
-                <div class="pd-field"><label>المسمى الوظيفي</label><input type="text" id="setTitle" value="مدير الحساب" /></div>
-              </div>
-              <button type="button" class="ob-btn-primary" data-save="تم حفظ بيانات الملف الشخصي">حفظ التغييرات</button>
-            </section>
+            <!-- ============ الحساب والأمان ============ -->
+            <section class="settings-panel is-active" data-panel="account">
+              <h3>بيانات الحساب</h3>
+              <p class="settings-panel-sub">البريد ورقم الجوال المرتبطان بحسابك كمورد</p>
 
-            <!-- Password -->
-            <section class="settings-panel" data-panel="password">
-              <h3>كلمة المرور</h3>
-              <p class="settings-panel-sub">يُنصح بتحديث كلمة المرور بشكل دوري</p>
-              <div class="pd-field"><label>كلمة المرور الحالية</label><input type="password" id="pwCurrent" placeholder="••••••••" /></div>
               <div class="pd-field-row cols-2">
-                <div class="pd-field"><label>كلمة المرور الجديدة</label><input type="password" id="pwNew" placeholder="••••••••" /></div>
-                <div class="pd-field"><label>تأكيد كلمة المرور</label><input type="password" id="pwConfirm" placeholder="••••••••" /></div>
+                <div class="pd-field">
+                  <label for="stEmail">البريد الإلكتروني <em>*</em></label>
+                  <input type="email" id="stEmail" dir="ltr" data-validate="email" data-required />
+                </div>
+                <div class="pd-field">
+                  <label for="stPhone">رقم الجوال <em>*</em></label>
+                  <input type="tel" id="stPhone" dir="ltr" inputmode="numeric" maxlength="10" data-validate="mobileSA" data-required />
+                </div>
               </div>
-              <button type="button" class="ob-btn-primary" id="pwSaveBtn">تحديث كلمة المرور</button>
-            </section>
+              <button type="button" class="ob-btn-primary" id="stSaveAccount">حفظ بيانات الحساب</button>
 
-            <!-- Security -->
-            <section class="settings-panel" data-panel="security">
-              <h3>الأمان</h3>
-              <p class="settings-panel-sub">تحكم في طرق حماية حسابك</p>
+              <div class="pd-subhead" style="margin-top:28px;"><strong>تغيير كلمة المرور</strong></div>
+              <div class="pd-field-row cols-3">
+                <div class="pd-field">
+                  <label for="pwCurrent">كلمة المرور الحالية</label>
+                  <input type="password" id="pwCurrent" dir="ltr" />
+                </div>
+                <div class="pd-field">
+                  <label for="pwNew">كلمة المرور الجديدة</label>
+                  <input type="password" id="pwNew" dir="ltr" />
+                </div>
+                <div class="pd-field">
+                  <label for="pwConfirm">تأكيد كلمة المرور</label>
+                  <input type="password" id="pwConfirm" dir="ltr" />
+                  <span class="field-error" id="pwError"></span>
+                </div>
+              </div>
+              <button type="button" class="ob-btn-secondary" id="pwSaveBtn">تحديث كلمة المرور</button>
+
+              <div class="pd-subhead" style="margin-top:28px;"><strong>الأمان</strong></div>
               <div class="toggle-row">
                 <div><strong>التحقق بخطوتين (2FA)</strong><small>رمز تحقق إضافي عبر الرسائل النصية عند تسجيل الدخول</small></div>
-                <label class="ob-toggle"><input type="checkbox" id="tfaToggle" checked /><span class="ob-toggle-switch"></span></label>
+                <label class="ob-toggle"><input type="checkbox" id="stTwoFactor" /><span class="ob-toggle-switch"></span></label>
               </div>
               <div class="toggle-row">
                 <div><strong>تنبيه عند تسجيل دخول من جهاز جديد</strong><small>إشعار فوري عبر البريد الإلكتروني</small></div>
-                <label class="ob-toggle"><input type="checkbox" checked /><span class="ob-toggle-switch"></span></label>
-              </div>
-              <div class="toggle-row">
-                <div><strong>الجلسة الحالية</strong><small>Windows · Chrome · الرياض، السعودية</small></div>
-                <button type="button" class="ob-btn-secondary" style="color:var(--danger);" id="endSessionBtn">إنهاء الجلسة</button>
+                <label class="ob-toggle"><input type="checkbox" id="stLoginAlerts" /><span class="ob-toggle-switch"></span></label>
               </div>
             </section>
 
-            <!-- API Keys -->
-            <section class="settings-panel" data-panel="api">
-              <h3>مفاتيح API</h3>
-              <p class="settings-panel-sub">استخدم هذا المفتاح لربط أنظمتك الخارجية بمنصة عمّار</p>
-              <div class="pd-field">
-                <label>مفتاح API الحالي</label>
-                <div style="display:flex;gap:8px;">
-                  <input type="text" id="apiKeyField" readonly style="flex:1;font-family:monospace;" />
-                  <button type="button" class="ob-btn-secondary" id="apiCopyBtn">نسخ</button>
+            <!-- ============ الدفع والتحصيل ============ -->
+            <section class="settings-panel" data-panel="payment">
+              <h3>الحسابات البنكية</h3>
+              <p class="settings-panel-sub">الحساب الرئيسي هو الذي تُحوَّل إليه مستحقاتك أسبوعياً</p>
+
+              <div id="stBanks"></div>
+
+              <button type="button" class="pd-add-row-btn" id="stAddBankBtn" style="margin-top:14px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                إضافة حساب بنكي
+              </button>
+            </section>
+
+            <!-- ============ الشحن ============ -->
+            <section class="settings-panel" data-panel="shipping">
+              <h3>شركات الشحن المفضّلة</h3>
+              <p class="settings-panel-sub">الشركات المحددة تظهر أولاً عند شحن أي طلب</p>
+              <div id="stCarriers"></div>
+
+              <div class="pd-subhead" style="margin-top:26px;"><strong>مناطق التغطية</strong></div>
+              <p class="settings-panel-sub">المدن التي توصّل إليها — تظهر للمشترين على صفحة متجرك</p>
+
+              <div class="pd-city-picker">
+                <div class="pd-city-toolbar">
+                  <div class="pd-city-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="search" id="stCitySearch" placeholder="ابحث عن مدينة أو منطقة..." />
+                  </div>
+                  <span class="pd-city-count" id="stCityCount">0 مدينة</span>
+                  <button type="button" class="pd-city-link" id="stCityAll">تحديد الكل</button>
+                  <button type="button" class="pd-city-link" id="stCityNone">إلغاء الكل</button>
+                </div>
+                <div class="pd-city-list" id="stCityList"></div>
+              </div>
+
+              <button type="button" class="ob-btn-primary" id="stSaveShipping" style="margin-top:16px;">حفظ إعدادات الشحن</button>
+            </section>
+
+            <!-- ============ التفضيلات ============ -->
+            <section class="settings-panel" data-panel="preferences">
+              <h3>اللغة والعملة</h3>
+              <p class="settings-panel-sub">تُطبَّق على واجهة لوحة التحكم وعرض الأسعار</p>
+
+              <div class="pd-field-row cols-2">
+                <div class="pd-field">
+                  <label for="stLanguage">لغة الواجهة</label>
+                  <select id="stLanguage">
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                  </select>
+                </div>
+                <div class="pd-field">
+                  <label for="stCurrency">العملة المعروضة</label>
+                  <select id="stCurrency">
+                    <option value="SAR">ريال سعودي (ر.س)</option>
+                    <option value="USD">دولار أمريكي ($)</option>
+                    <option value="AED">درهم إماراتي (د.إ)</option>
+                  </select>
                 </div>
               </div>
-              <button type="button" class="ob-btn-primary" id="apiRegenBtn">إنشاء مفتاح جديد</button>
-            </section>
 
-            <!-- Payment -->
-            <section class="settings-panel" data-panel="payment">
-              <h3>إعدادات الدفع</h3>
-              <p class="settings-panel-sub">الحساب البنكي المستخدم لتحويل مستحقاتك</p>
-              <div class="pd-field-row cols-2">
-                <div class="pd-field"><label>اسم البنك</label><input type="text" value="البنك الأهلي السعودي" /></div>
-                <div class="pd-field"><label>رقم الآيبان (IBAN)</label><input type="text" value="SA00 0000 0000 0000 0000 0000" /></div>
+              <div class="pd-subhead" style="margin-top:26px;"><strong>مظهر لوحة التحكم</strong></div>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button type="button" class="ob-btn-secondary" id="themeLightBtn">الوضع الفاتح</button>
+                <button type="button" class="ob-btn-secondary" id="themeDarkBtn">الوضع الداكن</button>
               </div>
-              <button type="button" class="ob-btn-primary" data-save="تم حفظ إعدادات الدفع">حفظ التغييرات</button>
-            </section>
 
-            <!-- Shipping -->
-            <section class="settings-panel" data-panel="shipping">
-              <h3>إعدادات الشحن الافتراضية</h3>
-              <p class="settings-panel-sub">تطبَّق على المنتجات الجديدة ما لم تُخصَّص</p>
-              <div class="pd-field-row cols-2">
-                <div class="pd-field"><label>تكلفة الشحن الافتراضية</label><input type="number" value="50" /></div>
-                <div class="pd-field"><label>حد الشحن المجاني</label><input type="number" value="5000" /></div>
+              <div class="pd-subhead" style="margin-top:26px;"><strong>الإشعارات</strong></div>
+              <div class="ord-alert info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>تُدار تفضيلات التنبيهات في صفحة مستقلة تتيح التحكم بكل نوع على حدة —
+                  <a class="ord-link" href="notification-settings.html">افتح إعدادات التنبيهات ↗</a></span>
               </div>
-              <button type="button" class="ob-btn-primary" data-save="تم حفظ إعدادات الشحن">حفظ التغييرات</button>
             </section>
 
-            <!-- Notifications -->
-            <section class="settings-panel" data-panel="notifications">
-              <h3>تفضيلات الإشعارات</h3>
-              <p class="settings-panel-sub">اختر القنوات التي تريد استلام التنبيهات من خلالها</p>
-              <div class="toggle-row"><div><strong>طلبات جديدة</strong><small>بريد إلكتروني + إشعار داخل المنصة</small></div><label class="ob-toggle"><input type="checkbox" checked /><span class="ob-toggle-switch"></span></label></div>
-              <div class="toggle-row"><div><strong>رسائل العملاء</strong><small>إشعار داخل المنصة</small></div><label class="ob-toggle"><input type="checkbox" checked /><span class="ob-toggle-switch"></span></label></div>
-              <div class="toggle-row"><div><strong>تنبيهات المخزون المنخفض</strong><small>بريد إلكتروني يومي</small></div><label class="ob-toggle"><input type="checkbox" checked /><span class="ob-toggle-switch"></span></label></div>
-              <div class="toggle-row"><div><strong>التقييمات الجديدة</strong><small>إشعار داخل المنصة فقط</small></div><label class="ob-toggle"><input type="checkbox" /><span class="ob-toggle-switch"></span></label></div>
-            </section>
+            <!-- ============ منطقة الخطر ============ -->
+            <section class="settings-panel" data-panel="danger">
+              <h3>منطقة الخطر</h3>
+              <p class="settings-panel-sub">إجراءات لا يمكن التراجع عنها بسهولة — تعامل معها بحذر</p>
 
-            <!-- Language -->
-            <section class="settings-panel" data-panel="language">
-              <h3>اللغة</h3>
-              <p class="settings-panel-sub">لغة واجهة بوابة الموردين</p>
-              <div class="pd-field">
-                <label>اللغة الحالية</label>
-                <select disabled><option>العربية</option></select>
+              <div class="ord-card" style="border-color:var(--warning);margin-bottom:16px;">
+                <div class="ord-card-head" style="margin-bottom:10px;padding-bottom:8px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                  <h3>تعطيل الحساب مؤقتاً</h3>
+                </div>
+                <p style="font-size:0.84rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
+                  يُخفي متجرك ومنتجاتك عن المشترين ويوقف استقبال الطلبات الجديدة، مع الاحتفاظ بكل بياناتك.
+                  يمكنك إعادة التفعيل في أي وقت.
+                </p>
+                <button type="button" class="ob-btn-secondary" id="stDeactivateBtn" style="color:var(--warning);">تعطيل الحساب مؤقتاً</button>
               </div>
-              <p style="font-size:0.8rem;color:var(--muted);">دعم اللغات الإضافية (الإنجليزية) قيد التطوير حالياً.</p>
-            </section>
 
-            <!-- Theme -->
-            <section class="settings-panel" data-panel="theme">
-              <h3>المظهر</h3>
-              <p class="settings-panel-sub">التبديل بين الوضع الفاتح والداكن — يُطبَّق فوراً على جميع صفحات بوابة الموردين</p>
-              <div style="display:flex;gap:14px;">
-                <button type="button" class="ob-btn-secondary" id="themeLightBtn" style="flex:1;">☀️ الوضع الفاتح</button>
-                <button type="button" class="ob-btn-secondary" id="themeDarkBtn" style="flex:1;">🌙 الوضع الداكن</button>
+              <div class="ord-card" style="border-color:var(--danger);">
+                <div class="ord-card-head" style="margin-bottom:10px;padding-bottom:8px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                  <h3>حذف الحساب نهائياً</h3>
+                </div>
+                <p style="font-size:0.84rem;color:var(--muted);line-height:1.8;margin-bottom:14px;">
+                  يحذف منتجاتك وطلباتك وفواتيرك ومستنداتك بشكل نهائي. لا يمكن التراجع عن هذا الإجراء إطلاقاً.
+                </p>
+                <button type="button" class="ob-btn-secondary" id="stDeleteBtn" style="color:var(--danger);border-color:var(--danger);">حذف الحساب نهائياً</button>
               </div>
             </section>
           </div>
@@ -181,6 +231,68 @@
     </main>
   </div>
 
+  <!-- نافذة الحساب البنكي -->
+  <div class="pd-modal-overlay" id="stBankOverlay" hidden>
+    <div class="pd-modal" style="max-width:540px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        </span>
+        <h2 id="stBankTitle">إضافة حساب بنكي</h2>
+        <button type="button" class="pd-modal-close" id="stBankClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body">
+        <div class="pd-field">
+          <label for="stBankName">البنك <em>*</em></label>
+          <select id="stBankName">
+            <option value="">اختر البنك</option>
+            <option>مصرف الراجحي</option>
+            <option>البنك الأهلي السعودي</option>
+            <option>بنك الرياض</option>
+            <option>البنك السعودي الفرنسي</option>
+            <option>البنك العربي الوطني</option>
+            <option>بنك البلاد</option>
+            <option>مصرف الإنماء</option>
+            <option>البنك السعودي البريطاني (ساب)</option>
+          </select>
+          <span class="field-error" id="stBankError"></span>
+        </div>
+        <div class="pd-field">
+          <label for="stBankHolder">اسم صاحب الحساب <em>*</em></label>
+          <input type="text" id="stBankHolder" placeholder="يجب أن يطابق اسم المنشأة في السجل التجاري" data-validate="text" data-required />
+        </div>
+        <div class="pd-field">
+          <label for="stBankIban">
+            رقم الآيبان (IBAN) <em>*</em>
+            <span class="field-hint" tabindex="0" data-hint="يتكوّن من 24 خانة تبدأ بحرفي SA متبوعين بـ22 رقماً، وتجده في تطبيق بنكك أو خطاب الآيبان.">؟</span>
+          </label>
+          <input type="text" id="stBankIban" dir="ltr" maxlength="24" placeholder="SA0000000000000000000000" />
+          <span class="field-error" id="stIbanError"></span>
+        </div>
+        <div class="pd-field">
+          <label class="pd-check-label">
+            <input type="checkbox" id="stBankPrimary" />
+            تعيينه كحساب رئيسي لاستلام المستحقات
+          </label>
+        </div>
+      </div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="stBankDelete" style="color:var(--danger);" hidden>حذف الحساب</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-ghost" id="stBankCancel">إلغاء</button>
+          <button type="button" class="ob-btn-primary" id="stBankSave">حفظ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/saudi-regions.js"></script>
+  <script src="js/validate.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/settings.js"></script>
 </body>

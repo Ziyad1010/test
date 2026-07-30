@@ -50,16 +50,16 @@ var Shell = (function () {
     if (!mount) return;
     var active = currentPage();
 
-    // شارة الطلبات الجديدة التي لم يطّلع عليها البائع بعد
-    var unseen = 0;
-    if (window.Store && Store.unseenOrdersCount) {
-      try { unseen = Store.unseenOrdersCount(); } catch (e) { unseen = 0; }
+    // شارات: الطلبات الجديدة غير المطّلع عليها، والإشعارات غير المقروءة
+    var counts = { 'orders.html': 0, 'notifications.html': 0 };
+    if (window.Store) {
+      try { counts['orders.html'] = Store.unseenOrdersCount(); } catch (e) { /* ignore */ }
+      try { counts['notifications.html'] = Store.unreadTotal(); } catch (e) { /* ignore */ }
     }
 
     var navHtml = NAV_ITEMS.map(function (item) {
-      var badge = (item.href === 'orders.html' && unseen > 0)
-        ? '<span class="nav-badge">' + (unseen > 99 ? '99+' : unseen) + '</span>'
-        : '';
+      var n = counts[item.href] || 0;
+      var badge = n > 0 ? '<span class="nav-badge">' + (n > 99 ? '99+' : n) + '</span>' : '';
       return '<a href="' + item.href + '" class="nav-item' + (item.href === active ? ' active' : '') + '">' +
         iconSvg(item.icon) + '<span>' + item.label + '</span>' + badge + '</a>';
     }).join('');
@@ -167,6 +167,11 @@ var Shell = (function () {
   function setTheme(theme) {
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* ignore */ }
     applyTheme(theme);
+
+    // Charts bake their colours in at construction time, so switching theme
+    // has to rebuild them — Store.emit() makes every page redraw itself.
+    applyChartTheme();
+    if (window.Store && Store.emit) Store.emit();
   }
 
   function getTheme() {
@@ -178,6 +183,28 @@ var Shell = (function () {
   // Apply immediately (not gated on DOMContentLoaded) so there's minimal flash.
   applyTheme(getTheme());
 
+  // Chart.js colours are set in JS, so they can't inherit the CSS theme.
+  // Expose the current palette so chart code reads the right values.
+  function chartColors() {
+    var dark = getTheme() === 'dark';
+    return {
+      dark: dark,
+      grid: dark ? '#2c3a53' : '#e2e8f0',
+      text: dark ? '#94a3b8' : '#64748b',
+      surface: dark ? '#161f33' : '#ffffff'
+    };
+  }
+
+  function applyChartTheme() {
+    if (typeof Chart === 'undefined') return;
+    var c = chartColors();
+    Chart.defaults.font.family = "'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif";
+    Chart.defaults.color = c.text;
+    Chart.defaults.borderColor = c.grid;
+    Chart.defaults.plugins.legend.rtl = true;
+    Chart.defaults.plugins.tooltip.rtl = true;
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     renderSidebar();
     setCompanyName();
@@ -187,5 +214,8 @@ var Shell = (function () {
     if (window.Store && Store.subscribe) Store.subscribe(renderSidebar);
   });
 
-  return { toast: toast, logout: logout, setTheme: setTheme, getTheme: getTheme };
+  return {
+    toast: toast, logout: logout, setTheme: setTheme, getTheme: getTheme,
+    chartColors: chartColors, applyChartTheme: applyChartTheme
+  };
 })();

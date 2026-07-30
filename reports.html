@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
   <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/orders.css" />
   <script>
     if (localStorage.getItem('ammar_supplier_onboarded') !== 'true') {
       window.location.replace('onboarding.html');
@@ -50,17 +51,14 @@
           </div>
         </div>
 
-        <div class="report-config">
+        <!-- مكتبة التقارير الجاهزة -->
+        <h2 style="font-size:1rem;font-weight:700;margin-bottom:12px;">مكتبة التقارير</h2>
+        <div class="rp-library" id="repLibrary"><!-- JS-populated --></div>
+
+        <!-- تخصيص نطاق التقرير -->
+        <div class="report-config" id="repConfig">
+          <div class="pd-subhead"><strong>تخصيص نطاق التقرير</strong></div>
           <div class="pd-field-row cols-3">
-            <div class="pd-field">
-              <label for="repType">نوع التقرير</label>
-              <select id="repType">
-                <option value="sales">تقرير المبيعات</option>
-                <option value="inventory">تقرير المخزون</option>
-                <option value="orders">تقرير الطلبات</option>
-                <option value="customers">تقرير العملاء</option>
-              </select>
-            </div>
             <div class="pd-field">
               <label for="repFromDay">من تاريخ</label>
               <div class="ob-date-group" data-date-for="repFrom">
@@ -69,7 +67,7 @@
                 <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
                 <span class="ob-date-sep">/</span>
                 <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
-                <input type="hidden" id="repFrom" value="2026-07-01" />
+                <input type="hidden" id="repFrom" />
               </div>
             </div>
             <div class="pd-field">
@@ -80,42 +78,153 @@
                 <input type="text" data-part="month" inputmode="numeric" maxlength="2" placeholder="شهر" aria-label="الشهر" />
                 <span class="ob-date-sep">/</span>
                 <input type="text" data-part="year" inputmode="numeric" maxlength="4" placeholder="سنة" aria-label="السنة" />
-                <input type="hidden" id="repTo" value="2026-07-26" />
+                <input type="hidden" id="repTo" />
               </div>
             </div>
+            <div class="pd-field">
+              <label for="repCategory">فئة المنتج</label>
+              <select id="repCategory">
+                <option value="">كل الفئات</option>
+                <option value="steel">حديد وصلب</option>
+                <option value="cement">أسمنت</option>
+                <option value="concrete">خرسانة جاهزة</option>
+                <option value="finishing">مواد تشطيب</option>
+                <option value="blocks">طوب وبلوك</option>
+                <option value="tools">أدوات ومعدات</option>
+              </select>
+            </div>
           </div>
-          <div class="ob-actions" style="border-top:none;padding-top:0;margin-top:4px;">
-            <button type="button" class="ob-btn-primary" id="repGenerateBtn">إنشاء التقرير</button>
+          <div class="pd-field-row cols-3">
+            <div class="pd-field">
+              <label for="repStatus">حالة الطلب</label>
+              <select id="repStatus"><option value="">كل الحالات</option></select>
+            </div>
+            <div class="pd-field">
+              <label for="repCity">المدينة</label>
+              <select id="repCity"><option value="">كل المدن</option></select>
+            </div>
+            <div class="pd-field" style="align-self:flex-end;">
+              <button type="button" class="ob-btn-primary" id="repGenerateBtn" style="width:100%;">إنشاء ومعاينة التقرير</button>
+            </div>
           </div>
         </div>
 
-        <div id="repResult" hidden>
-          <div class="panel-card" style="margin-bottom:20px;">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title" id="repTitle">تقرير المبيعات</h2>
-                <p class="page-subtitle" id="repRange" style="margin-top:2px;"></p>
-              </div>
-              <div style="display:flex;gap:10px;">
-                <button type="button" class="ob-btn-secondary" id="repExportCsv">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  تصدير Excel (CSV)
-                </button>
-                <button type="button" class="ob-btn-secondary" id="repExportPdf">تصدير PDF</button>
-              </div>
+        <!-- حالة التحميل -->
+        <div class="ord-state" id="repLoading" hidden>
+          <span class="ord-spinner"></span>
+          <strong>جارٍ توليد التقرير…</strong>
+        </div>
+
+        <!-- معاينة التقرير -->
+        <div class="rp-preview-wrap" id="repResult" hidden>
+          <div class="rp-preview-head">
+            <div>
+              <h3 id="repTitle">تقرير المبيعات</h3>
+              <p id="repRange"></p>
             </div>
-            <div class="pd-table-wrap" style="box-shadow:none;border:1px solid var(--line);">
-              <table class="pd-table">
-                <thead id="repTableHead"></thead>
-                <tbody id="repTableBody"></tbody>
-              </table>
+            <div class="rp-preview-actions">
+              <button type="button" class="ob-btn-secondary" id="repExportPdf">تنزيل PDF</button>
+              <button type="button" class="ob-btn-secondary" id="repExportExcel">تنزيل Excel</button>
+              <button type="button" class="ob-btn-secondary" id="repExportCsv">تنزيل CSV</button>
+              <button type="button" class="ob-btn-secondary" id="repScheduleBtn">جدولة دورية</button>
             </div>
+          </div>
+          <div class="rp-preview-body">
+            <table class="pd-table">
+              <thead id="repTableHead"></thead>
+              <tbody id="repTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- حالة فارغة للتقرير -->
+        <div class="ord-state" id="repEmpty" hidden>
+          <span class="ord-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </span>
+          <strong>لا توجد بيانات في هذا التقرير</strong>
+          <p>لم تُسجَّل بيانات مطابقة للنطاق أو الفلاتر المحددة. جرّب توسيع الفترة أو إزالة الفلاتر.</p>
+        </div>
+
+        <div class="an-grid-2" style="margin-top:22px;">
+          <!-- التقارير المجدولة -->
+          <div class="ord-card">
+            <div class="ord-card-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <h3>التقارير المجدولة</h3>
+            </div>
+            <div id="repSchedules"></div>
+          </div>
+
+          <!-- سجل التقارير -->
+          <div class="ord-card">
+            <div class="ord-card-head">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <h3>سجل التقارير المُولّدة</h3>
+            </div>
+            <div id="repHistory"></div>
           </div>
         </div>
       </div>
     </main>
   </div>
 
+  <!-- نافذة جدولة تقرير دوري -->
+  <div class="pd-modal-overlay" id="repScheduleOverlay" hidden>
+    <div class="pd-modal" style="max-width:520px;">
+      <div class="pd-modal-header">
+        <span class="pd-modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+        <h2>جدولة تقرير دوري</h2>
+        <button type="button" class="pd-modal-close" id="repScheduleClose" aria-label="إغلاق">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="pd-modal-body">
+        <div class="pd-field">
+          <label for="repSchedType">التقرير</label>
+          <select id="repSchedType"></select>
+        </div>
+        <div class="pd-field-row cols-2">
+          <div class="pd-field">
+            <label for="repSchedFreq">التكرار</label>
+            <select id="repSchedFreq">
+              <option value="weekly">أسبوعي</option>
+              <option value="monthly">شهري</option>
+            </select>
+          </div>
+          <div class="pd-field">
+            <label for="repSchedFormat">الصيغة</label>
+            <select id="repSchedFormat">
+              <option value="pdf">PDF</option>
+              <option value="excel">Excel</option>
+              <option value="csv">CSV</option>
+            </select>
+          </div>
+        </div>
+        <div class="pd-field">
+          <label for="repSchedEmail">البريد الإلكتروني للاستلام <em>*</em></label>
+          <input type="email" id="repSchedEmail" dir="ltr" placeholder="reports@example.sa" />
+          <span class="field-error" id="repSchedError"></span>
+        </div>
+        <div class="ord-alert info" style="margin-bottom:0;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>تُحفظ الجدولة هنا وتظهر في قائمة التقارير المجدولة. الإرسال التلقائي بالبريد يتطلب ربط المنصة بخادم بريد عند الإطلاق.</span>
+        </div>
+      </div>
+      <div class="pd-modal-footer">
+        <div class="pd-modal-footer-start">
+          <button type="button" class="ob-btn-ghost" id="repScheduleCancel">إلغاء</button>
+        </div>
+        <div class="pd-modal-footer-end">
+          <button type="button" class="ob-btn-primary" id="repScheduleSave">حفظ الجدولة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/date-field.js"></script>
   <script src="js/reports.js"></script>
