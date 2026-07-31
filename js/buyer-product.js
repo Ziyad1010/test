@@ -181,6 +181,9 @@
         return;
       }
 
+      // سجّل المشاهدة لتغذية قسم "شاهدتها مؤخراً" والتوصيات
+      Buyer.recordView(product.id);
+
       $('#bpContent').hidden = false;
       render();
     }, 220);
