@@ -4,207 +4,241 @@
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $all = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
 
-  var search = '';
-  var category = '';
+  var esc = ByUI.esc;
+  var slideIndex = 0;
+  var slideTimer = null;
 
-  function fmt(n) { return Number(n || 0).toLocaleString('ar-SA', { maximumFractionDigits: 2 }); }
+  /* ---------------- بانرات الهيرو ---------------- */
+  function slides() {
+    var deals = Buyer.flashDeals(1)[0];
+    var top = Buyer.bestSellers(1)[0];
 
-  function esc(s) {
-    return String(s === undefined || s === null ? '' : s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  function toast(msg, kind) { if (window.Shell) Shell.toast(msg, kind); }
-
-  var CATEGORY_ICONS = {
-    steel: '<path d="M2 12h20"/><path d="M6 8v8"/><path d="M12 6v12"/><path d="M18 8v8"/>',
-    cement: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/>',
-    concrete: '<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
-    finishing: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/>',
-    blocks: '<rect x="2" y="4" width="9" height="7"/><rect x="13" y="4" width="9" height="7"/><rect x="2" y="13" width="9" height="7"/><rect x="13" y="13" width="9" height="7"/>',
-    tools: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>'
-  };
-
-  /* ---------------- البطاقات السريعة ---------------- */
-  function renderQuickCards() {
-    var orders = Buyer.orders();
-    var active = orders.filter(function (o) {
-      return ['pending', 'processing', 'ready', 'shipping'].indexOf(o.status) !== -1;
-    }).length;
-
-    var due = Buyer.invoices().filter(function (i) {
-      return i.status === 'pending' || i.status === 'overdue';
-    }).length;
-
-    var pendingReviews = Buyer.reviewableProducts().filter(function (r) { return !r.review; }).length;
-
-    $('#bhActiveOrders').textContent = active;
-    $('#bhWishCount').textContent = Buyer.wishlist().length;
-    $('#bhDueInvoices').textContent = due;
-    $('#bhPendingReviews').textContent = pendingReviews;
-  }
-
-  /* ---------------- العروض النشطة ---------------- */
-  function renderOffers() {
-    // عروض تمثيلية للمشتري — تُقرأ من نفس منطق عروض المورد عند الربط الكامل
-    var offers = [
-      { discount: '15%', code: 'SAVE15', title: 'خصم على الحديد والصلب', sub: 'ساري حتى نهاية الشهر', cat: 'steel' },
-      { discount: '20%', code: 'FINISH20', title: 'مواد التشطيب', sub: 'على مجموعة مختارة', cat: 'finishing' },
-      { discount: '10%', code: 'BULK10', title: 'خصم الكميات الكبيرة', sub: 'للطلبات فوق 5,000 ر.س', cat: '' }
+    return [
+      {
+        tag: 'عروض اليوم',
+        title: deals ? ('خصم ' + deals.discount + '% على ' + deals.name) : 'خصومات تصل إلى 20% على مواد البناء',
+        text: 'عروض محدودة تنتهي عند منتصف الليل — اطلب الآن قبل نفاد الكمية.',
+        cta: 'تسوّق العروض',
+        href: 'buyer-market.html?filter=deals',
+        img: 'assets/images/banner-supply.jpg'
+      },
+      {
+        tag: 'الأكثر طلباً',
+        title: top ? (top.name + ' بأفضل سعر') : 'كل ما يحتاجه مشروعك في مكان واحد',
+        text: 'من أسمنت وحديد إلى أدوات ومعدات — من موردين موثّقين فقط.',
+        cta: 'تسوّق الآن',
+        href: 'buyer-market.html?filter=best',
+        img: 'assets/images/banner-delivery.jpg'
+      },
+      {
+        tag: 'توصيل لكل المملكة',
+        title: 'اطلب اليوم، ونوصّل لموقعك',
+        text: 'شبكة شحن تغطي كل المناطق مع تتبّع مباشر لشحنتك خطوة بخطوة.',
+        cta: 'تعرّف على الشحن',
+        href: 'buyer-info.html?topic=shipping',
+        img: 'assets/images/cat-concrete.jpg'
+      }
     ];
+  }
 
-    $('#offers').innerHTML =
-      '<div class="an-chart-card">' +
-        '<div class="an-chart-head"><div><h3>عروض نشطة الآن</h3><p>استخدم الكود عند إتمام الطلب</p></div></div>' +
-        '<div class="by-offer-strip">' +
-          offers.map(function (o) {
-            return '<a class="by-offer" href="buyer-home.html?category=' + encodeURIComponent(o.cat) + '">' +
-              '<div class="by-offer-top">' +
-                '<span class="by-offer-badge">-' + esc(o.discount) + '</span>' +
-                '<span class="by-offer-code">' + esc(o.code) + '</span>' +
-              '</div>' +
-              '<strong>' + esc(o.title) + '</strong>' +
-              '<small>' + esc(o.sub) + '</small>' +
-            '</a>';
-          }).join('') +
-        '</div>' +
-      '</div>';
+  function renderSlider() {
+    var list = slides();
+
+    $('#bhSlides').innerHTML = list.map(function (s) {
+      return '<a class="by-slide" href="' + esc(s.href) + '">' +
+        '<img src="' + esc(s.img) + '" alt="" />' +
+        '<span class="by-slide-tag">' + esc(s.tag) + '</span>' +
+        '<h2>' + esc(s.title) + '</h2>' +
+        '<p>' + esc(s.text) + '</p>' +
+        '<span class="by-slide-cta">' + esc(s.cta) +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>' +
+        '</span>' +
+      '</a>';
+    }).join('');
+
+    $('#bhDots').innerHTML = list.map(function (s, i) {
+      return '<button type="button" class="by-dot' + (i === 0 ? ' is-active' : '') + '" data-slide="' + i + '" aria-label="شريحة ' + (i + 1) + '"></button>';
+    }).join('');
+
+    $all('[data-slide]', $('#bhDots')).forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        go(parseInt(dot.getAttribute('data-slide'), 10));
+        restart();
+      });
+    });
+
+    // في RTL تتحرك الشرائح إلى اليمين، فالإزاحة موجبة
+    function go(i) {
+      var count = list.length;
+      slideIndex = (i + count) % count;
+      $('#bhSlides').style.transform = 'translateX(' + (slideIndex * 100) + '%)';
+      $all('[data-slide]').forEach(function (d, di) {
+        d.classList.toggle('is-active', di === slideIndex);
+      });
+    }
+
+    function restart() {
+      clearInterval(slideTimer);
+      slideTimer = setInterval(function () { go(slideIndex + 1); }, 6000);
+    }
+
+    $('#bhPrev').addEventListener('click', function () { go(slideIndex - 1); restart(); });
+    $('#bhNext').addEventListener('click', function () { go(slideIndex + 1); restart(); });
+
+    go(0);
+    restart();
   }
 
   /* ---------------- الفئات ---------------- */
   function renderCategories() {
-    var cats = Buyer.categories();
-
-    $('#bhCategories').innerHTML = cats.map(function (c) {
-      return '<button type="button" class="by-category' + (category === c.key ? ' is-active' : '') + '" data-cat="' + esc(c.key) + '">' +
-        '<span class="by-category-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
-          (CATEGORY_ICONS[c.key] || CATEGORY_ICONS.tools) + '</svg></span>' +
-        '<span class="by-category-body"><strong>' + esc(c.label) + '</strong><small>' + c.count + ' منتج</small></span>' +
-      '</button>';
+    $('#bhCategories').innerHTML = Buyer.categories().map(function (c) {
+      return '<a class="by-cat-circle" href="buyer-market.html?category=' + encodeURIComponent(c.key) + '">' +
+        '<span class="by-cat-circle-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+          (ByUI.CATEGORY_ICONS[c.key] || ByUI.CATEGORY_ICONS.tools) + '</svg></span>' +
+        '<strong>' + esc(c.label) + '</strong>' +
+        '<small>' + c.count + ' منتج</small>' +
+      '</a>';
     }).join('');
-
-    $all('[data-cat]', $('#bhCategories')).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var key = btn.getAttribute('data-cat');
-        category = (category === key) ? '' : key;
-        $('#bhSearchCategory').value = category;
-        render();
-      });
-    });
   }
 
-  /* ---------------- المنتجات ---------------- */
-  function visibleProducts() {
-    var q = search.trim().toLowerCase();
+  /* ---------------- العداد التنازلي ---------------- */
+  function startCountdown() {
+    var el = $('#bhCountdownText');
+    if (!el) return;
 
-    // بدون بحث أو فئة: اعرض المقترح حسب اهتمامات المشتري
-    if (!q && !category) return Buyer.recommended(8);
+    function tick() {
+      var left = Buyer.flashDealEndsAt() - Date.now();
+      if (left < 0) left = 0;
 
-    return Store.getProducts().filter(function (p) {
-      if (p.status !== 'active') return false;
-      if (category && p.category !== category) return false;
-      if (q) {
-        var hay = (p.name + ' ' + (p.brand || '') + ' ' + (p.subcategory || '')).toLowerCase();
-        if (hay.indexOf(q) === -1) return false;
+      var h = Math.floor(left / 3600000);
+      var m = Math.floor((left % 3600000) / 60000);
+      var s = Math.floor((left % 60000) / 1000);
+
+      function pad(n) { return n < 10 ? '0' + n : String(n); }
+      el.textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  /* ---------------- الموردون ---------------- */
+  function renderSuppliers() {
+    var list = Buyer.suppliers().slice(0, 6);
+
+    if (!list.length) {
+      $('#bhSuppliers').innerHTML = ByUI.emptyState('لا يوجد موردون لعرضهم حالياً.');
+      return;
+    }
+
+    $('#bhSuppliers').innerHTML = list.map(function (s) {
+      return '<a class="by-supplier" href="buyer-supplier.html?name=' + encodeURIComponent(s.name) + '">' +
+        '<span class="by-supplier-logo">' + esc(s.name.trim().charAt(0)) + '</span>' +
+        '<strong>' + esc(s.name) + '</strong>' +
+        '<span class="by-card-rating" style="justify-content:center;">' +
+          ByUI.starsHtml(s.rating) + '<span style="font-size:0.76rem;color:var(--muted);">' + s.rating + '</span>' +
+        '</span>' +
+        '<small>' + s.products + ' منتج — ' + s.categories.length + ' فئة</small>' +
+      '</a>';
+    }).join('');
+  }
+
+  /* ---------------- العلامات الموثوقة ---------------- */
+  function renderBrands() {
+    // شعارات حقيقية موجودة في assets — كل شعار يفتح بحث المتجر باسم العلامة
+    var brands = [
+      { name: 'سابك', file: 'sabic.svg' },
+      { name: 'أرامكو السعودية', file: 'aramco.svg' },
+      { name: 'الزامل للصلب', file: 'zamil-steel.svg' },
+      { name: 'الفوزان لمواد البناء', file: 'al-fozan.svg' },
+      { name: 'المهيدب', file: 'al-muhaidb.svg' },
+      { name: 'الخرسانة السعودية', file: 'saudi-readymix.svg' }
+    ];
+
+    $('#bhBrands').innerHTML = brands.map(function (b) {
+      return '<a href="buyer-market.html?q=' + encodeURIComponent(b.name) + '" title="' + esc(b.name) + '">' +
+        '<img src="assets/images/partners/' + esc(b.file) + '" alt="' + esc(b.name) + '" />' +
+      '</a>';
+    }).join('');
+  }
+
+  /* ---------------- النشرة البريدية ---------------- */
+  function initNewsletter() {
+    $('#bhNewsletter').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = $('#bhNewsEmail').value.trim();
+
+      if (!/^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(email)) {
+        ByUI.toast('أدخل بريداً إلكترونياً صحيحاً', 'danger');
+        return;
       }
-      return true;
+
+      try {
+        var subs = JSON.parse(localStorage.getItem('ammar_newsletter') || '[]');
+        if (subs.indexOf(email) === -1) subs.push(email);
+        localStorage.setItem('ammar_newsletter', JSON.stringify(subs));
+      } catch (err) { /* ignore */ }
+
+      $('#bhNewsEmail').value = '';
+      // الاشتراك محفوظ محلياً — الإرسال الفعلي يتطلب خادم بريد عند الإطلاق
+      ByUI.toast('تم تسجيل اشتراكك — سيصلك جديد العروض', 'success');
     });
   }
 
-  function effectivePrice(p) {
-    return p.discount > 0 ? p.price * (1 - p.discount / 100) : p.price;
-  }
+  /* ---------------- أقسام المنتجات ---------------- */
+  function renderSections() {
+    ByUI.renderProducts($('#bhDeals'), Buyer.flashDeals(6),
+      'لا توجد عروض نشطة الآن — تابعنا، تُضاف عروض جديدة يومياً.');
 
-  function renderProducts() {
-    var list = visibleProducts();
-    var filtering = !!(search.trim() || category);
+    var reco = Buyer.recommended(8);
+    var hasHistory = Buyer.orders().length > 0 || Buyer.recentlyViewed(1).length > 0;
 
-    $('#bhRecoTitle').textContent = filtering ? 'نتائج البحث' : 'مقترح لك';
-    $('#bhRecoSub').textContent = filtering
-      ? list.length + ' منتج مطابق'
-      : 'بناءً على فئات مشترياتك السابقة';
+    // مستخدم جديد بلا سجل: اعرض الأكثر مبيعاً بدل قسم فارغ
+    if (!hasHistory) {
+      $('#bhRecoTitle').textContent = 'الأكثر مبيعاً على المنصة';
+      $('#bhRecoSub').textContent = 'ابدأ من هنا — سنخصّص التوصيات لك بعد أول طلب';
+      reco = Buyer.bestSellers(8);
+    }
 
-    $('#bhProductsEmpty').hidden = list.length > 0;
-    $('#bhProducts').hidden = list.length === 0;
+    ByUI.renderProducts($('#bhReco'), reco,
+      'سنعرض لك توصيات مخصّصة بمجرد تصفّحك أو شرائك لأول منتج.');
 
-    if (!list.length) return;
+    var again = Buyer.buyAgain(6);
+    $('#bhBuyAgainSection').hidden = again.length === 0;
+    if (again.length) ByUI.renderProducts($('#bhBuyAgain'), again);
 
-    $('#bhProducts').innerHTML = list.map(function (p) {
-      var fav = Buyer.inWishlist(p.id);
-      var eff = effectivePrice(p);
-      var avail = Store.deriveAvailability(p);
-      var availLabel = { in_stock: 'متوفر', limited: 'كمية محدودة', out_of_stock: 'غير متوفر', on_demand: 'عند الطلب' }[avail];
+    ByUI.renderProducts($('#bhFeatured'), Buyer.featured(8));
+    ByUI.renderProducts($('#bhBest'), Buyer.bestSellers(8));
+    ByUI.renderProducts($('#bhNew'), Buyer.newArrivals(8));
 
-      return '<div class="pd-card">' +
-        '<div class="pd-card-img-wrap">' +
-          '<img class="pd-card-img" src="' + esc(p.img) + '" alt="' + esc(p.name) + '" />' +
-          '<span class="pd-card-status active">' + esc(p.brand || 'عام') + '</span>' +
-          '<button type="button" class="by-fav-btn' + (fav ? ' is-on' : '') + '" data-fav="' + esc(p.id) + '" aria-label="إضافة للمفضلة">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
-          '</button>' +
-        '</div>' +
-        '<div class="pd-card-body">' +
-          '<a class="pd-card-name" href="buyer-product.html?id=' + encodeURIComponent(p.id) + '" style="color:inherit;text-decoration:none;display:block;">' + esc(p.name) + '</a>' +
-          '<div class="pd-card-tags" style="margin-top:8px;">' +
-            '<span class="pd-avail ' + avail + '">' + availLabel + '</span>' +
-          '</div>' +
-          '<div class="pd-card-price-row">' +
-            '<span class="pd-price">' + fmt(eff) + ' ر.س</span>' +
-            '<span class="pd-card-sku">/ ' + esc(p.unit || 'وحدة') + '</span>' +
-            (eff < p.price ? '<span class="pd-price-old">' + fmt(p.price) + '</span>' : '') +
-          '</div>' +
-          '<a class="btn-full" href="buyer-product.html?id=' + encodeURIComponent(p.id) + '" style="display:block;text-align:center;text-decoration:none;margin-top:6px;">عرض التفاصيل</a>' +
-        '</div>' +
-      '</div>';
-    }).join('');
-
-    $all('[data-fav]', $('#bhProducts')).forEach(function (btn) {
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var added = Buyer.toggleWishlist(btn.getAttribute('data-fav'));
-        btn.classList.toggle('is-on', added);
-        renderQuickCards();
-        toast(added ? 'أُضيف إلى المفضلة' : 'أُزيل من المفضلة', added ? 'success' : 'danger');
-      });
-    });
-  }
-
-  /* ---------------- البحث ---------------- */
-  function initSearch() {
-    var sel = $('#bhSearchCategory');
-    sel.innerHTML = '<option value="">كل الفئات</option>' +
-      Buyer.categories().map(function (c) { return '<option value="' + esc(c.key) + '">' + esc(c.label) + '</option>'; }).join('');
-
-    $('#bhSearch').addEventListener('input', function () { search = this.value; renderProducts(); });
-    $('#bhSearch').addEventListener('keydown', function (e) { if (e.key === 'Enter') renderProducts(); });
-    sel.addEventListener('change', function () { category = this.value; render(); });
-    $('#bhSearchBtn').addEventListener('click', renderProducts);
-  }
-
-  function render() {
-    renderQuickCards();
-    renderCategories();
-    renderProducts();
+    var viewed = Buyer.recentlyViewed(6);
+    $('#bhViewedSection').hidden = viewed.length === 0;
+    if (viewed.length) ByUI.renderProducts($('#bhViewed'), viewed);
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    var params = new URLSearchParams(window.location.search);
-    category = params.get('category') || '';
+    ByUI.initHeader();
 
-    initSearch();
-    if (category) $('#bhSearchCategory').value = category;
+    var profile = Buyer.profile();
+    $('#bhGreeting').textContent = 'مرحباً ' + profile.name + '،';
+    $('#bhGreetingSub').textContent = 'شاهد أحدث العروض المخصصة لك اليوم';
+
+    renderSlider();
+    renderCategories();
+    renderSuppliers();
+    renderBrands();
+    initNewsletter();
+    startCountdown();
+
+    // هياكل تحميل بدل شاشة فارغة أثناء تجهيز البيانات
+    ['#bhDeals', '#bhReco', '#bhBuyAgain', '#bhFeatured', '#bhBest', '#bhNew'].forEach(function (sel) {
+      ByUI.skeleton($(sel), 4);
+    });
 
     setTimeout(function () {
-      $('#bhLoading').hidden = true;
-      $('#bhContent').hidden = false;
-
-      $('#bhGreeting').textContent = 'أهلاً بك، ' + Buyer.profile().name;
-
-      renderOffers();
-      render();
-
-      Store.subscribe(render);
-    }, 220);
+      renderSections();
+      ByUI.refreshChrome();
+      Store.subscribe(function () { renderSections(); ByUI.refreshChrome(); });
+    }, 420);
   });
 })();
