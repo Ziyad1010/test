@@ -18,6 +18,11 @@ window.Buyer = (function () {
   var K_PAYMENTS = 'ammar_buyer_payments';
   var K_REVIEWS = 'ammar_buyer_reviews';
   var K_PROFILE = 'ammar_buyer_profile';
+  var K_CART = 'ammar_buyer_cart';
+  var K_VIEWED = 'ammar_buyer_viewed';
+  var K_COMPARE = 'ammar_buyer_compare';
+  var K_PROMO = 'ammar_buyer_promo';
+  var K_GUEST = 'ammar_buyer_guest';
   var K_SEEDED = 'ammar_buyer_seeded_v1';
 
   /* ---------------- تخزين ---------------- */
@@ -382,6 +387,480 @@ window.Buyer = (function () {
     return notifications().filter(function (n) { return !n.read; }).length;
   }
 
+  /* ---------------- السلة ---------------- */
+  function cart() { return read(K_CART, []); }
+
+  function cartCount() {
+    return cart().reduce(function (s, i) { return s + (i.qty || 0); }, 0);
+  }
+
+  // سعر شريحة الكمية إن انطبقت، وإلا السعر بعد الخصم — نفس المنطق المعروض في صفحة المنتج
+  function unitPriceOf(p, qty) {
+    var base = p.discount > 0 ? p.price * (1 - p.discount / 100) : p.price;
+    var match = null;
+
+    (p.tiers || []).forEach(function (t) {
+      var from = parseInt(t.from, 10) || 1;
+      var to = parseInt(t.to, 10) || 0;
+      var price = parseFloat(t.price) || 0;
+      if (price > 0 && qty >= from && (!to || qty <= to)) match = price;
+    });
+
+    return match !== null ? match : base;
+  }
+
+  function cartLines() {
+    return cart().map(function (i) {
+      var p = Store.getProduct(i.productId);
+      if (!p) return null;
+      var unit = unitPriceOf(p, i.qty);
+      return { product: p, qty: i.qty, unitPrice: unit, lineTotal: unit * i.qty };
+    }).filter(Boolean);
+  }
+
+  function cartTotal() {
+    return cartLines().reduce(function (s, l) { return s + l.lineTotal; }, 0);
+  }
+
+  function addToCart(productId, qty) {
+    var p = Store.getProduct(productId);
+    if (!p) return false;
+    // لا تُضاف المنتجات النافدة إلى السلة
+    if (Store.deriveAvailability(p) === 'out_of_stock') return false;
+
+    var list = cart();
+    var key = String(productId);
+    var found = null;
+    list.forEach(function (i) { if (String(i.productId) === key) found = i; });
+
+    var step = qty || p.moq || 1;
+    if (found) found.qty += step;
+    else list.push({ productId: p.id, qty: step });
+
+    write(K_CART, list);
+    Store.emit();
+    return true;
+  }
+
+  function setCartQty(productId, qty) {
+    var list = cart().map(function (i) {
+      return String(i.productId) === String(productId) ? { productId: i.productId, qty: Math.max(1, qty) } : i;
+    });
+    write(K_CART, list);
+    Store.emit();
+  }
+
+  function removeFromCart(productId) {
+    write(K_CART, cart().filter(function (i) { return String(i.productId) !== String(productId); }));
+    Store.emit();
+  }
+
+  function clearCart() { write(K_CART, []); Store.emit(); }
+
+  function inCart(productId) {
+    return cart().some(function (i) { return String(i.productId) === String(productId); });
+  }
+
+  /* ---------------- شوهدت مؤخراً ---------------- */
+  function recordView(productId) {
+    var list = read(K_VIEWED, []).filter(function (id) { return String(id) !== String(productId); });
+    list.unshift(String(productId));
+    write(K_VIEWED, list.slice(0, 12));
+  }
+
+  function recentlyViewed(limit) {
+    return read(K_VIEWED, []).map(function (id) { return Store.getProduct(id); })
+      .filter(Boolean).slice(0, limit || 6);
+  }
+
+  /* ---------------- المقارنة ---------------- */
+  function compareList() { return read(K_COMPARE, []); }
+
+  function inCompare(productId) {
+    return compareList().indexOf(String(productId)) !== -1;
+  }
+
+  function toggleCompare(productId) {
+    var list = compareList();
+    var key = String(productId);
+    var idx = list.indexOf(key);
+
+    if (idx !== -1) { list.splice(idx, 1); }
+    else {
+      if (list.length >= 4) return 'full';   // أربعة منتجات كحد أقصى للمقارنة
+      list.push(key);
+    }
+
+    write(K_COMPARE, list);
+    Store.emit();
+    return idx === -1 ? 'added' : 'removed';
+  }
+
+  function compareProducts() {
+    return compareList().map(function (id) { return Store.getProduct(id); }).filter(Boolean);
+  }
+
+  function clearCompare() { write(K_COMPARE, []); Store.emit(); }
+
+  /* ---------------- التقييمات المجمّعة ----------------
+     لا يوجد نظام مراجعات عام بدون خادم، فتُشتق قيمة ثابتة لكل منتج من
+     معرّفه (لا تتغيّر مع كل تحديث) ويُضاف إليها تقييم المشتري الفعلي
+     إن وُجد، حتى تعكس النجوم رأيه الحقيقي فور كتابته. */
+  function ratingOf(productId) {
+    var id = parseInt(productId, 10) || 1;
+    var base = 3.6 + ((id * 37) % 13) / 10;          // 3.6 – 4.8
+    var count = 8 + ((id * 91) % 140);
+
+    var mine = reviewFor(productId);
+    if (mine) {
+      var total = base * count + mine.rating;
+      count += 1;
+      base = total / count;
+    }
+
+    return { value: Math.round(base * 10) / 10, count: count };
+  }
+
+  /* ---------------- الموردون ----------------
+     الموردون في هذه النسخة مشتقّون من العلامات التجارية للمنتجات. */
+  function suppliers() {
+    var map = {};
+
+    Store.getProducts().filter(function (p) { return p.status === 'active'; }).forEach(function (p) {
+      var name = p.brand || 'عام';
+      if (!map[name]) map[name] = { name: name, products: 0, categories: {}, views: 0 };
+      map[name].products += 1;
+      map[name].views += p.views || 0;
+      map[name].categories[p.category] = true;
+    });
+
+    return Object.keys(map).map(function (name) {
+      var s = map[name];
+      var id = encodeURIComponent(name);
+      var seed = name.length * 17;
+      return {
+        id: name,
+        slug: id,
+        name: name,
+        products: s.products,
+        categories: Object.keys(s.categories),
+        rating: Math.round((4 + (seed % 9) / 10) * 10) / 10,
+        views: s.views
+      };
+    }).sort(function (a, b) { return b.products - a.products || b.views - a.views; });
+  }
+
+  function supplier(name) {
+    var found = null;
+    suppliers().forEach(function (s) { if (s.name === name) found = s; });
+    return found;
+  }
+
+  function supplierProducts(name) {
+    return Store.getProducts().filter(function (p) {
+      return p.status === 'active' && (p.brand || 'عام') === name;
+    });
+  }
+
+  /* ---------------- أقسام المنتجات ---------------- */
+  function activeProducts() {
+    return Store.getProducts().filter(function (p) { return p.status === 'active'; });
+  }
+
+  // الأكثر مبيعاً: من كميات الطلبات الفعلية عبر المتجر كله
+  function bestSellers(limit) {
+    var sold = {};
+    Store.getOrders().forEach(function (o) {
+      (o.items || []).forEach(function (it) { sold[it.productId] = (sold[it.productId] || 0) + (it.qty || 0); });
+    });
+
+    return activeProducts().slice().sort(function (a, b) {
+      return (sold[b.id] || 0) - (sold[a.id] || 0);
+    }).slice(0, limit || 8);
+  }
+
+  function featured(limit) {
+    // المميّزة: الأعلى مشاهدةً مع توفّر فعلي
+    return activeProducts().filter(function (p) {
+      return Store.deriveAvailability(p) !== 'out_of_stock';
+    }).sort(function (a, b) { return (b.views || 0) - (a.views || 0); }).slice(0, limit || 8);
+  }
+
+  function newArrivals(limit) {
+    // الأحدث: الأعلى معرّفاً (تُضاف المنتجات بمعرّفات تصاعدية)
+    return activeProducts().slice().sort(function (a, b) { return b.id - a.id; }).slice(0, limit || 8);
+  }
+
+  function flashDeals(limit) {
+    return activeProducts().filter(function (p) { return (p.discount || 0) > 0; })
+      .sort(function (a, b) { return b.discount - a.discount; }).slice(0, limit || 6);
+  }
+
+  // نهاية عروض اليوم: منتصف ليل اليوم الحالي
+  function flashDealEndsAt() {
+    var d = new Date();
+    d.setHours(23, 59, 59, 999);
+    return d.getTime();
+  }
+
+  // منتجات اشتراها المشتري سابقاً — لإعادة الطلب السريع
+  function buyAgain(limit) {
+    var counts = {};
+    orders().forEach(function (o) {
+      (o.items || []).forEach(function (it) { counts[it.productId] = (counts[it.productId] || 0) + 1; });
+    });
+
+    return Object.keys(counts)
+      .sort(function (a, b) { return counts[b] - counts[a]; })
+      .map(function (id) { return Store.getProduct(id); })
+      .filter(function (p) { return p && p.status === 'active'; })
+      .slice(0, limit || 6);
+  }
+
+  /* ---------------- البحث الذكي ----------------
+     يوحّد صور الحروف العربية قبل المطابقة، فيتساوى "اسمنت" و"أسمنت"
+     و"إسمنت"، و"حديده" و"حديدة"، ويتجاهل التشكيل والتطويل. */
+  function normalize(text) {
+    return String(text || '')
+      .toLowerCase()
+      .replace(/[ً-ْـ]/g, '')   // تشكيل وتطويل
+      .replace(/[أإآٱ]/g, 'ا')
+      .replace(/ى/g, 'ي')
+      .replace(/ؤ/g, 'و')
+      .replace(/ئ/g, 'ي')
+      .replace(/ة/g, 'ه')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // مرادفات وأخطاء إملائية شائعة → الكلمة المعيارية
+  var SYNONYMS = {
+    'اسمنت': 'اسمنت', 'سمنت': 'اسمنت', 'إسمنت': 'اسمنت', 'اسمانت': 'اسمنت',
+    'حديد': 'حديد', 'صلب': 'حديد', 'تسليح': 'حديد', 'شيش': 'حديد', 'زوايا': 'حديد',
+    'بلوك': 'بلوك', 'طوب': 'بلوك', 'بلك': 'بلوك', 'انترلوك': 'بلوك',
+    'خرسانه': 'خرسانه', 'خرصانه': 'خرسانه', 'باطون': 'خرسانه', 'بيتون': 'خرسانه', 'صبه': 'خرسانه',
+    'بلاط': 'تشطيب', 'سيراميك': 'تشطيب', 'بورسلين': 'تشطيب', 'رخام': 'تشطيب',
+    'دهان': 'تشطيب', 'بويه': 'تشطيب', 'صبغ': 'تشطيب', 'عزل': 'تشطيب', 'جبس': 'تشطيب',
+    'عده': 'ادوات', 'عدد': 'ادوات', 'معدات': 'ادوات', 'خلاطه': 'ادوات', 'خلاط': 'ادوات',
+    'سقاله': 'ادوات', 'سلامه': 'ادوات'
+  };
+
+  // الكلمة المعيارية → الفئة التي تنتمي إليها
+  var TERM_CATEGORY = {
+    'اسمنت': 'cement', 'حديد': 'steel', 'بلوك': 'blocks',
+    'خرسانه': 'concrete', 'تشطيب': 'finishing', 'ادوات': 'tools'
+  };
+
+  // يوسّع الاستعلام بمرادفاته حتى تُطابق الكلمة الدارجة اسم المنتج الرسمي
+  function expandQuery(query) {
+    var norm = normalize(query);
+    var terms = [norm];
+
+    Object.keys(SYNONYMS).forEach(function (key) {
+      var nk = normalize(key);
+      if (norm.indexOf(nk) !== -1 || nk.indexOf(norm) !== -1) {
+        var canon = normalize(SYNONYMS[key]);
+        if (terms.indexOf(canon) === -1) terms.push(canon);
+        if (terms.indexOf(nk) === -1) terms.push(nk);
+      }
+    });
+
+    return terms;
+  }
+
+  // الفئة التي يقصدها الاستعلام — تُستخدم لاقتراح بدائل عند انعدام النتائج
+  function categoryForQuery(query) {
+    var terms = expandQuery(query);
+    var hit = '';
+    terms.forEach(function (t) { if (!hit && TERM_CATEGORY[t]) hit = TERM_CATEGORY[t]; });
+    return hit;
+  }
+
+  function matchesQuery(haystack, query) {
+    var hay = normalize(haystack);
+    return expandQuery(query).some(function (t) { return t && hay.indexOf(t) !== -1; });
+  }
+
+  // نتائج البحث الكاملة — نفس منطق المطابقة المستخدم في الاقتراحات
+  function search(query) {
+    if (!String(query || '').trim()) return activeProducts();
+
+    var cat = categoryForQuery(query);
+
+    return activeProducts().filter(function (p) {
+      var hay = p.name + ' ' + (p.brand || '') + ' ' + (p.subcategory || '') + ' ' +
+        (p.description || '') + ' ' + (categories().filter(function (c) { return c.key === p.category; })[0] || {}).label;
+      if (matchesQuery(hay, query)) return true;
+      // "بويه" لا تظهر في اسم المنتج لكنها تدل على فئة التشطيب
+      return cat && p.category === cat;
+    });
+  }
+
+  // اقتراحات فورية: منتجات (بصورة وسعر) + فئات + موردون
+  function suggest(query, limit) {
+    var raw = String(query || '').trim();
+    if (raw.length < 1) return [];
+
+    var out = [];
+
+    categories().forEach(function (c) {
+      if (matchesQuery(c.label, raw) || TERM_CATEGORY[normalize(raw)] === c.key) {
+        out.push({
+          type: 'category', label: c.label, sub: c.count + ' منتج',
+          href: 'buyer-market.html?category=' + encodeURIComponent(c.key)
+        });
+      }
+    });
+
+    suppliers().forEach(function (s) {
+      if (matchesQuery(s.name, raw)) {
+        out.push({
+          type: 'supplier', label: s.name, sub: s.products + ' منتج',
+          href: 'buyer-supplier.html?name=' + encodeURIComponent(s.name)
+        });
+      }
+    });
+
+    search(raw).forEach(function (p) {
+      var eff = p.discount > 0 ? p.price * (1 - p.discount / 100) : p.price;
+      out.push({
+        type: 'product',
+        label: p.name,
+        sub: (p.brand || 'عام'),
+        price: eff,
+        unit: p.unit || 'وحدة',
+        img: p.img,
+        href: 'buyer-product.html?id=' + encodeURIComponent(p.id)
+      });
+    });
+
+    return out.slice(0, limit || 8);
+  }
+
+  // منتجات ذات صلة: نفس الفئة أولاً ثم نفس المورد
+  function relatedTo(productId, limit) {
+    var p = Store.getProduct(productId);
+    if (!p) return [];
+
+    var others = activeProducts().filter(function (x) { return x.id !== p.id; });
+
+    return others.sort(function (a, b) {
+      var sa = (a.category === p.category ? 2 : 0) + ((a.brand || '') === (p.brand || '') ? 1 : 0);
+      var sb = (b.category === p.category ? 2 : 0) + ((b.brand || '') === (p.brand || '') ? 1 : 0);
+      if (sa !== sb) return sb - sa;
+      return (b.views || 0) - (a.views || 0);
+    }).slice(0, limit || 4);
+  }
+
+  /* ---------------- أكواد الخصم ---------------- */
+  var PROMOS = {
+    'SAVE15': { type: 'percent', value: 15, min: 0, label: 'خصم 15%' },
+    'BULK10': { type: 'percent', value: 10, min: 5000, label: 'خصم 10% للطلبات فوق 5,000 ر.س' },
+    'FINISH20': { type: 'percent', value: 20, min: 0, category: 'finishing', label: 'خصم 20% على مواد التشطيب' },
+    'SHIP0': { type: 'freeship', value: 0, min: 1000, label: 'شحن مجاني للطلبات فوق 1,000 ر.س' },
+    'WELCOME50': { type: 'fixed', value: 50, min: 500, label: 'خصم 50 ر.س على أول طلب' }
+  };
+
+  function getPromo() { return read(K_PROMO, null); }
+
+  // يتحقق من الكود ويعيد سبباً واضحاً عند الرفض بدل رسالة عامة
+  function applyPromo(code) {
+    var key = String(code || '').trim().toUpperCase();
+    if (!key) return { ok: false, message: 'أدخل كود الخصم أولاً' };
+
+    var promo = PROMOS[key];
+    if (!promo) return { ok: false, message: 'كود الخصم غير صحيح أو منتهي الصلاحية' };
+
+    var subtotal = cartTotal();
+    if (promo.min && subtotal < promo.min) {
+      return { ok: false, message: 'هذا الكود يتطلب طلباً بقيمة ' + Math.round(promo.min) + ' ر.س على الأقل' };
+    }
+
+    if (promo.category) {
+      var has = cartLines().some(function (l) { return l.product.category === promo.category; });
+      if (!has) return { ok: false, message: 'هذا الكود يسري على مواد التشطيب فقط' };
+    }
+
+    write(K_PROMO, { code: key, label: promo.label });
+    Store.emit();
+    return { ok: true, message: 'تم تطبيق الكود: ' + promo.label, promo: promo };
+  }
+
+  function clearPromo() { write(K_PROMO, null); Store.emit(); }
+
+  /* ---------------- الشحن والإجماليات ---------------- */
+  // تقدير الشحن: رسوم أساسية + وزن، ومجاني فوق عتبة معيّنة
+  function shippingEstimate(city) {
+    var lines = cartLines();
+    if (!lines.length) return { cost: 0, free: false, note: '' };
+
+    var subtotal = lines.reduce(function (s, l) { return s + l.lineTotal; }, 0);
+    var weight = lines.reduce(function (s, l) {
+      return s + (l.product.weight || 0) * l.qty;
+    }, 0);
+
+    var FREE_OVER = 3000;
+    var promo = getPromo();
+    var freeByPromo = promo && PROMOS[promo.code] && PROMOS[promo.code].type === 'freeship';
+
+    if (subtotal >= FREE_OVER || freeByPromo) {
+      return { cost: 0, free: true, note: freeByPromo ? 'شحن مجاني بكود الخصم' : 'شحن مجاني للطلبات فوق ' + FREE_OVER + ' ر.س' };
+    }
+
+    var base = 45;
+    var far = ['أبها', 'جازان', 'نجران', 'تبوك', 'حائل', 'عرعر', 'سكاكا'];
+    if (city && far.indexOf(city) !== -1) base += 35;
+
+    // كل طن إضافي يرفع التكلفة
+    var heavy = Math.floor(weight / 1000) * 60;
+    var cost = Math.min(base + heavy, 900);
+
+    return {
+      cost: cost,
+      free: false,
+      note: 'يصبح الشحن مجانياً عند تجاوز ' + FREE_OVER + ' ر.س'
+    };
+  }
+
+  // ملخص مالي موحّد يُستخدم في السلة والدفع والتأكيد — مصدر واحد للأرقام
+  function orderSummary(city) {
+    var lines = cartLines();
+    var subtotal = lines.reduce(function (s, l) { return s + l.lineTotal; }, 0);
+
+    var promoState = getPromo();
+    var discount = 0;
+    if (promoState && PROMOS[promoState.code]) {
+      var promo = PROMOS[promoState.code];
+      if (promo.type === 'percent') {
+        var base = promo.category
+          ? lines.filter(function (l) { return l.product.category === promo.category; })
+              .reduce(function (s, l) { return s + l.lineTotal; }, 0)
+          : subtotal;
+        discount = base * promo.value / 100;
+      } else if (promo.type === 'fixed') {
+        discount = Math.min(promo.value, subtotal);
+      }
+    }
+
+    var afterDiscount = Math.max(0, subtotal - discount);
+    var ship = shippingEstimate(city);
+    // الأسعار المعروضة شاملة الضريبة، فتُستخرج منها لا تُضاف فوقها
+    var vat = afterDiscount * Store.VAT_RATE / (1 + Store.VAT_RATE);
+
+    return {
+      lines: lines,
+      count: lines.reduce(function (s, l) { return s + l.qty; }, 0),
+      subtotal: subtotal,
+      discount: discount,
+      promo: promoState,
+      shipping: ship.cost,
+      shippingFree: ship.free,
+      shippingNote: ship.note,
+      vat: vat,
+      total: afterDiscount + ship.cost
+    };
+  }
+
   /* ---------------- البذرة الأولية ---------------- */
   function ensureSeeded() {
     var seeded = false;
@@ -453,6 +932,55 @@ window.Buyer = (function () {
 
     recommended: recommended,
     categories: categories,
+
+    cart: cart,
+    cartLines: cartLines,
+    cartCount: cartCount,
+    cartTotal: cartTotal,
+    addToCart: addToCart,
+    setCartQty: setCartQty,
+    removeFromCart: removeFromCart,
+    clearCart: clearCart,
+    inCart: inCart,
+
+    recordView: recordView,
+    recentlyViewed: recentlyViewed,
+
+    compareList: compareList,
+    compareProducts: compareProducts,
+    inCompare: inCompare,
+    toggleCompare: toggleCompare,
+    clearCompare: clearCompare,
+
+    ratingOf: ratingOf,
+    suppliers: suppliers,
+    supplier: supplier,
+    supplierProducts: supplierProducts,
+
+    activeProducts: activeProducts,
+    featured: featured,
+    bestSellers: bestSellers,
+    newArrivals: newArrivals,
+    flashDeals: flashDeals,
+    flashDealEndsAt: flashDealEndsAt,
+    buyAgain: buyAgain,
+
+    normalize: normalize,
+    expandQuery: expandQuery,
+    matchesQuery: matchesQuery,
+    categoryForQuery: categoryForQuery,
+    search: search,
+    suggest: suggest,
+    relatedTo: relatedTo,
+
+    getPromo: getPromo,
+    applyPromo: applyPromo,
+    clearPromo: clearPromo,
+    shippingEstimate: shippingEstimate,
+    orderSummary: orderSummary,
+
+    guestInfo: function () { return read(K_GUEST, null); },
+    saveGuestInfo: function (info) { write(K_GUEST, info); },
 
     notifications: notifications,
     markNotificationRead: markNotificationRead,

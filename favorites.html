@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>سلة التسوق | عمّار</title>
+  <title>المفضلة | عمّار</title>
   <link rel="icon" type="image/png" href="assets/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,7 +16,6 @@
   <link rel="stylesheet" href="css/buyer.css" />
   <link rel="stylesheet" href="css/buyer-home.css" />
   <link rel="stylesheet" href="css/ammar-theme.css" />
-  <link rel="stylesheet" href="css/buyer-journey.css" />
   <link rel="stylesheet" href="css/storefront.css" />
   <link rel="stylesheet" href="css/buyer-smart.css" />
   <script src="js/i18n.js"></script>
@@ -141,21 +140,20 @@
     </div>
   </header>
 
+  
+
   <section class="by-wrap by-section">
     <div class="by-section-head">
-      <div><h1 class="by-greeting" style="font-size:1.4rem;">سلة التسوق</h1><p id="bcartSub">راجع طلبك قبل إتمام الشراء</p></div>
+      <div>
+        <h1 class="by-greeting" style="font-size:1.4rem;">المفضلة</h1>
+        <p id="favSub">المنتجات التي حفظتها للرجوع إليها لاحقاً</p>
+      </div>
+      <a class="by-see-all" href="buyer-market.html">متابعة التسوق</a>
     </div>
-    <div id="bcartContent"></div>
+    <div class="by-products" id="favGrid" aria-live="polite"></div>
   </section>
 
-  <!-- شريط إتمام ثابت على الجوال -->
-  <div class="by-cart-sticky" id="bcartSticky" hidden>
-    <div class="by-cart-sticky-info">
-      <strong id="bcartStickyTotal">0 ر.س</strong>
-      <small id="bcartStickyCount">0 وحدة</small>
-    </div>
-    <button type="button" class="by-btn by-btn-primary" id="bcartStickyBtn">إتمام الشراء</button>
-  </div>
+
 
 <footer class="by-footer">
     <div class="by-wrap">
@@ -265,6 +263,30 @@
   <script src="js/buyer-smart.js"></script>
   <script src="js/buyer-smart-ui.js"></script>
   <script src="js/buyer-live.js"></script>
-  <script src="js/buyer-cart.js"></script>
+  <script>
+    // مفضلة المتجر — مستقلة تماماً عن بوابة المشتري أعمال
+    document.addEventListener('DOMContentLoaded', function () {
+      var grid = document.getElementById('favGrid');
+      var sub = document.getElementById('favSub');
+
+      function favProducts() {
+        return (window.Buyer && Buyer.wishlistProducts()) || [];
+      }
+
+      function render() {
+        var items = favProducts();
+        sub.textContent = items.length
+          ? items.length + ' من المنتجات المحفوظة'
+          : 'المنتجات التي حفظتها للرجوع إليها لاحقاً';
+        ByUI.renderProducts(grid, items,
+          'اضغط على أيقونة القلب في أي منتج لحفظه هنا، ثم جده في هذه الصفحة متى شئت.');
+      }
+
+      ByUI.initHeader();
+      ByUI.bindCardActions(grid);
+      render();
+      if (window.Store && Store.subscribe) Store.subscribe(render);
+    });
+  </script>
 </body>
 </html>

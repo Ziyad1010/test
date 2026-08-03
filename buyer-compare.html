@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="assets/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/dashboard.css" />
   <link rel="stylesheet" href="css/onboarding.css" />
   <link rel="stylesheet" href="css/products.css" />
@@ -15,6 +15,12 @@
   <link rel="stylesheet" href="css/orders.css" />
   <link rel="stylesheet" href="css/buyer.css" />
   <link rel="stylesheet" href="css/buyer-home.css" />
+  <link rel="stylesheet" href="css/ammar-theme.css" />
+  <link rel="stylesheet" href="css/buyer-journey.css" />
+  <link rel="stylesheet" href="css/storefront.css" />
+  <link rel="stylesheet" href="css/buyer-smart.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/storefront.js"></script>
 </head>
 <body class="by-store">
 
@@ -25,39 +31,58 @@
         <span><strong>عمّار</strong><small>سوق مواد البناء</small></span>
       </a>
 
-      <nav class="by-nav">
-        <a href="buyer-home.html" class="is-active">الرئيسية</a>
-        <a href="buyer-market.html">السوق</a>
-        <a href="buyer-categories.html">التصنيفات</a>
-        <a href="buyer-suppliers.html">الموردون</a>
-        <a href="buyer-info.html?topic=how">كيف نعمل</a>
-      </nav>
+      <div class="by-account" style="position:relative;">
+        <button type="button" class="by-city-btn" id="bhCityBtn" aria-haspopup="true" aria-label="اختيار مدينة التوصيل">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span><small data-i18n="search.deliverTo">التوصيل إلى</small><strong id="bhCityName" data-i18n="search.chooseCity">اختر مدينتك</strong></span>
+        </button>
+        <div class="by-city-pop" id="bhCityPop" hidden>
+          <label for="bhCitySelect">مدينة التوصيل</label>
+          <select id="bhCitySelect" aria-label="اختر المدينة"></select>
+          <button type="button" class="by-city-save" id="bhCitySave">حفظ الموقع</button>
+        </div>
+      </div>
 
       <div class="by-smart-search">
         <div class="by-smart-search-inner">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" id="bhSearch" placeholder="ابحث عن أسمنت، حديد، بلاط، أدوات…" autocomplete="off" aria-label="بحث" />
+          <input type="search" id="bhSearch" placeholder="ابحث عن منتج، تصنيف، أو مورد…" data-i18n-placeholder="search.placeholder" autocomplete="off" aria-label="بحث في السوق" />
           <select id="bhSearchCategory" aria-label="القسم">
-            <option value="">كل الأقسام</option>
+            <option value="" data-i18n="search.all">كل الأقسام</option>
           </select>
-          <button type="button" class="by-go" id="bhSearchBtn">بحث</button>
+          <button type="button" class="by-go" id="bhSearchBtn" data-i18n="search.go">بحث</button>
         </div>
         <div class="by-suggest" id="bhSuggest" hidden></div>
       </div>
 
+      <a class="by-biz-link" href="index.html" title="عمّار أعمال — حلول توريد للمشاريع">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
+        <span data-i18n="nav.business">عمّار أعمال</span>
+      </a>
+
       <div class="by-tools">
-        <a class="by-icon-btn" href="buyer-notifications.html" aria-label="الإشعارات" title="الإشعارات">
+        <a class="by-icon-btn sf-secondary-tool" href="buyer-notifications.html" aria-label="الإشعارات" title="الإشعارات">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span class="by-badge" id="bhNotifBadge" hidden>0</span>
         </a>
 
-        <a class="by-icon-btn" href="buyer-cart.html" aria-label="السلة" title="سلة التسوق">
+        <a class="by-icon-btn sf-secondary-tool" href="favorites.html" aria-label="المفضلة" title="المفضلة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="by-badge" id="bhWishBadge" hidden>0</span>
+        </a>
+
+        <a class="by-icon-btn sf-secondary-tool" href="buyer-compare.html" aria-label="المقارنة" title="مقارنة المنتجات">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span class="by-badge" id="bhCompareBadge" hidden>0</span>
+        </a>
+
+        <a class="by-icon-btn" href="buyer-cart.html" id="bhCartLink" aria-label="السلة" title="سلة التسوق">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
           <span class="by-badge" id="bhCartBadge" hidden>0</span>
         </a>
 
         <div class="by-account">
-          <button type="button" class="by-icon-btn" id="bhAccountBtn" aria-label="حسابي" title="حسابي">
+          <button type="button" class="by-icon-btn" id="bhAccountBtn" aria-label="حسابي" aria-haspopup="true" title="حسابي">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </button>
           <div class="by-menu" id="bhAccountMenu" hidden>
@@ -65,32 +90,52 @@
               <strong id="bhMenuName">المشتري</strong>
               <small id="bhMenuEmail"></small>
             </div>
+            <a href="buyer-settings.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span data-i18n="nav.account">حسابي</span>
+            </a>
             <a href="buyer-orders.html">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              طلباتي
+              <span data-i18n="nav.orders">طلباتي</span>
             </a>
-            <a href="buyer-wishlist.html">
+            <a href="buyer-addresses.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span data-i18n="nav.addresses">عناويني</span>
+            </a>
+            <a href="buyer-wallet.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              <span data-i18n="nav.wallet">المحفظة</span>
+            </a>
+            <a href="buyer-notifications.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span data-i18n="nav.notifications">الإشعارات</span>
+            </a>
+            <a href="buyer-compare.html">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span data-i18n="nav.compare">مقارنة المنتجات</span>
+            </a>
+            <a href="favorites.html">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              المفضلة
+              <span data-i18n="nav.favorites">المفضلة</span>
             </a>
             <a href="buyer-invoices.html">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              فواتيري
+              <span data-i18n="nav.invoices">فواتيري</span>
             </a>
-            <a href="buyer-settings.html">
+            <a href="buyer-settings.html#preferences">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              الإعدادات
+              <span data-i18n="nav.settings">الإعدادات</span>
             </a>
             <button type="button" class="danger" id="bhLogoutBtn">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              تسجيل الخروج
+              <span data-i18n="nav.logout">تسجيل الخروج</span>
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- الشريط الثانوي للتصنيفات -->
+    <!-- شريط التصنيفات مع القوائم الفرعية -->
     <div class="by-catbar">
       <div class="by-wrap by-catbar-inner" id="bhCatBar"></div>
     </div>
@@ -108,14 +153,14 @@
     <div class="by-wrap">
       <div class="by-footer-grid">
         <div class="by-footer-about">
-          <h4>عن عمّار</h4>
+          <h4 data-i18n="footer.about">عن عمّار</h4>
           <p>منصة سعودية تربط المقاولين والأفراد بموردي مواد البناء الموثوقين، بأسعار شفافة وتوصيل موثوق لكل مناطق المملكة.</p>
 
           <form id="bhNewsletter">
             <label for="bhNewsEmail" style="font-size:0.84rem;color:#cbd5e1;">اشترك ليصلك جديد العروض</label>
             <div class="by-newsletter">
               <input type="email" id="bhNewsEmail" dir="ltr" placeholder="your@email.com" />
-              <button type="submit">اشترك</button>
+              <button type="submit" data-i18n="footer.subscribe">اشترك</button>
             </div>
           </form>
 
@@ -136,7 +181,7 @@
         </div>
 
         <div>
-          <h4>الشركة</h4>
+          <h4 data-i18n="footer.company">الشركة</h4>
           <ul>
             <li><a href="buyer-info.html?topic=about">من نحن</a></li>
             <li><a href="buyer-info.html?topic=how">كيف نعمل</a></li>
@@ -147,7 +192,7 @@
         </div>
 
         <div>
-          <h4>الدعم</h4>
+          <h4 data-i18n="footer.support">الدعم</h4>
           <ul>
             <li><a href="help.html">مركز المساعدة</a></li>
             <li><a href="buyer-info.html?topic=support">تواصل معنا</a></li>
@@ -158,7 +203,7 @@
         </div>
 
         <div>
-          <h4>السياسات</h4>
+          <h4 data-i18n="footer.policies">السياسات</h4>
           <ul>
             <li><a href="buyer-info.html?topic=returns">سياسة الإرجاع</a></li>
             <li><a href="buyer-info.html?topic=payment">سياسة الدفع</a></li>
@@ -170,8 +215,8 @@
       </div>
 
       <div class="by-footer-bottom">
-        <span>© 2026 عمّار — جميع الحقوق محفوظة</span>
-        <span>صُنع في المملكة العربية السعودية</span>
+        <span data-i18n="footer.rights">© 2026 عمّار — جميع الحقوق محفوظة</span>
+        <span data-i18n="footer.madeIn">صُنع في المملكة العربية السعودية</span>
       </div>
     </div>
   </footer>
@@ -209,6 +254,9 @@
   <script src="js/store.js"></script>
   <script src="js/buyer.js"></script>
   <script src="js/buyer-ui.js"></script>
+  <script src="js/buyer-smart.js"></script>
+  <script src="js/buyer-smart-ui.js"></script>
+  <script src="js/buyer-live.js"></script>
   <script src="js/buyer-compare.js"></script>
 </body>
 </html>

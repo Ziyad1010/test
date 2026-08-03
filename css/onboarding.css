@@ -5,9 +5,9 @@
 
 :root {
   --ink:        #0f172a;
-  --primary-700: #1e40af;
-  --primary-600: #2563eb;
-  --primary-50:  #eff6ff;
+  --primary-700: #0086a8;
+  --primary-600: #00a8cc;
+  --primary-50:  #e0f7fa;
   --bg:         #f8fafc;
   --surface:    #ffffff;
   --line:       #e2e8f0;
@@ -154,7 +154,7 @@ ul { list-style: none; }
 }
 .ob-nav-item svg:first-child { width: 18px; height: 18px; flex-shrink: 0; }
 .ob-nav-item.is-current { background: rgba(37, 99, 235, 0.18); color: #ffffff; }
-.ob-nav-item.is-current svg:first-child { color: #60a5fa; }
+.ob-nav-item.is-current svg:first-child { color: var(--primary-600); }
 .ob-lock-ic { width: 14px !important; height: 14px !important; margin-inline-start: auto; opacity: 0.6; }
 
 .ob-sidebar-bottom {
@@ -945,7 +945,7 @@ ul { list-style: none; }
 .ob-callout-green { background: var(--success-bg); border: 1px solid #bbf7d0; color: #14532d; }
 .ob-callout-green .ob-callout-head { color: var(--success); }
 
-.ob-callout-blue { background: var(--primary-50); border: 1px solid #bfdbfe; color: #1e3a8a; }
+.ob-callout-blue { background: var(--primary-50); border: 1px solid #80deea; color: #0086a8; }
 .ob-callout-blue .ob-callout-head { color: var(--primary-600); }
 .ob-callout-blue ul { display: flex; flex-direction: column; gap: 6px; }
 .ob-callout-blue li { position: relative; padding-inline-start: 14px; }

@@ -4,7 +4,7 @@
    ============================================================ */
 
 :root {
-  /* Logo Palette Colors */
+  /* Logo Palette Colors — الألوان الأصلية */
   --teal-600:   #0086a8;
   --teal-500:   #00a8cc;    /* Primary Cyan/Teal from logo top */
   --teal-400:   #00c49f;    /* Bright cyan accent */
@@ -12,10 +12,11 @@
   --teal-100:   #e0f7fa;    /* Soft cyan background tint */
   --teal-50:    #f0fbfd;    /* Subtlest cyan background */
 
-  --orange-600: #d95d39;
-  --orange-500: #e76f51;    /* Brick-orange from logo bricks */
-  --orange-400: #f4a261;    /* Warm terracotta accent */
-  --orange-100: #fdf0ed;    /* Soft orange tint */
+  /* بلا برتقالي: التمييز بتدرّج التركواز نفسه */
+  --orange-600: #0086a8;
+  --orange-500: #00a8cc;
+  --orange-400: #00c49f;
+  --orange-100: #e0f7fa;
 
   --dark-900:   #0f172a;    /* Slate dark ink */
   --dark-800:   #1e293b;    /* Dark navy-slate surface */
@@ -923,7 +924,7 @@ ul { list-style: none; }
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(231, 111, 81, 0.2);
+  border: 1px solid rgba(0, 168, 204, 0.25);
 }
 html[dir="rtl"] .badge-soon {
   left: 16px;
@@ -1522,4 +1523,161 @@ img[src*="logo.png"] {
   .hero-features { grid-template-columns: 1fr; }
   .hero-title { font-size: 2rem; }
   .hero-sub { font-size: 0.95rem; }
+}
+
+
+/* ============================================================
+   عمّار أعمال — مكوّنات البوابة المؤسسية
+   ============================================================ */
+.brand-biz {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--orange-600);
+  border: 1px solid var(--orange-400);
+  background: var(--orange-100);
+  border-radius: 999px;
+  padding: 1px 8px;
+  margin-inline-start: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
+.header-login-link {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+.header-login-link:hover { color: var(--teal-500); }
+
+.btn-outline-nav {
+  border: 1px solid var(--teal-300);
+  color: var(--teal-600);
+  background: var(--surface);
+  padding: 10px 18px;
+  border-radius: 11px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.btn-outline-nav:hover { background: var(--teal-50); border-color: var(--teal-500); }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--orange-600);
+  border: 1px solid var(--orange-400);
+  background: var(--orange-100);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 14px;
+}
+.hero-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange-500);
+}
+
+.hero-cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.btn-primary-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--teal-500);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  border-start-start-radius: 4px;
+  padding: 13px 30px;
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+.btn-primary-hero:hover { background: var(--teal-600); }
+.btn-primary-hero:active { transform: translateY(1px); }
+
+.btn-ghost-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--teal-300);
+  color: var(--teal-600);
+  background: var(--surface);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  padding: 13px 26px;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+.btn-ghost-hero:hover { background: var(--teal-50); border-color: var(--teal-500); }
+
+.btn-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: var(--teal-600);
+  font-weight: 700;
+  font-size: 1.05rem;
+  border-radius: 999px;
+  padding: 14px 34px;
+  margin-inline-start: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: background 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+.btn-cta-ghost:hover {
+  background: var(--teal-50);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+}
+
+/* حلقة تركيز موحّدة مع بقية المنصة */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--orange-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .header-login-link { display: none; }
+  .btn-cta-ghost { margin-inline-start: 0; margin-top: 10px; }
+}
+
+
+/* وضوح نص القائمة في كل حالات Hover/Active — بلا أي شفافية */
+.nav-link,
+.nav-link:hover,
+.nav-link:active,
+.nav-link:focus,
+.nav-link.active {
+  opacity: 1;
+  -webkit-text-fill-color: currentColor;
+}
+.nav-link:hover { color: var(--teal-600); }
+
+@media (max-width: 900px) {
+  .main-nav {
+    background: var(--surface);
+  }
 }

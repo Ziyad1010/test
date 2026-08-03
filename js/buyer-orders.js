@@ -103,9 +103,86 @@
     });
   }
 
+  /* ---------------- رسم الإنفاق الشهري ----------------
+     مشتق من طلبات هذا المشتري فقط، ويتحدّث مع أي تغيير في المتجر. */
+  var spendChart = null;
+
+  function renderSpend() {
+    if (!window.Smart || !window.Chart) return;
+
+    var card = $('#boSpendCard');
+    var series = Smart.spendSeries(6);
+    var any = series.some(function (s) { return s.total > 0; });
+
+    // لا رسم بلا بيانات — بطاقة فارغة أسوأ من عدمها
+    if (!any) { card.hidden = true; return; }
+    card.hidden = false;
+
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var grid = dark ? 'rgba(255,255,255,0.08)' : 'rgba(15,23,42,0.07)';
+    var tick = dark ? '#94a3b8' : '#64748b';
+
+    var data = {
+      labels: series.map(function (s) { return s.label; }),
+      datasets: [
+        {
+          label: 'الإنفاق (ر.س)', data: series.map(function (s) { return s.total; }),
+          backgroundColor: '#00a8cc', borderRadius: 8, borderSkipped: false,
+          yAxisID: 'y', order: 2
+        },
+        {
+          label: 'عدد الطلبات', data: series.map(function (s) { return s.orders; }),
+          type: 'line', borderColor: dark ? '#e8eff8' : '#0e2439',
+          backgroundColor: dark ? '#e8eff8' : '#0e2439',
+          borderWidth: 2.5, tension: 0.35, pointRadius: 4, pointHoverRadius: 6,
+          yAxisID: 'y1', order: 1
+        }
+      ]
+    };
+
+    if (spendChart) { spendChart.destroy(); spendChart = null; }
+
+    spendChart = new Chart($('#boSpendChart'), {
+      type: 'bar',
+      data: data,
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            rtl: true, textDirection: 'rtl',
+            callbacks: {
+              label: function (ctx) {
+                return ctx.datasetIndex === 0
+                  ? ' الإنفاق: ' + ctx.parsed.y.toLocaleString('ar-SA') + ' ر.س'
+                  : ' الطلبات: ' + ctx.parsed.y;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: tick, font: { family: 'IBM Plex Sans Arabic' } } },
+          y: {
+            position: 'right', beginAtZero: true,
+            grid: { color: grid }, border: { display: false },
+            ticks: { color: tick, font: { family: 'IBM Plex Sans Arabic' },
+              callback: function (v) { return v.toLocaleString('ar-SA'); } }
+          },
+          y1: {
+            position: 'left', beginAtZero: true,
+            grid: { display: false }, border: { display: false },
+            ticks: { color: tick, stepSize: 1, font: { family: 'IBM Plex Sans Arabic' } }
+          }
+        }
+      }
+    });
+  }
+
   function render() {
     renderTabs();
     renderTable();
+    renderSpend();
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -116,6 +193,7 @@
 
     setTimeout(function () {
       render();
+      if (window.Live) Live.start();
       Store.subscribe(render);
     }, 220);
   });

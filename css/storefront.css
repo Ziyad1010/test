@@ -1,0 +1,850 @@
+/* ============================================================
+   عمّار — طبقة النظام البصري للمتجر (Storefront Design System)
+   ------------------------------------------------------------
+   تُحمَّل آخر ملف في كل صفحات بوابة المشتري، فتضبط فوق ما سبقها:
+   الخطوط، السلّم الطباعي، الإيقاع الرأسي، لوحة الألوان المضبوطة،
+   شكل البطاقات والشارات، والحركات الدقيقة.
+
+   قاعدة اللون: لون علامة واحد (تركواز عمّار)، لون ثانوي واحد
+   (كحلي عميق للتمييز والأشرطة الداكنة)، ولون تنبيه واحد فقط
+   يُستخدم للخصومات والإلحاح والتحذيرات — لا ألوان متفرقة.
+   ============================================================ */
+
+:root {
+  /* --- الخطوط: اثنان فقط في كامل المتجر --- */
+  --sf-font-display: "Tajawal", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --sf-font-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+
+  /* --- لوحة مضبوطة: علامة + ثانوي + تنبيه --- */
+  --sf-brand:        #00a8cc;
+  --sf-brand-strong: #0086a8;
+  --sf-brand-soft:   #e0f7fa;
+  --sf-brand-tint:   #f2fbfd;
+
+  --sf-second:       #0e2439;
+  --sf-second-2:     #1b3550;
+  --sf-second-soft:  #24405e;
+
+  --sf-alert:        #e11d48;
+  --sf-alert-soft:   #fff1f4;
+
+  /* --- سطوح ونصوص --- */
+  --sf-ink:      #0d1b2a;
+  --sf-body:     #475569;
+  --sf-faint:    #94a3b8;
+  --sf-line:     #e6ecf2;
+  --sf-line-2:   #eff3f7;
+  --sf-card:     #ffffff;
+  --sf-canvas:   #f7fafc;
+  --sf-media:    #f1f5f8;
+
+  /* --- إيقاع رأسي سخي: 60px على الجوال إلى 112px على المكتب --- */
+  --sf-gap: clamp(60px, 8vw, 112px);
+  --sf-gap-sm: clamp(36px, 4.5vw, 60px);
+
+  /* --- الزوايا والظلال --- */
+  --sf-r-sm: 10px;
+  --sf-r: 16px;
+  --sf-r-lg: 22px;
+  --sf-r-xl: 28px;
+  --sf-sh-1: 0 1px 2px rgba(13, 27, 42, 0.04), 0 2px 8px rgba(13, 27, 42, 0.04);
+  --sf-sh-2: 0 4px 12px rgba(13, 27, 42, 0.06), 0 12px 32px rgba(13, 27, 42, 0.07);
+  --sf-sh-3: 0 8px 20px rgba(13, 27, 42, 0.08), 0 24px 60px rgba(13, 27, 42, 0.1);
+
+  --sf-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme="dark"] {
+  --sf-brand:        #22c9e8;
+  --sf-brand-strong: #66dcf0;
+  --sf-brand-soft:   rgba(34, 201, 232, 0.14);
+  --sf-brand-tint:   rgba(34, 201, 232, 0.07);
+
+  --sf-second:       #0a1626;
+  --sf-second-2:     #142236;
+  --sf-second-soft:  #1d3149;
+
+  --sf-alert:        #fb7185;
+  --sf-alert-soft:   rgba(251, 113, 133, 0.14);
+
+  --sf-ink:      #e8eff8;
+  --sf-body:     #a9b8cc;
+  --sf-faint:    #7d8ea5;
+  --sf-line:     #26344a;
+  --sf-line-2:   #1e2a3d;
+  --sf-card:     #141d2e;
+  --sf-canvas:   #0b1220;
+  --sf-media:    #1a2436;
+
+  --sf-sh-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --sf-sh-2: 0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.35);
+  --sf-sh-3: 0 8px 20px rgba(0, 0, 0, 0.45), 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================================
+   1) الأساس الطباعي
+   ============================================================ */
+body.by-store {
+  font-family: var(--sf-font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  background: var(--sf-canvas);
+  color: var(--sf-ink);
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.by-store h1,
+body.by-store h2,
+body.by-store h3,
+body.by-store h4,
+body.by-store .sf-display {
+  font-family: var(--sf-font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+}
+
+/* H1 — 36 إلى 48 بكسل */
+body.by-store h1,
+body.by-store .am-hero-copy h1,
+body.by-store .by-success-hero h1 {
+  font-size: clamp(2.25rem, 3.6vw, 3rem);
+  font-weight: 800;
+  line-height: 1.18;
+}
+
+/* H2 — 28 إلى 32 بكسل */
+body.by-store .by-section-head h2,
+body.by-store .sf-h2 {
+  font-size: clamp(1.75rem, 2.4vw, 2rem);
+  font-weight: 600;
+  color: var(--sf-ink);
+  line-height: 1.25;
+}
+body.by-store .by-section-head p {
+  font-size: 1rem;
+  color: var(--sf-body);
+  line-height: 1.6;
+  margin-top: 8px;
+  max-width: 56ch;
+}
+
+body.by-store p,
+body.by-store li,
+body.by-store td,
+body.by-store label { line-height: 1.6; }
+
+/* ============================================================
+   2) الإيقاع الرأسي والمسافة البيضاء
+   ============================================================ */
+body.by-store .by-wrap { max-width: 1240px; padding-inline: 28px; }
+
+body.by-store .by-section {
+  padding-block: 0;
+  margin-block: var(--sf-gap);
+}
+body.by-store .by-section:first-of-type { margin-top: var(--sf-gap-sm); }
+body.by-store .by-section-head { margin-bottom: 34px; align-items: flex-end; }
+
+/* أشرطة الأقسام: هوية بصرية مختلفة قليلاً تكسر الرتابة */
+.sf-band {
+  margin-block: var(--sf-gap);
+  padding-block: var(--sf-gap-sm);
+}
+/* يجب أن يتفوّق على body.by-store .by-section وإلا تضاعفت المسافة */
+body.by-store .sf-band > .by-section { margin-block: 0; }
+.sf-band--tint { background: var(--sf-brand-tint); border-block: 1px solid var(--sf-line-2); }
+.sf-band--paper { background: var(--sf-card); border-block: 1px solid var(--sf-line-2); }
+.sf-band--dark {
+  background: linear-gradient(135deg, var(--sf-second) 0%, var(--sf-second-2) 100%);
+  color: #eef4fa;
+  border-block: none;
+}
+.sf-band--dark .by-section-head h2,
+.sf-band--dark h2,
+.sf-band--dark h3 { color: #ffffff; }
+.sf-band--dark .by-section-head p { color: rgba(238, 244, 250, 0.72); }
+.sf-band--dark .by-see-all,
+.sf-band--dark .by-more { color: var(--sf-brand); }
+
+/* ============================================================
+   3) الأزرار — مساحة تنفّس ونبض عند الضغط
+   ============================================================ */
+body.by-store .by-btn,
+body.by-store .ob-btn-primary,
+body.by-store .by-sticky-cta {
+  font-family: var(--sf-font-body);
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: transform 0.16s var(--sf-ease), box-shadow 0.22s var(--sf-ease),
+              background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+body.by-store .by-btn-primary {
+  background: var(--sf-brand);
+  color: #04252e;
+  box-shadow: 0 8px 22px rgba(0, 168, 204, 0.28);
+}
+body.by-store .by-btn-primary:hover:not(:disabled) {
+  background: var(--sf-brand-strong);
+  color: #04252e;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0, 134, 168, 0.34);
+}
+body.by-store .by-btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--sf-line);
+  color: var(--sf-ink);
+  box-shadow: none;
+}
+body.by-store .by-btn-outline:hover { border-color: var(--sf-brand); color: var(--sf-brand-strong); background: var(--sf-brand-tint); }
+body.by-store .by-btn-outline.is-on { background: var(--sf-brand-soft); border-color: var(--sf-brand); color: var(--sf-brand-strong); }
+body.by-store .by-btn-buy { background: var(--sf-second); color: #fff; box-shadow: 0 8px 22px rgba(14, 36, 57, 0.24); }
+body.by-store .by-btn-buy:hover { background: var(--sf-second-2); }
+
+body.by-store .by-btn:active:not(:disabled) { transform: scale(0.975); }
+
+/* موجة ضغط تُحقن بالجافاسكربت */
+.sf-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.22;
+  transform: scale(0);
+  pointer-events: none;
+  animation: sfRipple 0.55s var(--sf-ease) forwards;
+}
+@keyframes sfRipple { to { transform: scale(2.6); opacity: 0; } }
+
+/* نبض قصير بعد الإجراء الناجح */
+.sf-pulse { animation: sfPulse 0.5s var(--sf-ease); }
+@keyframes sfPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0, 168, 204, 0.5); }
+  100% { box-shadow: 0 0 0 16px rgba(0, 168, 204, 0); }
+}
+
+/* مساحة فارغة 24px حول زر الإجراء الرئيسي فلا ينافسه شيء */
+body.by-store .by-buy-actions { margin-block: 26px; gap: 14px; }
+body.by-store .by-buy-secondary { margin-top: 24px; }
+body.by-store .by-pdp-actions { margin-block: 26px; }
+
+/* ============================================================
+   4) بطاقة المنتج — شكل موحّد وشارات موحّدة
+   ============================================================ */
+body.by-store .by-products {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+body.by-store .by-card {
+  background: var(--sf-card);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r-lg);
+  box-shadow: var(--sf-sh-1);
+  transition: transform 0.3s var(--sf-ease), box-shadow 0.3s var(--sf-ease), border-color 0.3s ease;
+}
+body.by-store .by-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--sf-sh-3);
+  border-color: var(--sf-brand);
+}
+body.by-store .by-card.is-featured { border-color: var(--sf-line); }
+
+/* خلفية صور موحّدة لكل المنتجات + تكبير ناعم عند المرور */
+body.by-store .by-card-media {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  background: var(--sf-media);
+  border-radius: 0;
+  isolation: isolate;
+}
+body.by-store .by-card-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(13, 27, 42, 0.06) 100%);
+  pointer-events: none;
+}
+body.by-store .by-card-media img {
+  transition: transform 0.6s var(--sf-ease);
+  will-change: transform;
+}
+body.by-store .by-card:hover .by-card-media img { transform: scale(1.07); }
+
+body.by-store .by-card-body { padding: 18px 18px 20px; gap: 10px; }
+body.by-store .by-card-name {
+  font-family: var(--sf-font-body);
+  font-size: 0.98rem;
+  font-weight: 600;
+  line-height: 1.5;
+  min-height: 3em;
+  color: var(--sf-ink);
+}
+body.by-store .by-card-supplier { font-size: 0.78rem; color: var(--sf-faint); }
+body.by-store .by-card-supplier svg { color: var(--sf-brand); }
+
+/* --- شارات موحّدة الشكل والحجم --- */
+body.by-store .by-card-badges { top: 12px; inset-inline-end: 12px; gap: 6px; }
+body.by-store .by-tag,
+.sf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding-inline: 10px;
+  border-radius: 7px;
+  font-family: var(--sf-font-body);
+  font-size: 0.71rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+.sf-badge svg { width: 12px; height: 12px; }
+
+/* لون تنبيه واحد لكل ما هو خصم/إلحاح */
+body.by-store .by-tag.discount,
+.sf-badge--sale { background: var(--sf-alert); color: #fff; }
+body.by-store .by-tag.bulk,
+.sf-badge--bulk { background: var(--sf-second); color: #fff; }
+body.by-store .by-tag.new,
+.sf-badge--new { background: var(--sf-brand); color: #04252e; }
+.sf-badge--best { background: #fff; color: var(--sf-second); border: 1px solid var(--sf-line); }
+.sf-badge--out { background: rgba(13, 27, 42, 0.78); color: #fff; }
+
+/* --- السعر: تباين حاد بين الحالي والقديم --- */
+body.by-store .am-price { gap: 7px; align-items: baseline; margin-top: 2px; }
+body.by-store .am-price .val {
+  font-family: var(--sf-font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--sf-ink);
+  letter-spacing: -0.02em;
+}
+body.by-store .am-price .cur { font-size: 0.8rem; font-weight: 600; color: var(--sf-ink); }
+body.by-store .am-price .unit { font-size: 0.76rem; color: var(--sf-faint); font-weight: 500; }
+body.by-store .am-price .old {
+  font-size: 0.85rem;
+  color: var(--sf-faint);
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  font-weight: 500;
+}
+body.by-store .by-card.has-sale .am-price .val { color: var(--sf-alert); }
+
+/* دليل اجتماعي مختصر أسفل البطاقة */
+.sf-proof {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--sf-body);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.sf-proof svg { width: 13px; height: 13px; color: var(--sf-brand); flex-shrink: 0; }
+
+/* أزرار الإجراء السريع: تظهر بنعومة */
+body.by-store .by-card-quick { top: 12px; inset-inline-start: 12px; opacity: 0; transform: translateY(-6px); transition: opacity 0.25s ease, transform 0.25s var(--sf-ease); }
+body.by-store .by-card:hover .by-card-quick,
+body.by-store .by-card:focus-within .by-card-quick { opacity: 1; transform: none; }
+body.by-store .by-quick-btn {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--sf-line);
+  box-shadow: var(--sf-sh-1);
+}
+body.by-store .by-quick-btn.is-on { background: var(--sf-brand); color: #04252e; border-color: var(--sf-brand); }
+
+/* ============================================================
+   5) Bento Grid — صناديق بأحجام متفاوتة
+   ============================================================ */
+.sf-bento {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* minmax يمنع بطاقة المنتج من الفيضان خارج الصندوق */
+  grid-auto-rows: minmax(172px, auto);
+  gap: 20px;
+}
+.sf-bento .by-card { min-width: 0; }
+.sf-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  border-radius: var(--sf-r-lg);
+  border: 1px solid var(--sf-line);
+  background: var(--sf-card);
+  box-shadow: var(--sf-sh-1);
+  padding: 22px;
+  color: var(--sf-ink);
+  transition: transform 0.3s var(--sf-ease), box-shadow 0.3s var(--sf-ease), border-color 0.3s ease;
+  min-width: 0;
+}
+.sf-tile:hover { transform: translateY(-5px); box-shadow: var(--sf-sh-3); border-color: var(--sf-brand); }
+
+.sf-tile-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--sf-media);
+}
+.sf-tile-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--sf-ease);
+}
+.sf-tile:hover .sf-tile-bg img { transform: scale(1.08); }
+.sf-tile-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(9, 22, 36, 0.9) 0%, rgba(9, 22, 36, 0.45) 45%, rgba(9, 22, 36, 0.06) 100%);
+}
+.sf-tile.has-media { color: #fff; border-color: transparent; }
+.sf-tile.has-media .sf-tile-body strong,
+.sf-tile.has-media .sf-tile-body small { color: #fff; }
+.sf-tile.has-media .sf-tile-body small { color: rgba(255, 255, 255, 0.78); }
+
+.sf-tile-body { position: relative; z-index: 1; min-width: 0; }
+.sf-tile-body strong {
+  font-family: var(--sf-font-display);
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 5px;
+}
+.sf-tile-body small { display: block; font-size: 0.83rem; color: var(--sf-body); line-height: 1.6; }
+.sf-tile-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+.sf-tile-tags span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 11px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+.sf-tile-badge {
+  position: absolute;
+  top: 18px;
+  inset-inline-end: 18px;
+  z-index: 1;
+}
+.sf-tile-ico {
+  position: relative;
+  z-index: 1;
+  width: 44px; height: 44px;
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--sf-brand-soft);
+  color: var(--sf-brand-strong);
+  margin-bottom: auto;
+}
+.sf-tile-ico svg { width: 21px; height: 21px; }
+
+/* أحجام الصناديق: كبير / عريض / طويل / عادي */
+.sf-tile--lg { grid-column: span 2; grid-row: span 2; }
+.sf-tile--wide { grid-column: span 2; }
+.sf-tile--tall { grid-row: span 2; }
+.sf-tile--lg .sf-tile-body strong { font-size: 1.65rem; }
+
+/* بطاقة منتج داخل الشبكة تبقى بنفس نسبة البطاقات الأخرى */
+.sf-bento .by-card { grid-column: span 1; grid-row: span 2; }
+
+/* ============================================================
+   6) صفحة المنتج — حشو 40px حول الصورة وبلا مشتّتات
+   ============================================================ */
+body.by-store .by-pdp { gap: 48px; }
+body.by-store .by-gallery-main {
+  padding: 40px;
+  background: var(--sf-media);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r-xl);
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+body.by-store .by-gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.45s var(--sf-ease);
+  /* المتغيّران يضبطهما buyer-product.js من موضع المؤشر */
+  transform-origin: var(--zx, 50%) var(--zy, 50%);
+}
+body.by-store .by-gallery-main.is-zoomed img { transform: scale(2.2); }
+body.by-store .by-thumbs { gap: 12px; margin-top: 16px; }
+body.by-store .by-thumb {
+  width: 78px; height: 78px;
+  border-radius: var(--sf-r-sm);
+  border: 1.5px solid var(--sf-line);
+  background: var(--sf-media);
+  padding: 8px;
+  transition: border-color 0.2s ease, transform 0.2s var(--sf-ease);
+}
+body.by-store .by-thumb:hover { transform: translateY(-2px); }
+body.by-store .by-thumb.is-on { border-color: var(--sf-brand); }
+body.by-store .by-thumb img { object-fit: contain; }
+
+body.by-store .by-pdp-name { font-family: var(--sf-font-display); font-size: clamp(1.6rem, 2.4vw, 2.1rem); font-weight: 700; line-height: 1.3; }
+body.by-store .by-pdp-price-box {
+  background: var(--sf-card);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r);
+  padding: 24px;
+  margin-top: 22px;
+}
+/* السعر يلتزم بسقف السلّم (24px) بخط شبه عريض — يبرز باللون والعزل لا بالحجم */
+body.by-store .by-price-main strong {
+  font-family: var(--sf-font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--sf-ink);
+  letter-spacing: -0.02em;
+}
+body.by-store .by-price-main .by-cur { color: var(--sf-ink); font-weight: 600; }
+body.by-store .by-price-main del { color: var(--sf-faint); text-decoration-thickness: 1.5px; }
+body.by-store .by-save { background: var(--sf-alert-soft); color: var(--sf-alert); }
+body.by-store .by-urgency.is-bad { background: var(--sf-alert-soft); color: var(--sf-alert); }
+body.by-store .by-panel {
+  background: var(--sf-card);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r-lg);
+  padding: 26px;
+  box-shadow: var(--sf-sh-1);
+}
+body.by-store .by-panel + .by-panel { margin-top: 22px; }
+body.by-store .by-panel-title { font-family: var(--sf-font-display); font-size: 1.12rem; font-weight: 700; margin-bottom: 18px; }
+body.by-store .by-panel-title svg { color: var(--sf-brand); }
+
+/* ============================================================
+   7) قسم المراجعات
+   ============================================================ */
+.sf-reviews-top {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+  padding-bottom: 24px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--sf-line);
+}
+.sf-score { text-align: center; }
+.sf-score b {
+  font-family: var(--sf-font-display);
+  display: block;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--sf-ink);
+  letter-spacing: -0.03em;
+}
+.sf-score small { display: block; font-size: 0.8rem; color: var(--sf-faint); margin-top: 8px; }
+.sf-score .by-stars { justify-content: center; margin-top: 10px; }
+
+.sf-bars { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.sf-bar { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--sf-body); }
+.sf-bar span:first-child { width: 46px; flex-shrink: 0; }
+.sf-bar-track { flex: 1; height: 7px; border-radius: 999px; background: var(--sf-line-2); overflow: hidden; }
+.sf-bar-fill { display: block; height: 100%; border-radius: 999px; background: var(--sf-brand); }
+.sf-bar span:last-child { width: 38px; text-align: end; flex-shrink: 0; color: var(--sf-faint); }
+
+.sf-review-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.sf-review {
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r);
+  padding: 18px;
+  background: var(--sf-canvas);
+}
+.sf-review-head { display: flex; align-items: center; gap: 11px; margin-bottom: 11px; }
+.sf-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--sf-font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+}
+.sf-review-who { min-width: 0; flex: 1; }
+.sf-review-who b { display: block; font-size: 0.87rem; font-weight: 700; }
+.sf-review-who small { display: block; font-size: 0.74rem; color: var(--sf-faint); }
+.sf-review-verified {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.7rem; font-weight: 700; color: var(--sf-brand-strong);
+}
+.sf-review-verified svg { width: 12px; height: 12px; }
+.sf-review p { font-size: 0.87rem; color: var(--sf-body); line-height: 1.75; margin: 9px 0 0; }
+.sf-review .by-stars svg { width: 13px; height: 13px; }
+
+/* ============================================================
+   8) الظهور التدريجي عند التمرير
+   ============================================================ */
+/* الإخفاء مشروط بوسم .sf-ready الذي يضيفه storefront.js فور تحميله،
+   فلو تعطّل السكربت لأي سبب يبقى المحتوى ظاهراً بدل أن يختفي نهائياً. */
+.sf-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.65s var(--sf-ease), transform 0.65s var(--sf-ease);
+  will-change: opacity, transform;
+}
+.sf-ready [data-reveal].is-revealed { opacity: 1; transform: none; }
+
+/* ============================================================
+   9) طيران المنتج إلى السلة
+   ============================================================ */
+.sf-fly {
+  position: fixed;
+  z-index: 400;
+  width: 68px; height: 68px;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: var(--sf-sh-2);
+  pointer-events: none;
+  transition: transform 0.75s cubic-bezier(0.55, -0.1, 0.6, 1), opacity 0.75s ease;
+}
+.sf-cart-bump { animation: sfBump 0.5s var(--sf-ease); }
+@keyframes sfBump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.28); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   10) هيكل التحميل
+   ============================================================ */
+body.by-store .by-skeleton,
+body.by-store .by-sk {
+  background: linear-gradient(100deg, var(--sf-line-2) 30%, var(--sf-line) 45%, var(--sf-line-2) 60%);
+  background-size: 220% 100%;
+  animation: sfShimmer 1.5s ease-in-out infinite;
+  border-radius: var(--sf-r-sm);
+}
+body.by-store .by-skeleton {
+  background: var(--sf-card);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r-lg);
+  animation: none;
+  overflow: hidden;
+}
+body.by-store .by-sk-media,
+body.by-store .by-sk-line {
+  background: linear-gradient(100deg, var(--sf-line-2) 30%, var(--sf-line) 45%, var(--sf-line-2) 60%);
+  background-size: 220% 100%;
+  animation: sfShimmer 1.5s ease-in-out infinite;
+}
+body.by-store .by-sk-media { aspect-ratio: 4 / 3; height: auto; }
+@keyframes sfShimmer { from { background-position: 200% 0; } to { background-position: -60% 0; } }
+
+/* ============================================================
+   11) الهيدر المبسّط
+   ============================================================ */
+body.by-store .by-header {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--sf-line);
+}
+:root[data-theme="dark"] body.by-store .by-header { background: rgba(20, 29, 46, 0.9); }
+body.by-store .by-header-main { padding-block: 16px; gap: 22px; }
+body.by-store .by-smart-search-inner {
+  border-radius: 999px;
+  border: 1.5px solid var(--sf-line);
+  background: var(--sf-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+body.by-store .by-smart-search-inner:focus-within {
+  border-color: var(--sf-brand);
+  box-shadow: 0 0 0 4px var(--sf-brand-soft);
+}
+body.by-store .by-go { border-radius: 999px; background: var(--sf-brand); color: #04252e; font-weight: 700; }
+body.by-store .by-go:hover { background: var(--sf-brand-strong); color: #04252e; }
+body.by-store .by-icon-btn { border-radius: 12px; }
+body.by-store .by-badge { background: var(--sf-alert); color: #fff; font-weight: 700; }
+
+/* شريط التصنيفات: أهدأ وأقل ازدحاماً */
+body.by-store .by-catbar { background: var(--sf-card); border-bottom: 1px solid var(--sf-line); }
+body.by-store .by-catbar-inner { gap: 4px; }
+
+/* عناصر ثانوية تُخفى من الشريط العلوي وتنتقل لقائمة الحساب */
+body.by-store .by-tools .sf-secondary-tool { display: none; }
+
+/* ============================================================
+   12) عناصر متنوعة موحّدة
+   ============================================================ */
+body.by-store .am-chip {
+  height: 24px;
+  border-radius: 7px;
+  padding-inline: 9px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+body.by-store .am-chip.stock-out { background: var(--sf-alert-soft); color: var(--sf-alert); }
+body.by-store .by-stars svg { width: 14px; height: 14px; }
+body.by-store .by-empty {
+  background: var(--sf-card);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r-lg);
+  padding: 56px 32px;
+}
+body.by-store .by-footer { background: var(--sf-second); }
+body.by-store .by-footer h4 { font-family: var(--sf-font-display); }
+
+body.by-store .by-cart-line { padding-block: 20px; gap: 18px; }
+body.by-store .by-cart-line img { width: 88px; height: 88px; border-radius: var(--sf-r-sm); background: var(--sf-media); object-fit: contain; padding: 6px; }
+body.by-store .by-total-row.grand span:last-child { font-family: var(--sf-font-display); color: var(--sf-ink); font-size: 1.5rem; font-weight: 700; }
+body.by-store .by-stepper { border-radius: 999px; border: 1.5px solid var(--sf-line); overflow: hidden; }
+body.by-store .by-summary-item img { background: var(--sf-media); object-fit: contain; padding: 4px; }
+
+/* الخطوات في صفحة الدفع */
+body.by-store .by-step-num { width: 40px; height: 40px; font-family: var(--sf-font-display); font-weight: 700; }
+body.by-store .by-step.is-current .by-step-num,
+body.by-store .by-step.is-done .by-step-num { background: var(--sf-brand); border-color: var(--sf-brand); color: #04252e; }
+body.by-store .by-step.is-done::before,
+body.by-store .by-step.is-current::before { background: var(--sf-brand); }
+body.by-store .by-step-label { font-size: 0.9rem; }
+
+/* ============================================================
+   13) الجوال — الإصبع أولاً، وتمرير أفقي للصفوف
+   ============================================================ */
+@media (max-width: 900px) {
+  .sf-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 156px; gap: 14px; }
+  .sf-tile--lg { grid-column: span 2; grid-row: span 2; }
+  .sf-tile--wide { grid-column: span 2; grid-row: span 1; }
+  .sf-tile--tall { grid-column: span 1; grid-row: span 2; }
+  .sf-bento .by-card { grid-column: span 1; grid-row: span 2; }
+  .sf-reviews-top { grid-template-columns: 1fr; gap: 20px; }
+}
+
+@media (max-width: 720px) {
+  body.by-store { font-size: 16px; }
+  body.by-store .by-wrap { padding-inline: 18px; }
+  body.by-store .by-section-head { margin-bottom: 22px; }
+  body.by-store .by-section-head p { font-size: 0.92rem; }
+
+  /* صفوف المنتجات تصبح تمريراً أفقياً سلساً بدل شبكة مضغوطة */
+  body.by-store .by-products.sf-rail {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 14px;
+    /* يمتد إلى حافة الشاشة ليبدو التمرير طبيعياً */
+    margin-inline: -18px;
+    padding-inline: 18px;
+    padding-bottom: 6px;
+  }
+  body.by-store .by-products.sf-rail::-webkit-scrollbar { display: none; }
+  body.by-store .by-products.sf-rail > * {
+    flex: 0 0 74%;
+    max-width: 280px;
+    scroll-snap-align: start;
+  }
+  /* حالة "لا نتائج" تحتاج العرض الكامل لا بطاقة ضيقة في مسار تمرير */
+  body.by-store .by-products.sf-rail.is-empty { display: grid; margin-inline: 0; padding-inline: 0; }
+
+  /* أهداف لمس لا تقل عن 46px */
+  body.by-store .by-btn { min-height: 50px; padding: 14px 22px; font-size: 1rem; }
+  body.by-store .by-quick-btn { width: 40px; height: 40px; opacity: 1; transform: none; }
+  body.by-store .by-icon-btn { width: 44px; height: 44px; }
+  body.by-store .by-stepper button { width: 48px; height: 50px; font-size: 1.2rem; }
+  body.by-store .by-stepper input { height: 50px; font-size: 1rem; }
+  body.by-store .by-thumb { width: 64px; height: 64px; }
+  body.by-store .by-gallery-main { padding: 24px; aspect-ratio: 1 / 1; }
+  body.by-store .by-panel { padding: 20px; border-radius: var(--sf-r); }
+  body.by-store .by-pdp-price-box { padding: 18px; }
+  body.by-store .sf-review-list { grid-template-columns: 1fr; }
+  body.by-store .by-card-body { padding: 15px 15px 17px; }
+  body.by-store .am-price .val { font-size: 1.3rem; }
+}
+
+/* ============================================================
+   14) صفحة البداية والسوق والسلة — لمسات أخيرة
+   ============================================================ */
+body.by-store .am-hero { padding-block: clamp(48px, 6vw, 84px); }
+body.by-store .am-hero-copy h1 em { color: var(--sf-brand); font-style: normal; }
+body.by-store .am-hero-search input { font-size: 1.02rem; }
+body.by-store .by-countdown {
+  background: var(--sf-alert-soft);
+  color: var(--sf-alert);
+  border-radius: 999px;
+  padding: 7px 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+body.by-store .am-ruler { display: none; }   /* المسافة البيضاء تفصل الأقسام الآن */
+
+/* الفلاتر الجانبية في السوق */
+body.by-store .by-filters {
+  border-radius: var(--sf-r-lg);
+  border: 1px solid var(--sf-line);
+  background: var(--sf-card);
+  padding: 22px;
+}
+body.by-store .by-check { border-radius: 9px; padding: 8px 10px; }
+body.by-store .by-check.is-on { color: var(--sf-brand-strong); }
+body.by-store .by-chip { border-radius: 999px; padding: 7px 14px; font-size: 0.82rem; }
+body.by-store .by-chip:hover,
+body.by-store .by-chip.is-on { border-color: var(--sf-brand); color: var(--sf-brand-strong); background: var(--sf-brand-tint); }
+body.by-store .by-active-chip {
+  border-radius: 999px;
+  background: var(--sf-brand-soft);
+  color: var(--sf-brand-strong);
+  padding: 6px 8px 6px 14px;
+  font-weight: 600;
+}
+body.by-store .by-results-count { font-size: 0.92rem; }
+
+/* السلة والملخص */
+body.by-store .by-summary,
+body.by-store .by-cart-grid > div > .by-panel { border-radius: var(--sf-r-lg); }
+body.by-store .by-promo input,
+body.by-store .by-field input,
+body.by-store .by-field select,
+body.by-store .by-field textarea {
+  border-radius: 12px;
+  border: 1.5px solid var(--sf-line);
+  padding: 13px 15px;
+  font-size: 0.98rem;
+  background: var(--sf-card);
+  color: var(--sf-ink);
+}
+body.by-store .by-field input:focus,
+body.by-store .by-field select:focus,
+body.by-store .by-field textarea:focus,
+body.by-store .by-promo input:focus {
+  border-color: var(--sf-brand);
+  box-shadow: 0 0 0 4px var(--sf-brand-soft);
+  outline: none;
+}
+body.by-store .by-field.is-invalid input { border-color: var(--sf-alert); background: var(--sf-alert-soft); }
+body.by-store .by-field.is-invalid .by-field-msg { color: var(--sf-alert); }
+body.by-store .by-choice { border-radius: 14px; padding: 16px; border: 1.5px solid var(--sf-line); }
+body.by-store .by-choice.is-on { border-color: var(--sf-brand); background: var(--sf-brand-tint); }
+body.by-store .by-trust { color: var(--sf-body); font-size: 0.86rem; }
+body.by-store .by-trust svg { color: var(--sf-brand); }
+
+/* ============================================================
+   15) احترام تفضيل تقليل الحركة
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  body.by-store *,
+  body.by-store *::before,
+  body.by-store *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .sf-ready [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
