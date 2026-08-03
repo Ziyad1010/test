@@ -123,6 +123,11 @@ function bindCart() {
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".add-btn");
     if (!btn) return;
+    // بوابة «عمّار أعمال» بلا سلة — الشراء يتم داخل المتجر نفسه
+    if (!badge) {
+      window.location.href = "buyer-home.html";
+      return;
+    }
     cartCount += 1;
     badge.textContent = cartCount;
     badge.animate(
@@ -199,8 +204,11 @@ function bindSearch() {
     e.preventDefault();
     const q = document.getElementById("searchInput").value.trim();
     const cat = document.getElementById("searchCategory");
-    const catName = cat.options[cat.selectedIndex].text;
-    alert(q ? `جارٍ البحث عن: «${q}» في ${catName}` : "اكتب كلمة للبحث أولًا");
+    // البحث من البوابة يقود مباشرةً إلى سوق المشتري الفعلي
+    const params = [];
+    if (q) params.push("q=" + encodeURIComponent(q));
+    if (cat && cat.value) params.push("category=" + encodeURIComponent(cat.value));
+    window.location.href = "buyer-market.html" + (params.length ? "?" + params.join("&") : "");
   });
 }
 

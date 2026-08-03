@@ -203,6 +203,7 @@
     renderAlerts();
     renderItems();
     renderTimeline();
+    if (window.SmartUI) SmartUI.renderTimeline($('#bdVisualTimeline'), order);
     renderShipping();
     renderPayment();
     renderActions();
@@ -223,6 +224,9 @@
 
       $('#bdContent').hidden = false;
       render();
+
+      // الحالة تتغيّر من تبويب المورد وتظهر هنا فوراً بلا إعادة تحميل
+      if (window.Live) Live.start();
 
       Store.subscribe(function () {
         order = Buyer.order(orderId);

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إتمام الطلب | عمّار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
+  <link rel="stylesheet" href="css/buyer-home.css" />
+  <link rel="stylesheet" href="css/ammar-theme.css" />
+  <link rel="stylesheet" href="css/buyer-journey.css" />
+  <link rel="stylesheet" href="css/storefront.css" />
+  <link rel="stylesheet" href="css/buyer-smart.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/storefront.js"></script>
+</head>
+<body class="by-store by-checkout-page">
+
+  <!-- ترويسة مبسّطة: لا قوائم ولا بانرات ولا روابط خارجية تشتّت المستخدم -->
+  <header class="by-checkout-header">
+    <div class="by-wrap by-checkout-header-inner">
+      <a class="by-logo" href="buyer-cart.html" title="العودة إلى السلة">
+        <img src="assets/images/logo.png" alt="شعار عمّار" />
+        <span><strong>عمّار</strong><small>إتمام الطلب</small></span>
+      </a>
+
+      <span class="by-secure-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        اتصال مشفّر — بياناتك محمية
+      </span>
+
+      <a class="by-back-cart" href="buyer-cart.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        العودة إلى السلة
+      </a>
+    </div>
+  </header>
+
+  <main class="by-wrap by-checkout-wrap">
+
+    <!-- مؤشر التقدم (RTL: يبدأ من اليمين) -->
+    <ol class="by-steps" id="coSteps">
+      <li class="by-step is-current" data-step="1">
+        <span class="by-step-num">1</span>
+        <span class="by-step-label">التوصيل</span>
+      </li>
+      <li class="by-step" data-step="2">
+        <span class="by-step-num">2</span>
+        <span class="by-step-label">الدفع</span>
+      </li>
+      <li class="by-step" data-step="3">
+        <span class="by-step-num">3</span>
+        <span class="by-step-label">المراجعة والتأكيد</span>
+      </li>
+    </ol>
+    <p class="by-step-remain" id="coRemain">خطوتان متبقيتان — الحقول الاختيارية موضّحة بوضوح</p>
+
+    <div class="by-empty" id="coEmpty" hidden>
+      <span class="by-empty-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      </span>
+      <strong>لا يمكن إتمام طلب فارغ</strong>
+      <p>أضف منتجات إلى سلتك أولاً ثم عد إلى هنا.</p>
+      <a class="by-btn by-btn-primary" href="buyer-market.html" style="flex:none;">تصفّح السوق</a>
+    </div>
+
+    <div class="by-checkout-grid" id="coGrid">
+      <div>
+        <!-- ============ الخطوة 1: التوصيل ============ -->
+        <section class="by-panel" id="coStep1">
+          <h3 class="by-panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            عنوان التوصيل
+          </h3>
+
+          <p class="by-guest-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            تُكمل طلبك كضيف — لا حاجة لإنشاء حساب. يمكنك حفظ بياناتك بعد التأكيد إن أردت.
+          </p>
+
+          <div id="coSavedAddresses"></div>
+
+          <form id="coAddressForm" novalidate>
+            <div class="by-row-2">
+              <div class="by-field" data-field="name">
+                <label for="coName">الاسم الكامل</label>
+                <input type="text" id="coName" autocomplete="name" placeholder="مثال: خالد العتيبي" />
+                <span class="by-field-msg"></span>
+              </div>
+
+              <div class="by-field" data-field="phone">
+                <label for="coPhone">رقم الجوال</label>
+                <input type="tel" id="coPhone" dir="ltr" autocomplete="tel" placeholder="05XXXXXXXX" inputmode="numeric" />
+                <span class="by-field-msg"></span>
+              </div>
+            </div>
+
+            <div class="by-field" data-field="email">
+              <label for="coEmail">البريد الإلكتروني <span class="optional">(اختياري — لإرسال الفاتورة)</span></label>
+              <input type="email" id="coEmail" dir="ltr" autocomplete="email" placeholder="your@email.com" />
+              <span class="by-field-msg"></span>
+            </div>
+
+            <div class="by-row-2">
+              <div class="by-field" data-field="city">
+                <label for="coCity">المدينة</label>
+                <select id="coCity"></select>
+                <span class="by-field-msg"></span>
+              </div>
+
+              <div class="by-field" data-field="district">
+                <label for="coDistrict">الحي</label>
+                <select id="coDistrict"></select>
+                <span class="by-field-msg"></span>
+              </div>
+            </div>
+
+            <div class="by-field" data-field="street">
+              <label for="coStreet">الشارع ورقم المبنى</label>
+              <input type="text" id="coStreet" autocomplete="street-address" placeholder="ابدأ بالكتابة وستظهر اقتراحات" />
+              <div class="by-addr-suggest" id="coStreetSuggest" hidden></div>
+              <span class="by-field-msg"></span>
+            </div>
+
+            <div class="by-field" data-field="notes">
+              <label for="coNotes">ملاحظات للمندوب <span class="optional">(اختياري)</span></label>
+              <textarea id="coNotes" rows="2" placeholder="مثال: التسليم بعد العصر، البوابة الخلفية"></textarea>
+              <span class="by-field-msg"></span>
+            </div>
+
+            <label class="by-inline-check">
+              <input type="checkbox" id="coSaveAddress" checked />
+              <span>احفظ هذا العنوان لطلباتي القادمة</span>
+            </label>
+          </form>
+
+          <div class="by-checkout-nav">
+            <button type="button" class="by-btn by-btn-primary" id="coNext1">
+              متابعة إلى الدفع
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ============ الخطوة 2: الدفع ============ -->
+        <section class="by-panel" id="coStep2" hidden>
+          <h3 class="by-panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            طريقة الدفع
+          </h3>
+
+          <div id="coPayMethods"></div>
+          <div id="coPayExtra"></div>
+
+          <div class="by-trust" style="margin-top:16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>جميع المعاملات تمر عبر قناة مشفّرة، ولا تُخزَّن بيانات بطاقتك على المنصة.</span>
+          </div>
+
+          <div class="by-checkout-nav">
+            <button type="button" class="by-btn by-btn-outline" id="coBack2">رجوع</button>
+            <button type="button" class="by-btn by-btn-primary" id="coNext2">
+              متابعة إلى المراجعة
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ============ الخطوة 3: المراجعة ============ -->
+        <section class="by-panel" id="coStep3" hidden>
+          <h3 class="by-panel-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            راجع طلبك قبل التأكيد
+          </h3>
+
+          <div class="by-review-block">
+            <div class="by-review-head"><strong>التوصيل</strong>
+              <button type="button" class="by-review-edit" data-goto="1">تعديل</button></div>
+            <div id="coReviewAddress"></div>
+          </div>
+
+          <div class="by-review-block">
+            <div class="by-review-head"><strong>الدفع</strong>
+              <button type="button" class="by-review-edit" data-goto="2">تعديل</button></div>
+            <div id="coReviewPayment"></div>
+          </div>
+
+          <div class="by-review-block">
+            <div class="by-review-head"><strong>المنتجات</strong>
+              <a class="by-review-edit" href="buyer-cart.html">تعديل السلة</a></div>
+            <div id="coReviewItems"></div>
+          </div>
+
+          <label class="by-inline-check" style="margin-top:14px;">
+            <input type="checkbox" id="coTerms" />
+            <span>أوافق على <a href="buyer-info.html?topic=terms" target="_blank" rel="noopener">الشروط والأحكام</a> و<a href="buyer-info.html?topic=returns" target="_blank" rel="noopener">سياسة الإرجاع</a></span>
+          </label>
+          <p class="by-field-msg" id="coTermsMsg"></p>
+
+          <div class="by-checkout-nav">
+            <button type="button" class="by-btn by-btn-outline" id="coBack3">رجوع</button>
+            <button type="button" class="by-btn by-btn-primary" id="coConfirm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              تأكيد الطلب والدفع
+            </button>
+          </div>
+        </section>
+
+        <div class="by-support-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>تحتاج مساعدة؟ اتصل بنا على <a href="tel:8000000000" dir="ltr">8000-000-000</a> أو راسلنا على <a href="https://wa.me/966800000000" target="_blank" rel="noopener">واتساب</a> — من 8ص إلى 8م.</span>
+        </div>
+      </div>
+
+      <!-- ملخص لاصق يبقى ظاهراً في كل الخطوات -->
+      <aside class="by-panel by-summary" id="coSummary"></aside>
+    </div>
+  </main>
+
+  <!-- زر تأكيد ثابت أسفل الشاشة -->
+  <div class="by-sticky-confirm" id="coSticky" hidden>
+    <div class="by-wrap by-sticky-confirm-inner">
+      <span class="by-sticky-confirm-total">
+        <small id="coStickyLabel">الإجمالي شامل الشحن والضريبة</small>
+        <strong id="coStickyTotal">0 ر.س</strong>
+      </span>
+      <button type="button" class="by-btn by-btn-primary" id="coStickyBtn">متابعة</button>
+    </div>
+  </div>
+
+  <script src="js/saudi-regions.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-ui.js"></script>
+  <script src="js/buyer-smart.js"></script>
+  <script src="js/buyer-smart-ui.js"></script>
+  <script src="js/buyer-live.js"></script>
+  <script src="js/buyer-checkout.js"></script>
+</body>
+</html>

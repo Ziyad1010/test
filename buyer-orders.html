@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="css/portal.css" />
   <link rel="stylesheet" href="css/orders.css" />
   <link rel="stylesheet" href="css/buyer.css" />
+  <link rel="stylesheet" href="css/ammar-theme.css" />
+  <link rel="stylesheet" href="css/storefront.css" />
+  <link rel="stylesheet" href="css/buyer-smart.css" />
 </head>
 <body>
 
@@ -32,9 +35,9 @@
           </div>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
-          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+          <a href="buyer-home.html" class="refresh-btn" style="text-decoration: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
-            الرئيسية للموقع
+            العودة إلى المتجر
           </a>
         </div>
       </header>
@@ -44,6 +47,19 @@
           <div>
             <h1 class="page-title">طلباتي</h1>
             <p class="page-subtitle">تابع حالة طلباتك وتتبّع شحناتك لحظة بلحظة</p>
+          </div>
+        </div>
+
+        <div class="ord-card" id="boSpendCard" hidden>
+          <div class="ord-card-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <h3>إنفاقك عبر الأشهر</h3>
+            <span class="sm-live" id="bhLive" hidden><span class="sm-live-dot"></span>تحديث مباشر</span>
+          </div>
+          <div class="sm-chart-wrap"><canvas id="boSpendChart"></canvas></div>
+          <div class="sm-chart-legend">
+            <span><i style="background:#00a8cc;"></i> إجمالي الإنفاق (ر.س)</span>
+            <span><i style="background:#0e2439;"></i> عدد الطلبات</span>
           </div>
         </div>
 
@@ -89,9 +105,13 @@
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="js/store.js"></script>
   <script src="js/buyer.js"></script>
   <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-smart.js"></script>
+  <script src="js/buyer-smart-ui.js"></script>
+  <script src="js/buyer-live.js"></script>
   <script src="js/buyer-orders.js"></script>
 </body>
 </html>

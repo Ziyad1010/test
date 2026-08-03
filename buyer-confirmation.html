@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تم تأكيد طلبك | عمّار</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/onboarding.css" />
+  <link rel="stylesheet" href="css/buyer.css" />
+  <link rel="stylesheet" href="css/buyer-home.css" />
+  <link rel="stylesheet" href="css/ammar-theme.css" />
+  <link rel="stylesheet" href="css/buyer-journey.css" />
+  <link rel="stylesheet" href="css/storefront.css" />
+  <link rel="stylesheet" href="css/buyer-smart.css" />
+  <script src="js/i18n.js"></script>
+  <script src="js/storefront.js"></script>
+</head>
+<body class="by-store by-checkout-page">
+
+  <header class="by-checkout-header">
+    <div class="by-wrap by-checkout-header-inner">
+      <a class="by-logo" href="buyer-home.html">
+        <img src="assets/images/logo.png" alt="شعار عمّار" />
+        <span><strong>عمّار</strong><small>تأكيد الطلب</small></span>
+      </a>
+
+      <span class="by-secure-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        تمت العملية بنجاح
+      </span>
+
+      <a class="by-back-cart" href="buyer-home.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        العودة للمتجر
+      </a>
+    </div>
+  </header>
+
+  <main class="by-wrap by-checkout-wrap">
+    <div class="by-empty" id="cfNotFound" hidden>
+      <span class="by-empty-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </span>
+      <strong>لم نعثر على هذا الطلب</strong>
+      <p>ربما فُتح الرابط من جهاز آخر. يمكنك مراجعة كل طلباتك من صفحة «طلباتي».</p>
+      <a class="by-btn by-btn-primary" href="buyer-orders.html" style="flex:none;">عرض طلباتي</a>
+    </div>
+
+    <div id="cfContent" hidden>
+      <section class="by-success-hero">
+        <span class="by-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+        <h1>تم استلام طلبك بنجاح</h1>
+        <p id="cfLead">شكراً لثقتك بعمّار — سنبدأ تجهيز طلبك فوراً ونُبلغك بكل تحديث في حالته.</p>
+        <span class="by-order-no" id="cfOrderNo">—</span>
+        <p class="by-confirm-sent" id="cfSent"></p>
+
+        <div class="by-success-actions">
+          <a class="by-btn by-btn-primary" id="cfTrack" href="buyer-orders.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            تتبّع الطلب
+          </a>
+          <a class="by-btn by-btn-outline" href="buyer-market.html">متابعة التسوّق</a>
+        </div>
+      </section>
+
+      <div class="by-checkout-grid">
+        <div>
+          <section class="by-panel">
+            <h3 class="by-panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              موعد التسليم المتوقع
+            </h3>
+            <div class="by-eta-big" id="cfEta"></div>
+            <div class="by-timeline" id="cfTimeline"></div>
+          </section>
+
+          <section class="by-panel">
+            <h3 class="by-panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              ملخص الطلب
+            </h3>
+            <div id="cfItems"></div>
+            <div class="by-totals" id="cfTotals"></div>
+          </section>
+
+          <section class="by-panel by-nudge" id="cfNudge" hidden>
+            <h3 class="by-panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              احفظ بياناتك للمرة القادمة
+            </h3>
+            <p>أنشئ حساباً بنقرة واحدة لتتبّع طلباتك، وحفظ عناوينك، وإعادة الطلب في ثوانٍ. طلبك الحالي سيُربط بحسابك تلقائياً — ولا شيء يضيع إن تجاهلت هذه الخطوة.</p>
+            <div class="by-nudge-actions">
+              <button type="button" class="by-btn by-btn-primary" id="cfCreate">إنشاء حساب سريع</button>
+              <button type="button" class="by-btn by-btn-outline" id="cfSkip">لاحقاً</button>
+            </div>
+          </section>
+        </div>
+
+        <aside>
+          <section class="by-panel">
+            <h3 class="by-panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              التوصيل والدفع
+            </h3>
+            <div id="cfDetails"></div>
+          </section>
+
+          <div class="by-support-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>سؤال عن طلبك؟ <a href="tel:8000000000" dir="ltr">8000-000-000</a> — من 8ص إلى 8م.</span>
+          </div>
+        </aside>
+      </div>
+
+      <section class="by-section" id="cfRelatedWrap" hidden>
+        <div class="by-section-head">
+          <div><h2 style="font-size:1.05rem;">قد تحتاجها في نفس المشروع</h2></div>
+        </div>
+        <div class="by-products" id="cfRelated" data-rail></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/store.js"></script>
+  <script src="js/buyer.js"></script>
+  <script src="js/buyer-ui.js"></script>
+  <script src="js/buyer-smart.js"></script>
+  <script src="js/buyer-smart-ui.js"></script>
+  <script src="js/buyer-live.js"></script>
+  <script src="js/buyer-confirmation.js"></script>
+</body>
+</html>

@@ -117,12 +117,18 @@
     $('#bsLanguage').value = prefs.language;
     $('#bsCurrency').value = prefs.currency;
 
+    // اللغة المحفوظة تُقرأ من طبقة I18n نفسها فلا يتضارب المصدران
+    if (window.I18n) $('#bsLanguage').value = I18n.current();
+
     $('#bsLanguage').addEventListener('change', function () {
       var p = readPrefs(); p.language = this.value; writePrefs(p);
-      // الترجمة الكاملة تحتاج ملفات لغة — الاختيار محفوظ فقط حالياً
-      toast(this.value === 'ar'
-        ? 'تم حفظ اللغة: العربية'
-        : 'تم حفظ التفضيل — ترجمة الواجهة ستتوفر عند الإطلاق', 'success');
+
+      if (window.I18n) {
+        I18n.set(this.value);
+        toast(this.value === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English', 'success');
+      } else {
+        toast('تم حفظ اللغة', 'success');
+      }
     });
 
     $('#bsCurrency').addEventListener('change', function () {
@@ -164,6 +170,79 @@
     });
   }
 
+  /* ---------------- نقاط الولاء ---------------- */
+  function renderLoyalty() {
+    var mount = $('#bsLoyalty');
+    if (!mount || !window.Smart) return;
+
+    var t = Smart.tier();
+    var available = Smart.points();
+    var fmt = function (n) { return Number(n || 0).toLocaleString('ar-SA'); };
+
+    mount.innerHTML =
+      '<div class="sm-loyal">' +
+        '<div class="sm-loyal-hero">' +
+          '<span class="sm-loyal-points"><b>' + fmt(available) + '</b><small>نقطة متاحة</small></span>' +
+          '<span class="sm-loyal-value">= ' + Smart.pointsValue(available) + ' ر.س</span>' +
+        '</div>' +
+
+        '<div class="sm-tier-bar sm-tier-bar--light">' +
+          '<div class="sm-tier-track"><span style="width:' + Math.max(3, t.progress) + '%;"></span></div>' +
+          '<small>' + (t.next
+            ? 'عضويتك الحالية <b>' + t.current.label + '</b> — تبقّى ' + fmt(t.toNext) + ' نقطة لعضوية ' + t.next.label
+            : 'وصلت إلى أعلى عضوية: <b>' + t.current.label + '</b>') + '</small>' +
+        '</div>' +
+
+        '<ul class="sm-loyal-tiers">' +
+          Smart.TIERS.map(function (tier) {
+            var reached = t.total >= tier.min;
+            return '<li class="' + (reached ? 'is-on' : '') + '">' +
+              '<b>' + tier.label + '</b>' +
+              '<small>من ' + fmt(tier.min) + ' نقطة — ' + tier.perk + '</small>' +
+            '</li>';
+          }).join('') +
+        '</ul>' +
+
+        '<div class="sm-loyal-facts">' +
+          '<span>إجمالي ما كسبته: <b>' + fmt(Smart.earnedPoints()) + '</b> نقطة</span>' +
+          '<span>أقل استبدال: <b>' + Smart.MIN_REDEEM + '</b> نقطة</span>' +
+          '<span>قيمة النقطة: <b>' + Smart.RIYAL_PER_POINT + '</b> ر.س</span>' +
+        '</div>' +
+
+        (available >= Smart.MIN_REDEEM
+          ? '<div class="sm-loyal-redeem">' +
+              '<input type="text" id="bsRedeemQty" inputmode="numeric" value="' + available + '" aria-label="عدد النقاط" />' +
+              '<button type="button" class="ob-btn-primary" id="bsRedeemBtn">استبدل نقاطاً</button>' +
+            '</div>'
+          : '<p class="settings-panel-sub" style="margin-top:16px;">تحتاج ' +
+            fmt(Smart.MIN_REDEEM - available) + ' نقطة إضافية لتتمكن من الاستبدال.</p>') +
+      '</div>';
+
+    var btn = $('#bsRedeemBtn');
+    if (!btn) return;
+
+    $('#bsRedeemQty').addEventListener('input', function () {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    btn.addEventListener('click', function () {
+      var res = Smart.redeem($('#bsRedeemQty').value);
+      toast(res.message, res.ok ? 'success' : 'danger');
+      if (res.ok) renderLoyalty();
+    });
+  }
+
+  function initTourReplay() {
+    var btn = $('#bsReplayTour');
+    if (!btn) return;
+
+    btn.addEventListener('click', function () {
+      if (window.Smart) Smart.resetTour();
+      toast('ستبدأ الجولة عند فتح الصفحة الرئيسية', 'success');
+      setTimeout(function () { window.location.href = 'buyer-home.html'; }, 900);
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     initTabs();
     initProfile();
@@ -172,7 +251,10 @@
 
     fillProfile();
     renderNotifPrefs();
+    renderLoyalty();
+    initTourReplay();
 
     if (window.Validate) Validate.attachAll(document);
+    Store.subscribe(renderLoyalty);
   });
 })();

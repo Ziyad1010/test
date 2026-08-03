@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="css/portal.css" />
   <link rel="stylesheet" href="css/orders.css" />
   <link rel="stylesheet" href="css/buyer.css" />
+  <link rel="stylesheet" href="css/ammar-theme.css" />
+  <link rel="stylesheet" href="css/storefront.css" />
+  <link rel="stylesheet" href="css/buyer-smart.css" />
 </head>
 <body>
 
@@ -32,9 +35,9 @@
           </div>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
-          <a href="index.html" class="refresh-btn" style="text-decoration: none;">
+          <a href="buyer-home.html" class="refresh-btn" style="text-decoration: none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M15 3h6v6"/><path d="M10 21H4v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
-            الرئيسية للموقع
+            العودة إلى المتجر
           </a>
         </div>
       </header>
@@ -60,6 +63,10 @@
             <button type="button" class="settings-nav-btn" data-panel="prefs">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/></svg>
               اللغة والمظهر
+            </button>
+            <button type="button" class="settings-nav-btn" data-panel="loyalty">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              نقاط الولاء
             </button>
             <button type="button" class="settings-nav-btn" data-panel="notifs">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
@@ -136,6 +143,16 @@
                 <button type="button" class="ob-btn-secondary" id="bsThemeLight">الوضع الفاتح</button>
                 <button type="button" class="ob-btn-secondary" id="bsThemeDark">الوضع الداكن</button>
               </div>
+
+              <div class="pd-subhead" style="margin-top:24px;"><strong>الجولة التعريفية</strong></div>
+              <p class="settings-panel-sub">شرح تفاعلي مختصر لأهم مزايا المتجر</p>
+              <button type="button" class="ob-btn-secondary" id="bsReplayTour">إعادة تشغيل الجولة</button>
+            </section>
+
+            <section class="settings-panel" data-panel="loyalty">
+              <h3>نقاط الولاء</h3>
+              <p class="settings-panel-sub">تكسب نقطة على كل 10 ر.س من مشترياتك، وتستبدلها خصماً على طلباتك القادمة</p>
+              <div id="bsLoyalty"></div>
             </section>
 
             <section class="settings-panel" data-panel="notifs">
@@ -154,6 +171,9 @@
   <script src="js/validate.js"></script>
   <script src="js/saudi-regions.js"></script>
   <script src="js/buyer-shell.js"></script>
+  <script src="js/buyer-smart.js"></script>
+  <script src="js/buyer-smart-ui.js"></script>
+  <script src="js/buyer-live.js"></script>
   <script src="js/buyer-settings.js"></script>
 </body>
 </html>
