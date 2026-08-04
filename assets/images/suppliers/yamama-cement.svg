@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="شعار مورد الأسمنت">
+  <defs>
+    <linearGradient id="cemG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4b5f52"/>
+      <stop offset="1" stop-color="#6d8574"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="26" fill="url(#cemG)"/>
+  <!-- كيس أسمنت -->
+  <path d="M40 30h40a6 6 0 0 1 6 6v52a6 6 0 0 1-6 6H40a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6z" fill="#ffffff" opacity="0.95"/>
+  <path d="M40 30h40a6 6 0 0 1 6 6v8H34v-8a6 6 0 0 1 6-6z" fill="#d7e2da"/>
+  <rect x="48" y="56" width="24" height="6" rx="3" fill="#4b5f52"/>
+  <rect x="48" y="70" width="16" height="6" rx="3" fill="#8aa394"/>
+</svg>

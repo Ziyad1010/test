@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="شعار مورد البلاط والسيراميك">
+  <defs>
+    <linearGradient id="tileG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a4482e"/>
+      <stop offset="1" stop-color="#c76a4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="26" fill="url(#tileG)"/>
+  <!-- بلاطات بنمط متعاكس -->
+  <g fill="#ffffff">
+    <rect x="28" y="28" width="28" height="28" rx="4" opacity="0.95"/>
+    <rect x="64" y="28" width="28" height="28" rx="4" opacity="0.55"/>
+    <rect x="28" y="64" width="28" height="28" rx="4" opacity="0.55"/>
+    <rect x="64" y="64" width="28" height="28" rx="4" opacity="0.95"/>
+  </g>
+</svg>

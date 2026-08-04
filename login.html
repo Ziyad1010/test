@@ -39,6 +39,10 @@
             <button type="button" class="account-type-btn active" id="btnBuyer" onclick="selectRole('buyer')">مشتري / أفراد</button>
             <button type="button" class="account-type-btn" id="btnSupplier" onclick="selectRole('supplier')">مورد / شركات</button>
           </div>
+          <p class="portal-note" id="portalNote" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
+            أنت تسجّل الدخول إلى <strong>عمّار أعمال</strong> — ستنتقل مباشرة إلى لوحة تحكم المورد.
+          </p>
         </div>
 
         <button class="auth-google-btn" onclick="handleGoogleSignIn()">
@@ -60,7 +64,7 @@
             <button type="button" class="password-toggle" aria-label="عرض كلمة المرور" onclick="togglePassword('password')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
-            <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+            <a href="forgot-password.html" class="forgot-link">نسيت كلمة المرور؟</a>
           </div>
 
           <button type="submit" class="auth-btn">تسجيل الدخول</button>
@@ -73,6 +77,7 @@
     </div>
   </div>
 
+  <script src="js/session.js"></script>
   <script>
     let currentRole = 'buyer';
 
@@ -99,14 +104,32 @@
       }
     }
 
-    function supplierDestination() {
-      return localStorage.getItem('ammar_supplier_onboarded') === 'true' ? 'dashboard.html' : 'onboarding.html';
-    }
+    // الدخول من «عمّار أعمال» يصل بالمعامل portal=business فيُفتح
+    // التبويب الصحيح مسبقاً ويذهب المستخدم إلى داشبورد المورد مباشرة
+    (function applyPortalParam() {
+      var portal = new URLSearchParams(window.location.search).get('portal');
+      if (portal === 'business' || portal === 'supplier') {
+        document.addEventListener('DOMContentLoaded', function () {
+          selectRole('supplier');
+          var note = document.getElementById('portalNote');
+          if (note) note.hidden = false;
+        });
+      }
+    })();
 
-    // نوع الحساب يحدّد البوابة: المورد إلى لوحة التحكم، والمشتري إلى بوابته
+    // كل بوابة لها جلسة مستقلة: الدخول لإحداهما لا يمسّ الأخرى
     function destination() {
+      var portal = currentRole === 'supplier' ? 'business' : 'store';
+      var email = (document.getElementById('email') || {}).value || '';
+
+      if (window.Session) {
+        Session.signIn(portal, { email: email });
+        return Session.homeUrl(portal);
+      }
+
       try { localStorage.setItem('ammar_account_type', currentRole); } catch (e) { /* ignore */ }
-      return currentRole === 'supplier' ? supplierDestination() : 'buyer-home.html';
+      if (currentRole !== 'supplier') return 'buyer-home.html';
+      return localStorage.getItem('ammar_supplier_onboarded') === 'true' ? 'dashboard.html' : 'onboarding.html';
     }
 
     function handleLoginSubmit(e) {

@@ -156,17 +156,19 @@ body.by-store .by-section-head { margin-bottom: 34px; align-items: flex-end; }
 body.by-store .sf-band > .by-section { margin-block: 0; }
 .sf-band--tint { background: var(--sf-brand-tint); border-block: 1px solid var(--sf-line-2); }
 .sf-band--paper { background: var(--sf-card); border-block: 1px solid var(--sf-line-2); }
-.sf-band--dark {
-  background: linear-gradient(135deg, var(--sf-second) 0%, var(--sf-second-2) 100%);
-  color: #eef4fa;
-  border-block: none;
+
+/* شريط بهوية العلامة: تدرّج تركوازي هادئ بنصوص داكنة —
+   يميّز القسم دون كسر ثيم الصفحة كما كان يفعل الشريط الكحلي. */
+.sf-band--brand {
+  background:
+    radial-gradient(120% 100% at 100% 0%, var(--sf-brand-soft) 0%, transparent 60%),
+    linear-gradient(180deg, var(--sf-brand-tint) 0%, var(--sf-canvas) 100%);
+  border-block: 1px solid var(--sf-line-2);
 }
-.sf-band--dark .by-section-head h2,
-.sf-band--dark h2,
-.sf-band--dark h3 { color: #ffffff; }
-.sf-band--dark .by-section-head p { color: rgba(238, 244, 250, 0.72); }
-.sf-band--dark .by-see-all,
-.sf-band--dark .by-more { color: var(--sf-brand); }
+.sf-band--brand .by-section-head h2 { color: var(--sf-ink); }
+.sf-band--brand .by-section-head p { color: var(--sf-body); }
+.sf-band--brand .by-see-all,
+.sf-band--brand .by-more { color: var(--sf-brand-strong); }
 
 /* ============================================================
    3) الأزرار — مساحة تنفّس ونبض عند الضغط
@@ -836,15 +838,371 @@ body.by-store .by-trust { color: var(--sf-body); font-size: 0.86rem; }
 body.by-store .by-trust svg { color: var(--sf-brand); }
 
 /* ============================================================
-   15) احترام تفضيل تقليل الحركة
+   15) تصحيحات تباين مؤكَّدة
+   ------------------------------------------------------------
+   الحالتان أدناه ليستا مشكلتَي إظهار/إخفاء بل تصادم ألوان:
+   طبقة الهوية غيّرت الخلفيات دون تحديث ألوان النص التي كُتبت
+   لخلفيات سابقة، فبدا النص «يظهر عند المرور فقط».
+   ============================================================ */
+
+/* النص أسفل الشعار: رمادي داكن مقروء بدل التركواز على الأبيض */
+body.by-store .by-logo small {
+  color: var(--sf-body);
+  font-weight: 600;
+}
+
+/* زر «أضف للسلة»: كان لون النص والخلفية كلاهما التركواز نفسه،
+   فاختفى النص حتى يأتي :hover ويجعله أبيض. اللون الآن صريح في
+   كل حالة، والمرور يغيّر الدرجة والظل فقط. */
+body.by-store .by-add-btn,
+body.by-store .by-add-btn:link,
+body.by-store .by-add-btn:visited {
+  background: var(--sf-brand);
+  border: 1px solid var(--sf-brand);
+  color: #04252e;
+  opacity: 1;
+  visibility: visible;
+  font-weight: 700;
+  transition: background 0.18s ease, box-shadow 0.2s ease, transform 0.14s var(--sf-ease);
+}
+body.by-store .by-add-btn svg,
+body.by-store .by-add-btn span { color: inherit; opacity: 1; visibility: visible; }
+
+body.by-store .by-add-btn:hover:not(:disabled) {
+  background: var(--sf-brand-strong);
+  border-color: var(--sf-brand-strong);
+  color: #04252e;
+  box-shadow: 0 5px 14px rgba(0, 134, 168, 0.28);
+}
+body.by-store .by-add-btn:active:not(:disabled) { transform: scale(0.97); color: #04252e; }
+
+/* «غير متوفر»: رمادي واضح النص في كل الحالات */
+body.by-store .by-add-btn:disabled,
+body.by-store .by-add-btn:disabled:hover {
+  background: var(--sf-line-2);
+  border-color: var(--sf-line);
+  color: var(--sf-body);
+  opacity: 1;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   16) شريط التصنيفات: مستطيلات مضغوطة بمظهر سلايدر ثابت
+   ============================================================ */
+.sf-catstrip {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.sf-catstrip::-webkit-scrollbar { display: none; }
+
+.sf-catcard {
+  flex: 1 1 0;
+  min-width: 172px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--sf-line);
+  border-radius: 14px;
+  background: var(--sf-card);
+  box-shadow: var(--sf-sh-1);
+  color: var(--sf-ink);
+  transition: transform 0.22s var(--sf-ease), box-shadow 0.22s var(--sf-ease), border-color 0.2s ease;
+}
+.sf-catcard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--sf-sh-2);
+  border-color: var(--sf-brand);
+}
+.sf-catcard-ico {
+  width: 42px; height: 42px;
+  border-radius: 11px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--sf-brand-soft);
+  color: var(--sf-brand-strong);
+}
+.sf-catcard-ico svg { width: 20px; height: 20px; }
+.sf-catcard-body { min-width: 0; }
+.sf-catcard-body strong {
+  display: block;
+  font-family: var(--sf-font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sf-catcard-body small { display: block; font-size: 0.76rem; color: var(--sf-faint); margin-top: 2px; }
+
+@media (max-width: 900px) {
+  /* على الشاشات الضيّقة يبقى الشكل نفسه مع تمرير أفقي طبيعي */
+  .sf-catstrip { margin-inline: -18px; padding-inline: 18px; }
+  .sf-catcard { flex: 0 0 auto; min-width: 168px; }
+}
+
+/* ============================================================
+   17) صفحات حساب المشتري — بهوية المتجر لا بهيكل الداشبورد
+   ------------------------------------------------------------
+   لا dash-shell ولا dash-sidebar هنا: هيدر المتجر نفسه، وتنقّل
+   حساب أفقي، وفوتر المتجر — بوابة مستقلة تماماً عن لوحة الأعمال.
+   ============================================================ */
+.by-account-shell { padding-block: 26px 0; }
+
+.ba-head {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  background: var(--sf-card);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r-lg);
+  padding: 20px 24px;
+  box-shadow: var(--sf-sh-1);
+}
+.ba-avatar {
+  width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--sf-brand-soft); color: var(--sf-brand-strong);
+  font-family: var(--sf-font-display); font-size: 1.25rem; font-weight: 700;
+}
+.ba-who { flex: 1; min-width: 0; }
+.ba-who strong { display: block; font-family: var(--sf-font-display); font-size: 1.1rem; font-weight: 700; }
+.ba-who small { display: block; font-size: 0.8rem; color: var(--sf-faint); margin-top: 3px; }
+.ba-logout {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--sf-line); background: var(--sf-card);
+  color: var(--sf-body); border-radius: 999px;
+  padding: 9px 16px; cursor: pointer;
+  font-family: inherit; font-size: 0.83rem; font-weight: 700;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.ba-logout:hover { background: var(--sf-alert-soft); color: var(--sf-alert); border-color: var(--sf-alert); }
+.ba-logout svg { width: 15px; height: 15px; }
+
+.ba-nav { margin-top: 18px; border-bottom: 1px solid var(--sf-line); }
+.ba-nav-scroll {
+  display: flex; gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ba-nav-scroll::-webkit-scrollbar { display: none; }
+
+/* النص والأيقونة والعدّاد ظاهرون دائماً — لا شيء مرهون بالمرور */
+.ba-tab {
+  display: inline-flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+  padding: 13px 16px;
+  border-bottom: 2.5px solid transparent;
+  color: var(--sf-body);
+  font-size: 0.88rem; font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+.ba-tab svg { width: 17px; height: 17px; color: currentColor; }
+.ba-tab span { opacity: 1; visibility: visible; }
+.ba-tab:hover { color: var(--sf-brand-strong); background: var(--sf-brand-tint); }
+.ba-tab.is-active { color: var(--sf-brand-strong); border-bottom-color: var(--sf-brand); font-weight: 700; }
+
+.ba-badge {
+  min-width: 19px; height: 19px;
+  padding-inline: 6px;
+  border-radius: 999px;
+  background: var(--sf-alert); color: #fff;
+  font-size: 0.68rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.ba-body { padding-block: 28px 0; }
+/* عناصر لوحة التحكم المتبقية داخل المحتوى تُحاذى مع هوية المتجر */
+.ba-body .page-header { margin-bottom: 24px; }
+.ba-body .page-title { font-family: var(--sf-font-display); font-size: clamp(1.6rem, 2.4vw, 2rem); font-weight: 700; }
+.ba-body .page-subtitle { font-size: 0.95rem; color: var(--sf-body); margin-top: 6px; }
+.ba-body .ord-card,
+.ba-body .settings-panel,
+.ba-body .pd-table-wrap {
+  background: var(--sf-card);
+  border: 1px solid var(--sf-line);
+  border-radius: var(--sf-r-lg);
+  box-shadow: var(--sf-sh-1);
+}
+
+@media (max-width: 720px) {
+  .ba-head { padding: 16px; }
+  .ba-logout { width: 100%; justify-content: center; }
+  .ba-nav { margin-inline: -18px; padding-inline: 18px; }
+  .ba-tab { padding: 12px 13px; font-size: 0.84rem; }
+}
+
+/* ============================================================
+   18) شعارات الموردين — خلفية موحّدة و object-fit: contain
+   ------------------------------------------------------------
+   الأيقونة النائبة تقع خلف الصورة دائماً، فإن فشل تحميل الشعار
+   (onerror يُزيل <img>) ظهرت الأيقونة تلقائياً بلا فراغ.
+   ============================================================ */
+.by-sup-logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px; height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--sf-media);
+  border: 1px solid var(--sf-line);
+}
+.by-sup-logo img {
+  position: relative;
+  z-index: 1;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  background: var(--sf-media);
+}
+.by-sup-logo-ph {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--sf-brand-strong);
+}
+.by-sup-logo-ph svg { width: 55%; height: 55%; }
+
+/* الشعارات المرفقة مربّعات مصمّمة بحوافها — تملأ الإطار بلا حشو */
+.by-sup-logo.is-tile { background: transparent; border-color: transparent; }
+.by-sup-logo.is-tile img { padding: 0; background: transparent; }
+
+.by-sup-logo.is-lg { width: 74px; height: 74px; border-radius: 16px; }
+.by-sup-logo.is-lg img { padding: 9px; }
+.by-sup-logo.is-lg.is-tile img { padding: 0; }
+
+/* رفع الشعار في صفحة بيانات الشركة */
+.co-logo-box img { object-fit: contain !important; background: var(--sf-media); padding: 6px; }
+
+/* ============================================================
+   19) صقل الحركة — سلاسة موحّدة عبر المتجر
+   ------------------------------------------------------------
+   ثلاث مشاكل كانت تُفقد الحركة نعومتها:
+   • تشتّت المدد (0.15 / 0.16 / 0.18 / 0.2 / 0.22 / 0.25s) بلا نظام.
+   • استخدام transition: all فينتقل حتى ما لا يُقصد تحريكه.
+   • تحريك خصائص تُعيد التخطيط بدل transform/opacity.
+   ============================================================ */
+:root {
+  /* سلّم زمني من ثلاث درجات فقط */
+  --sf-t-fast: 160ms;    /* تغيّر لون/خلفية */
+  --sf-t-base: 260ms;    /* حركة عنصر */
+  --sf-t-slow: 420ms;    /* دخول/خروج */
+
+  --sf-ease-out: cubic-bezier(0.22, 1, 0.36, 1);   /* هبوط ناعم */
+  --sf-ease-soft: cubic-bezier(0.4, 0, 0.2, 1);    /* ذهاب وإياب */
+}
+
+html { scroll-behavior: smooth; }
+
+/* تمرير أنعم داخل المسارات الأفقية والقوائم */
+body.by-store .by-products.sf-rail,
+body.by-store .sf-catstrip,
+body.by-store .ba-nav-scroll,
+body.by-store .by-suggest,
+body.by-store .sm-asst-body { scroll-behavior: smooth; }
+
+/* transition: all يحرّك خصائص التخطيط أيضاً — نحصره في المقصود */
+body.by-store .nav-item,
+body.by-store .by-icon-btn,
+body.by-store .by-menu a,
+body.by-store .by-catbar-inner a {
+  transition: background-color var(--sf-t-fast) var(--sf-ease-soft),
+              color var(--sf-t-fast) var(--sf-ease-soft),
+              border-color var(--sf-t-fast) var(--sf-ease-soft),
+              transform var(--sf-t-base) var(--sf-ease-out);
+}
+
+/* البطاقات والصناديق: حركة واحدة متّسقة + تلميح للمركّب */
+body.by-store .by-card,
+body.by-store .sf-tile,
+body.by-store .sf-catcard,
+body.by-store .sm-vs-item,
+body.by-store .sm-drop,
+body.by-store .by-saved-addr {
+  transition: transform var(--sf-t-base) var(--sf-ease-out),
+              box-shadow var(--sf-t-base) var(--sf-ease-out),
+              border-color var(--sf-t-fast) var(--sf-ease-soft);
+  will-change: transform;
+  /* يمنع اهتزاز الحواف أثناء التحويل على بعض المحرّكات */
+  backface-visibility: hidden;
+}
+
+/* الصور: تكبير أنعم وأطول قليلاً فلا يبدو قفزة */
+body.by-store .by-card-media img,
+body.by-store .sf-tile-bg img {
+  transition: transform 620ms var(--sf-ease-out);
+  will-change: transform;
+}
+
+/* الأزرار: استجابة فورية عند الضغط بلا ارتجاج */
+body.by-store .by-btn,
+body.by-store .by-add-btn,
+body.by-store .by-quick-btn,
+body.by-store .by-chip,
+body.by-store .ba-tab {
+  transition: background-color var(--sf-t-fast) var(--sf-ease-soft),
+              color var(--sf-t-fast) var(--sf-ease-soft),
+              border-color var(--sf-t-fast) var(--sf-ease-soft),
+              box-shadow var(--sf-t-base) var(--sf-ease-out),
+              transform 120ms var(--sf-ease-soft);
+}
+
+/* الظهور التدريجي: مسافة أقصر ومدة أقصر = إحساس أخف */
+.sf-ready [data-reveal] {
+  transform: translateY(16px);
+  transition: opacity var(--sf-t-slow) var(--sf-ease-out),
+              transform var(--sf-t-slow) var(--sf-ease-out);
+}
+
+/* دخول الصفحة: تلاشٍ خفيف يمنع الوميض عند التحميل */
+body.by-store { animation: sfPageIn 320ms var(--sf-ease-out); }
+@keyframes sfPageIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* القوائم المنسدلة والاقتراحات تدخل بانزلاق قصير */
+body.by-store .by-suggest,
+body.by-store .by-menu,
+body.by-store .by-city-pop {
+  animation: sfPopIn var(--sf-t-base) var(--sf-ease-out);
+  transform-origin: top center;
+}
+@keyframes sfPopIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* الشرائح والوسوم تظهر بنبضة صغيرة بدل الظهور المفاجئ */
+body.by-store .by-active-chip,
+body.by-store .ofc-chip { animation: sfChipIn 220ms var(--sf-ease-out); }
+@keyframes sfChipIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* الهياكل والتوست: إيقاع أهدأ */
+body.by-store .by-skeleton,
+body.by-store .by-sk-media,
+body.by-store .by-sk-line { animation-duration: 1.7s; }
+.shell-toast { transition: opacity var(--sf-t-base) var(--sf-ease-out), transform var(--sf-t-base) var(--sf-ease-out); }
+
+/* ============================================================
+   20) احترام تفضيل تقليل الحركة
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   body.by-store *,
   body.by-store *::before,
   body.by-store *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
   .sf-ready [data-reveal] { opacity: 1 !important; transform: none !important; }
 }

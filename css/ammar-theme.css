@@ -85,16 +85,63 @@ textarea:focus-visible,
   }
 }
 
-/* شريط جانبي للمورد: محايد بأسلوب كود المنصات */
+/* شريط جانبي للمورد: محايد بأسلوب كود المنصات
+   ------------------------------------------------------------
+   ملاحظة مهمة: dashboard.css كتب ألوان نصوص الشريط لخلفية كحلية
+   داكنة (#94a3b8 افتراضياً و #ffffff عند المرور). بعد تفتيح
+   الخلفية هنا صار النص الأبيض يختفي على الأبيض عند المرور —
+   لذلك تُعاد كتابة كل حالات اللون أدناه، لا الخلفية وحدها. */
 .dash-sidebar {
   background: var(--surface);
   border-inline-start: 1px solid var(--line);
+  color: var(--ink);
 }
-.dash-sidebar .nav-item.active {
+
+.dash-sidebar .sidebar-header { border-bottom-color: var(--line); }
+.dash-sidebar .sidebar-brand strong { color: var(--ink); }
+.dash-sidebar .sidebar-brand small { color: var(--muted); }
+.dash-sidebar .sidebar-footer { border-top-color: var(--line); }
+
+/* النص والأيقونة والعدّاد ظاهرون في كل الحالات — لا شيء مرتبط بالمرور */
+.dash-sidebar .nav-item { color: var(--muted); }
+.dash-sidebar .nav-item svg { color: currentColor; }
+.dash-sidebar .nav-item > span {
+  flex: 1;
+  min-width: 0;
+  opacity: 1;
+  visibility: visible;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash-sidebar .nav-item:hover {
   background: var(--primary-50);
   color: var(--primary-700);
 }
+.dash-sidebar .nav-item:hover svg { color: var(--primary-600); }
+
+.dash-sidebar .nav-item.active {
+  background: var(--primary-50);
+  color: var(--primary-700);
+  font-weight: 700;
+}
 .dash-sidebar .nav-item.active svg { color: var(--primary-600); }
+
+/* العدّاد الأحمر لا يرث لون العنصر ولا يزيح النص */
+.dash-sidebar .nav-item .nav-badge {
+  color: #fff;
+  opacity: 1;
+  visibility: visible;
+  flex-shrink: 0;
+}
+
+/* تسجيل الخروج يحتفظ بلونه التحذيري في كل الحالات */
+.dash-sidebar .nav-item.nav-logout,
+.dash-sidebar .nav-item.nav-logout:hover { color: var(--danger); }
+.dash-sidebar .nav-item.nav-logout svg,
+.dash-sidebar .nav-item.nav-logout:hover svg { color: var(--danger); }
+.dash-sidebar .nav-item.nav-logout:hover { background: var(--danger-bg); }
 
 /* فاصل أقسام بسيط */
 .am-ruler {
@@ -1227,3 +1274,6 @@ textarea:focus-visible,
   color: var(--primary-700) !important;
 }
 .ob-nav-item.is-current svg { color: var(--primary-600) !important; }
+
+/* معاينة شعار الشركة: contain على خلفية موحّدة كما في المتجر */
+#coLogoPreview img { object-fit: contain !important; background: var(--surface-2); padding: 6px; }
