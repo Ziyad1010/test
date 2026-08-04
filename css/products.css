@@ -1046,3 +1046,13 @@
   .pd-wstep::before { top: 13px; }
   .pd-wstep-label { font-size: 0.66rem; }
 }
+
+/* عداد المدن المختارة داخل زرّ المنتقي */
+.ofc-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; padding-inline: 6px;
+  margin-inline-start: 7px;
+  border-radius: 999px;
+  background: var(--primary-600); color: #fff;
+  font-size: 0.72rem; font-weight: 800; line-height: 1;
+}

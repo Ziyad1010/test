@@ -57,7 +57,7 @@
         <div class="by-suggest" id="bhSuggest" hidden></div>
       </div>
 
-      <a class="by-biz-link" href="index.html" title="عمّار أعمال — حلول توريد للمشاريع">
+      <a class="by-biz-link" href="login.html?portal=business" title="عمّار أعمال — حلول توريد للمشاريع">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
         <span data-i18n="nav.business">عمّار أعمال</span>
       </a>
@@ -206,17 +206,7 @@
     </div>
   </section>
 
-  <!-- ===================== لوحة المشتري المختصرة ===================== -->
-  <section class="by-wrap by-section" id="bhPanelSection" hidden>
-    <div class="sm-panel" id="bhPanel"></div>
-  </section>
-
-  <!-- ===================== تنبيهات انخفاض الأسعار ===================== -->
-  <section class="by-wrap" id="bhDropsSection" hidden>
-    <div class="sm-drops" id="bhDrops"></div>
-  </section>
-
-  <!-- ===================== تصفح حسب التصنيف — Bento ===================== -->
+  <!-- ===================== تصفح حسب التصنيف — شريط مضغوط ثابت ===================== -->
   <section class="by-wrap by-section">
     <div class="by-section-head" data-reveal>
       <div><h2>تصفح حسب التصنيف</h2><p>اختر القسم الذي يحتاجه مشروعك وابدأ فوراً</p></div>
@@ -225,7 +215,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </a>
     </div>
-    <div class="sf-bento" id="bhCategories"></div>
+    <div class="sf-catstrip" id="bhCategories"></div>
   </section>
 
   <!-- ===================== منتجات مقترحة لك ===================== -->
@@ -238,6 +228,11 @@
       </a>
     </div>
     <div class="by-products" id="bhReco" data-rail></div>
+  </section>
+
+  <!-- ===================== تنبيهات انخفاض الأسعار ===================== -->
+  <section class="by-wrap" id="bhDropsSection" hidden>
+    <div class="sm-drops" id="bhDrops"></div>
   </section>
 
   <!-- ===================== عروض اليوم — Bento على خلفية مميزة ===================== -->
@@ -273,7 +268,7 @@
   </section>
 
   <!-- ===================== اشترِ بالجملة — شريط داكن ===================== -->
-  <div class="sf-band sf-band--dark">
+  <div class="sf-band sf-band--brand">
     <section class="by-wrap by-section">
       <div class="by-section-head" data-reveal>
         <div><h2>اشترِ بالجملة</h2><p>أسعار شرائح كمية تنخفض كلما زادت طلبيتك</p></div>
