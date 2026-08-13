@@ -81,7 +81,9 @@
         city: $('#bsCity').value
       });
 
-      $('#dashCompanyName').textContent = $('#bsName').value.trim();
+      // اسم المستخدم يظهر في ترويسة الحساب وقائمة الهيدر
+      var head = $('#baHead');
+      if (head && window.BuyerAccount) { /* يُعاد رسمها عبر Store.emit */ }
       toast('تم حفظ بياناتك', 'success');
     });
   }

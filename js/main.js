@@ -79,7 +79,7 @@ function renderCategories() {
   if (!grid) return;
   grid.innerHTML = CATEGORIES.map(
     (c) => `
-    <a href="#" class="cat-card reveal" data-cat="${c.id}">
+    <a href="buyer-market.html?category=${encodeURIComponent(c.id)}" class="cat-card reveal" data-cat="${c.id}">
       <img src="${c.img}" alt="${c.name}" loading="lazy" />
       <div class="cat-card-body">
         <h3>${c.name}</h3>

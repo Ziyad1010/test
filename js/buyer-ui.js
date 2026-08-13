@@ -82,6 +82,36 @@ var ByUI = (function () {
     return def || list[0] || null;
   }
 
+  /* ---------------- شعار المورد ----------------
+     شعار مرفوع من صفحة «بيانات الشركة» إن وُجد، وإلا أيقونة مصنع
+     موحّدة — لا حرف نائب. كل الشعارات على خلفية واحدة بـ contain
+     فلا تختلف النسب بين مورد وآخر. */
+  var FACTORY_ICON =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M2 20h20"/><path d="M4 20V9l5 3V9l5 3V6l6 4v10"/>' +
+    '<line x1="8" y1="16" x2="8" y2="16.01"/><line x1="13" y1="16" x2="13" y2="16.01"/><line x1="18" y1="16" x2="18" y2="16.01"/></svg>';
+
+  function supplierLogoHtml(name, extraClass) {
+    var src = '';
+    try { src = Store.supplierLogo(name); } catch (e) { src = ''; }
+
+    var cls = 'by-sup-logo' + (extraClass ? ' ' + extraClass : '');
+
+    if (src) {
+      // الشعارات المرفقة مع النموذج مربّعات كاملة الحواف، أما المرفوعة
+      // فقد تكون بخلفية شفافة وتحتاج حشواً حولها
+      if (src.indexOf('assets/') === 0) cls += ' is-tile';
+
+      // onerror يُسقط الصورة التالفة فتظهر الأيقونة الموحّدة خلفها
+      return '<span class="' + cls + '">' +
+        '<span class="by-sup-logo-ph">' + FACTORY_ICON + '</span>' +
+        '<img src="' + esc(src) + '" alt="شعار ' + esc(name) + '" loading="lazy" onerror="this.remove()" />' +
+      '</span>';
+    }
+
+    return '<span class="' + cls + '"><span class="by-sup-logo-ph">' + FACTORY_ICON + '</span></span>';
+  }
+
   /* ---------------- دليل اجتماعي من بيانات حقيقية ----------------
      عدد الوحدات المباعة فعلاً خلال آخر 30 يوماً من سجل الطلبات،
      لا رقم تسويقي مخترع. يعود بصفر إن لم يُطلب المنتج بعد. */
@@ -907,6 +937,7 @@ var ByUI = (function () {
     esc: esc,
     toast: toast,
     starsHtml: starsHtml,
+    supplierLogoHtml: supplierLogoHtml,
     effectivePrice: effectivePrice,
     productCard: productCard,
     renderProducts: renderProducts,
