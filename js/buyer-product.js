@@ -495,7 +495,7 @@
         'المورد' +
       '</h3>' +
       '<div class="by-supplier-mini">' +
-        '<span class="by-supplier-logo">' + esc(name.charAt(0)) + '</span>' +
+        ByUI.supplierLogoHtml(name, 'by-supplier-logo') +
         '<span><strong>' + esc(name) + '</strong>' +
           '<small>' + (s ? s.rating + ' ★ — ' + s.products + ' منتج' : 'مورد على المنصة') + '</small></span>' +
       '</div>' +

@@ -11,14 +11,6 @@
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var esc = ByUI.esc;
 
-  var CAT_IMAGES = {
-    cement: 'assets/images/cat-cement.jpg',
-    steel: 'assets/images/cat-steel.jpg',
-    concrete: 'assets/images/cat-concrete.jpg',
-    blocks: 'assets/images/cat-blocks.jpg',
-    finishing: 'assets/images/cat-finishing.jpg',
-    tools: 'assets/images/cat-tools.jpg'
-  };
 
   /* ---------------- بحث الهيرو ---------------- */
   function initHeroSearch() {
@@ -83,77 +75,6 @@
     });
   }
 
-  /* ---------------- لوحة المشتري المختصرة ----------------
-     كل رقم هنا مشتق من طلبات هذا المشتري الفعلية. */
-  function renderPanel() {
-    if (!window.Smart) return;
-
-    var d = Smart.dashboard();
-    // لا معنى للوحة قبل أول طلب — نُخفيها بدل عرض أصفار
-    if (!d.totalOrders && !d.savedItems) return;
-
-    $('#bhPanelSection').hidden = false;
-
-    var t = d.tier;
-    var profile = Buyer.profile();
-
-    $('#bhPanel').innerHTML =
-      '<div class="sm-panel-head">' +
-        '<div>' +
-          '<h2>أهلاً ' + esc(String(profile.name || 'بك').split(' ')[0]) + '</h2>' +
-          '<p>ملخّص نشاطك على المنصة</p>' +
-        '</div>' +
-        '<span class="sm-tier sm-tier--' + t.current.key + '">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' +
-          'عضو ' + esc(t.current.label) +
-        '</span>' +
-      '</div>' +
-
-      '<div class="sm-stats">' +
-        stat('إنفاق هذا الشهر', ByUI.fmt(d.monthSpend) + ' <small>ر.س</small>',
-          '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>') +
-        stat('طلبات نشطة', d.activeOrders,
-          '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>',
-          d.activeOrders ? 'buyer-orders.html' : '') +
-        stat('نقاط الولاء', ByUI.fmt(d.points) + ' <small>= ' + Smart.pointsValue(d.points) + ' ر.س</small>',
-          '<path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>') +
-        stat('في المفضلة', d.savedItems,
-          '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
-          d.savedItems ? 'favorites.html' : '') +
-      '</div>' +
-
-      (t.next
-        ? '<div class="sm-tier-bar">' +
-            '<div class="sm-tier-track"><span style="width:' + Math.max(3, t.progress) + '%;"></span></div>' +
-            '<small>تبقّى <b>' + ByUI.fmt(t.toNext) + '</b> نقطة للوصول إلى عضوية ' + esc(t.next.label) +
-            ' — ' + esc(t.next.perk) + '</small>' +
-          '</div>'
-        : '<div class="sm-tier-bar"><small>أنت في أعلى مستوى عضوية: ' + esc(t.current.perk) + '</small></div>') +
-
-      (d.points >= Smart.MIN_REDEEM
-        ? '<button type="button" class="by-btn by-btn-primary sm-redeem" id="bhRedeem">' +
-            'استبدل ' + ByUI.fmt(d.points) + ' نقطة بخصم ' + Smart.pointsValue(d.points) + ' ر.س' +
-          '</button>'
-        : '<p class="sm-panel-note">اجمع ' + Smart.MIN_REDEEM + ' نقطة لتتمكن من الاستبدال — تكسب نقطة لكل 10 ر.س من مشترياتك.</p>');
-
-    var redeem = $('#bhRedeem');
-    if (redeem) {
-      redeem.addEventListener('click', function () {
-        var res = Smart.redeem(Smart.points());
-        ByUI.toast(res.message, res.ok ? 'success' : 'danger');
-        if (res.ok) renderPanel();
-      });
-    }
-  }
-
-  function stat(label, value, icon, href) {
-    var tag = href ? 'a' : 'div';
-    return '<' + tag + ' class="sm-stat"' + (href ? ' href="' + href + '"' : '') + '>' +
-      '<span class="sm-stat-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + icon + '</svg></span>' +
-      '<span class="sm-stat-body"><small>' + esc(label) + '</small><strong>' + value + '</strong></span>' +
-    '</' + tag + '>';
-  }
-
   /* ---------------- تنبيه انخفاض السعر على المفضلة ---------------- */
   function renderDrops() {
     if (!window.Smart) return;
@@ -187,30 +108,29 @@
     });
   }
 
-  /* ---------------- التصنيفات بشبكة Bento ----------------
-     أحجام متفاوتة تكسر رتابة الشبكة المتساوية: القسمان الأكثر
-     منتجات يأخذان مساحة أكبر، والباقي صناديق عادية. */
-  // النمط يملأ الشبكة بلا فراغات: صف كبير + عريض، ثم مربعان، ثم عريضان
-  var BENTO_CAT_SHAPE = ['sf-tile--lg', 'sf-tile--wide', '', '', 'sf-tile--wide', 'sf-tile--wide'];
-
+  /* ---------------- التصنيفات: شريط مستطيلات مضغوط ----------------
+     مظهر سلايدر (محاذاة أفقية وتباعد متساوٍ) بلا حركة تلقائية ولا
+     سحب — عرض ثابت فقط. */
   function renderCategories() {
     var mount = $('#bhCategories');
     if (!mount) return;
 
     var cats = Buyer.categories().slice().sort(function (a, b) { return b.count - a.count; });
 
-    mount.innerHTML = cats.map(function (c, i) {
-      return '<a class="sf-tile has-media ' + BENTO_CAT_SHAPE[i % BENTO_CAT_SHAPE.length] + '" ' +
-        'href="buyer-market.html?category=' + encodeURIComponent(c.key) + '">' +
-        '<span class="sf-tile-bg"><img src="' + esc(CAT_IMAGES[c.key] || CAT_IMAGES.tools) + '" alt="" loading="lazy" /></span>' +
-        '<span class="sf-tile-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
-          (ByUI.CATEGORY_ICONS[c.key] || ByUI.CATEGORY_ICONS.tools) + '</svg></span>' +
-        '<span class="sf-tile-body"><strong>' + esc(c.label) + '</strong>' +
-        '<small>' + c.count + ' منتج متاح</small></span>' +
+    mount.innerHTML = cats.map(function (c) {
+      return '<a class="sf-catcard" href="buyer-market.html?category=' + encodeURIComponent(c.key) + '">' +
+        '<span class="sf-catcard-ico" aria-hidden="true">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' +
+          (ByUI.CATEGORY_ICONS[c.key] || ByUI.CATEGORY_ICONS.tools) + '</svg>' +
+        '</span>' +
+        '<span class="sf-catcard-body">' +
+          '<strong>' + esc(c.label) + '</strong>' +
+          '<small>' + c.count + ' منتج</small>' +
+        '</span>' +
       '</a>';
     }).join('');
 
-    if (window.SF) SF.stagger(mount);
+    if (window.SF) SF.stagger(mount, 40);
   }
 
   /* ---------------- عروض اليوم بشبكة Bento ----------------
@@ -335,23 +255,6 @@
 
   // شعارات الموردين الحقيقية — ضع ملف الشعار الرسمي بنفس الاسم وسيظهر تلقائياً،
   // وإن غاب الملف يظهر حرف المورد داخل صندوق موحّد.
-  var SUPPLIER_LOGOS = {
-    'حديد الراجحي': 'assets/images/suppliers/rajhi-steel.png',
-    'أسمنت اليمامة': 'assets/images/suppliers/yamama-cement.png',
-    'الخزف السعودي': 'assets/images/suppliers/saudi-ceramics.png',
-    'الخرسانة السعودية': 'assets/images/suppliers/saudi-readymix.png',
-    'الفوزان لمواد البناء': 'assets/images/suppliers/alfozan.png',
-    'أسمنت العربية': 'assets/images/suppliers/arabian-cement.png'
-  };
-
-  function supplierLogoHtml(name) {
-    // الحرف الأول يبقى خلف الشعار دائماً: إن تعذّر تحميل الصورة تُزال فيظهر بدلها
-    var initial = '<span class="am-monogram">' + esc(name.trim().charAt(0)) + '</span>';
-    var src = SUPPLIER_LOGOS[name.trim()];
-    if (!src) return initial;
-    return initial + '<img src="' + src + '" alt="شعار ' + esc(name) + '" loading="lazy" onerror="this.remove()">';
-  }
-
   function renderSuppliers() {
     var mount = $('#bhSuppliers');
     if (!mount) return;
@@ -376,7 +279,7 @@
 
       return '<a class="am-supplier" href="buyer-supplier.html?name=' + encodeURIComponent(s.name) + '">' +
         '<span class="am-supplier-top">' +
-          '<span class="am-supplier-logo">' + supplierLogoHtml(s.name) + '</span>' +
+          ByUI.supplierLogoHtml(s.name, 'am-supplier-logo') +
           '<span><strong>' + esc(s.name) + '</strong>' +
             '<span class="am-supplier-rating">' + star + ' ' + s.rating + ' من 5</span>' +
           '</span>' +
@@ -501,43 +404,34 @@
     });
   }
 
+  // كل بيانات هذه الصفحة تُقرأ من localStorage بلا أي طلب شبكة
+  // فعلي، فلا يوجد فاصل تحميل حقيقي يستدعي هيكلاً مؤقتاً أو تأخيراً
+  // مصطنعاً — كل الأقسام تُرسم في تمريرة واحدة متزامنة بدل أن
+  // "تقفز" أربعة أقسام بعد ٣٨٠ مللي ثانية بينما البقية تظهر فوراً.
   document.addEventListener('DOMContentLoaded', function () {
     try {
       ByUI.initHeader();
       initHeroSearch();
       initSiteCard();
       renderSiteCard();
-      renderPanel();
       renderDrops();
       renderCategories();
       renderSuppliers();
       renderBundles();
+      renderSections();
       initNewsletter();
       startCountdown();
+      ByUI.refreshChrome();
+
+      Store.subscribe(function () {
+        renderSections();
+        renderSiteCard();
+        ByUI.refreshChrome();
+      });
+
       if (window.Tour) Tour.autoStart();
     } catch (err) {
       renderLoadError();
-      return;
     }
-
-    // هياكل تحميل بدل شاشة فارغة أثناء تجهيز البيانات
-    ['#bhDeals', '#bhReco', '#bhCityBest', '#bhBulk'].forEach(function (sel) {
-      ByUI.skeleton($(sel), 4);
-    });
-
-    setTimeout(function () {
-      try {
-        renderSections();
-        ByUI.refreshChrome();
-        Store.subscribe(function () {
-          renderSections();
-          renderSiteCard();
-          renderPanel();
-          ByUI.refreshChrome();
-        });
-      } catch (err) {
-        renderLoadError();
-      }
-    }, 380);
   });
 })();

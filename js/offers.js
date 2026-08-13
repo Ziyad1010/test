@@ -100,8 +100,9 @@
     var trigger = $('#ofCitiesTrigger');
     var textEl = $('#ofCitiesTriggerText');
     trigger.classList.toggle('has-value', selectedCities.length > 0);
-    textEl.textContent = selectedCities.length
-      ? selectedCities.length + ' مدينة محددة'
+    // عداد صغير مستقل بجانب النص يبقى ظاهراً بعد إغلاق القائمة
+    textEl.innerHTML = selectedCities.length
+      ? 'مدن مستهدفة <span class="ofc-count">' + selectedCities.length + '</span>'
       : 'اختر المدن المستهدفة';
   }
 

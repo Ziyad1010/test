@@ -104,7 +104,7 @@
   function renderLogo(c) {
     var box = $('#coLogoPreview');
     if (c.logo) {
-      box.innerHTML = '<img src="' + esc(c.logo) + '" alt="شعار الشركة" style="width:100%;height:100%;object-fit:cover;" />';
+      box.innerHTML = '<img src="' + esc(c.logo) + '" alt="شعار الشركة" style="width:100%;height:100%;object-fit:contain;" />';
     } else {
       box.textContent = (c.nameAr || 'ش').trim().charAt(0);
     }
@@ -339,7 +339,11 @@
       if (!this.files || !this.files[0]) return;
       var reader = new FileReader();
       reader.onload = function () {
-        Store.saveCompany({ logo: String(reader.result) });
+        var url = String(reader.result);
+        Store.saveCompany({ logo: url });
+        // يُنشر أيضاً تحت اسم العلامة ليظهر في «موردون موثوقون» بالمتجر
+        var brand = Store.getCompany().nameAr;
+        if (brand) Store.setSupplierLogo(brand, url);
         renderLogo(Store.getCompany());
         renderAudit();
         toast('تم تحديث شعار الشركة', 'success');

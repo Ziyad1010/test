@@ -23,7 +23,7 @@
     $('#bspHeader').innerHTML =
       '<div class="ord-card">' +
         '<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">' +
-          '<span class="by-supplier-logo" style="width:72px;height:72px;font-size:1.7rem;">' + esc(s.name.trim().charAt(0)) + '</span>' +
+          ByUI.supplierLogoHtml(s.name, 'by-supplier-logo is-lg') +
           '<div style="flex:1;min-width:180px;">' +
             '<h2 style="font-size:1.3rem;font-weight:800;margin-bottom:6px;">' + esc(s.name) + '</h2>' +
             '<div class="by-card-rating" style="margin-bottom:6px;">' +

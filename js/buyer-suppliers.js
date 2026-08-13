@@ -18,7 +18,7 @@
 
     $('#bsupGrid').innerHTML = list.map(function (s) {
       return '<a class="by-supplier" href="buyer-supplier.html?name=' + encodeURIComponent(s.name) + '">' +
-        '<span class="by-supplier-logo">' + esc(s.name.trim().charAt(0)) + '</span>' +
+        ByUI.supplierLogoHtml(s.name, 'by-supplier-logo') +
         '<strong>' + esc(s.name) + '</strong>' +
         '<span class="by-card-rating" style="justify-content:center;">' +
           ByUI.starsHtml(s.rating) + '<span style="font-size:0.76rem;color:var(--muted);">' + s.rating + '</span>' +
